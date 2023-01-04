@@ -1,0 +1,9 @@
+
+# Build results
+[Dd]ebug/
+[Bb]in/
+[Oo]bj/
+
+# Visual Studio cache
+.vs/
+.vscode/

@@ -1,9 +1,9 @@
 ﻿using System;
 using MySql.Data.MySqlClient;
-using Fluxus.Api.Entities;
+using FluxusApi.Entities;
 using System.Collections;
 
-namespace Fluxus.Api.Repositories
+namespace FluxusApi.Repositories
 {
     public class AgenciaRepository
     {

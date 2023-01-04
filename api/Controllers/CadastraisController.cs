@@ -1,12 +1,12 @@
 ﻿using System;
 using System.Collections;
 using Microsoft.AspNetCore.Mvc;
-using Fluxus.Api.Entities;
-using Fluxus.Api.Repositories;
+using FluxusApi.Entities;
+using FluxusApi.Repositories;
 using Microsoft.AspNetCore.Http;
 using System.Text;
 
-namespace Fluxus.Api.Controllers
+namespace FluxusApi.Controllers
 {
 
 

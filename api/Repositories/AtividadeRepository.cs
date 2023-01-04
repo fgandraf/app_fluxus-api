@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections;
 using MySql.Data.MySqlClient;
-using Fluxus.Api.Entities;
+using FluxusApi.Entities;
 
-namespace Fluxus.Api.Repositories
+namespace FluxusApi.Repositories
 {
     public class AtividadeRepository
     {

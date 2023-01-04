@@ -1,6 +1,6 @@
 ﻿
 
-namespace Fluxus.Api.Repositories
+namespace FluxusApi.Repositories
 
 {
     public static class ConnectionString

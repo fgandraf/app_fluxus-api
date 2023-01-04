@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Fluxus.Api.Entities
+namespace FluxusApi.Entities
 {
 
     public class Fatura

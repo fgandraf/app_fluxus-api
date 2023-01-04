@@ -1,11 +1,11 @@
 ﻿using System;
 using MySql.Data.MySqlClient;
-using Fluxus.Api.Entities;
+using FluxusApi.Entities;
 using System.Collections;
 using System.Globalization;
 using Microsoft.AspNetCore.Components.Routing;
 
-namespace Fluxus.Api.Repositories
+namespace FluxusApi.Repositories
 {
 
 

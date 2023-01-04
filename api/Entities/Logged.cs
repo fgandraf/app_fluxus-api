@@ -1,6 +1,6 @@
 ﻿//using
 
-namespace Fluxus.Api.Entities
+namespace FluxusApi.Entities
 {
     public class Logged
     {

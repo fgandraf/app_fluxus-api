@@ -4,6 +4,8 @@ using Microsoft.AspNetCore.Mvc;
 using FluxusApi.Entities;
 using FluxusApi.Repositories;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Primitives;
+
 
 namespace FluxusApi.Controllers
 {
@@ -12,93 +14,71 @@ namespace FluxusApi.Controllers
     [Route("api/[controller]")]
 
 
-    public class ProfissionalController : ControllerBase
+    public class BankBranchController : ControllerBase
     {
         /*
+
 
         Autentication AutenticacaoServico;
 
 
 
-        public ProfissionalController(IHttpContextAccessor context)
+        public AgenciaController(IHttpContextAccessor context)
         {
             AutenticacaoServico = new Autentication(context);
         }
 
 
 
-
-        // GET: api/profissional
+        // GET: api/agencia
         [HttpGet]
         public ArrayList GetAll()
         {
             try
             {
                 AutenticacaoServico.Autenticar();
-                return new ProfissionalRepository().GetAll();
+                
+                return new AgenciaRepository().GetAll();
             }
             catch (Exception)
             {
                 throw;
             }
 
-        }
-
-
-
-
-
-        // GET api/profissional/getcodigoenomeid
-        [HttpGet]
-        [Route("getcodigoenomeid")]
-        public ArrayList GetCodigoENomeid()
-        {
-            try
-            {
-                AutenticacaoServico.Autenticar();
-                return new ProfissionalRepository().GetCodigoENomeid();
-            }
-            catch (Exception)
-            {
-                throw;
-            }
 
         }
 
 
 
-
-
-
-        // GET api/profissional/getuserinfo/<userName>
-        [HttpGet]
-        [Route("getuserinfo/{userName}")]
-        public ArrayList GetUserInfo(string userName)
-        {
-            try
-            {
-                AutenticacaoServico.Autenticar();
-                return new ProfissionalRepository().GetUserInfoBy(userName);
-            }
-            catch (Exception)
-            {
-                throw;
-            }
-
-        }
-
-
-
-
-        // GET api/profissional/getby/<id>
+        // GET: api/agencia/getby/<id>
         [HttpGet]
         [Route("getby/{id}")]
-        public Profissional GetBy(long id)
+        public Agencia GetBy(long id)
         {
             try
             {
                 AutenticacaoServico.Autenticar();
-                return new ProfissionalRepository().GetBy(id);
+                return new AgenciaRepository().GetBy(id);
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+
+        }
+
+
+
+
+        // GET: api/agencia/getsomeby/<agenciaCodigo>
+        [HttpGet]
+        [Route("getsomeby/{agenciaCodigo}")]
+        public ArrayList GetSomeBy(string agenciaCodigo)
+        {
+            try
+            {
+                AutenticacaoServico.Autenticar();
+                return new AgenciaRepository().GetNomeTelefone1EmailBy(agenciaCodigo);
             }
             catch (Exception)
             {
@@ -111,20 +91,19 @@ namespace FluxusApi.Controllers
 
 
 
-        // POST api/profissional/post
+        // POST api/agencia/post
         [HttpPost]
         [Route("post")]
-        public ReturnAllServices Post([FromBody] Profissional profissional)
+        public ReturnAllServices Post([FromBody] Agencia agencia)
         {
             ReturnAllServices retorno = new ReturnAllServices();
             try
             {
                 AutenticacaoServico.Autenticar();
-
-                new ProfissionalRepository().Insert(profissional);
+                new AgenciaRepository().Insert(agencia);
 
                 retorno.Result = true;
-                retorno.ErrorMessage = "Profissional Cadastrado!";
+                retorno.ErrorMessage = "Agencia Cadastrada!";
             }
             catch (Exception ex)
             {
@@ -139,20 +118,20 @@ namespace FluxusApi.Controllers
 
 
 
-        // PUT api/profissional/put/<id>
+        // PUT api/agencia/put/<id>
         [HttpPut]
         [Route("put/{id}")]
-        public ReturnAllServices Put(long id, [FromBody] Profissional profissional)
+        public ReturnAllServices Put(long id, [FromBody] Agencia agencia)
         {
             ReturnAllServices retorno = new ReturnAllServices();
             try
             {
                 AutenticacaoServico.Autenticar();
 
-                new ProfissionalRepository().Update(id, profissional);
+                new AgenciaRepository().Update(id, agencia);
 
                 retorno.Result = true;
-                retorno.ErrorMessage = "Profissional Alterado!";
+                retorno.ErrorMessage = "Agencia Alterada!";
             }
             catch (Exception ex)
             {
@@ -167,20 +146,20 @@ namespace FluxusApi.Controllers
 
 
 
-        // DELETE api/profissional/delete/<id>
+        // DELETE api/agencia/delete/<id>
         [HttpDelete]
         [Route("delete/{id}")]
         public ReturnAllServices Delete(long id)
         {
+
             ReturnAllServices retorno = new ReturnAllServices();
             try
             {
                 AutenticacaoServico.Autenticar();
-
-                new ProfissionalRepository().Delete(id);
+                new AgenciaRepository().Delete(id);
 
                 retorno.Result = true;
-                retorno.ErrorMessage = "Profissional Excluído!";
+                retorno.ErrorMessage = "Agencia Excluída!";
             }
             catch (Exception ex)
             {

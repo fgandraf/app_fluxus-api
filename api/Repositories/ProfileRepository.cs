@@ -7,7 +7,7 @@ namespace FluxusApi.Repositories
 {
 
 
-    public class CadastraisRepository
+    public class ProfileRepository
     {
         public ArrayList GetAll()
         {
@@ -22,7 +22,7 @@ namespace FluxusApi.Repositories
 
                 if (dr.HasRows)
                 {
-                    Cadastrais cadastrais = new Cadastrais();
+                    Profile cadastrais = new Profile();
                     if (dr.Read())
                     {
                         cadastrais.Cnpj = Convert.ToString(dr["cnpj"]);
@@ -185,7 +185,7 @@ namespace FluxusApi.Repositories
 
 
 
-        public long Insert(Cadastrais dado)
+        public long Insert(Profile dado)
         {
             try
             {
@@ -236,7 +236,7 @@ namespace FluxusApi.Repositories
 
 
 
-        public void Update(Cadastrais dado)
+        public void Update(Profile dado)
         {
             try
             {

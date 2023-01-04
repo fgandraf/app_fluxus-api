@@ -7,7 +7,7 @@ namespace FluxusApi.Repositories
 {
 
 
-    class FaturaRepository
+    class InvoiceRepository
     {
         public ArrayList GetAll()
         {
@@ -24,7 +24,7 @@ namespace FluxusApi.Repositories
                 {
                     while (dr.Read())
                     {
-                        Fatura fatura = new Fatura();
+                        Invoice fatura = new Invoice();
 
                         fatura.Id = Convert.ToInt32(dr["id"]);
                         fatura.Descricao = Convert.ToString(dr["descricao"]);
@@ -77,7 +77,7 @@ namespace FluxusApi.Repositories
             }
         }
 
-        public long Insert(Fatura dado)
+        public long Insert(Invoice dado)
         {
             try
             {
@@ -100,7 +100,7 @@ namespace FluxusApi.Repositories
             }
         }
 
-        public void UpdateTotals(long id, Fatura dado)
+        public void UpdateTotals(long id, Invoice dado)
         {
             try
             {

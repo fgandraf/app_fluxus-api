@@ -5,7 +5,7 @@ using FluxusApi.Entities;
 
 namespace FluxusApi.Repositories
 {
-    public class AtividadeRepository
+    public class ServiceRepository
     {
         public ArrayList GetAll()
         {
@@ -22,7 +22,7 @@ namespace FluxusApi.Repositories
                 {
                     while (dr.Read())
                     {
-                        Atividade atividade = new Atividade();
+                        Service atividade = new Service();
 
                         atividade.Id = Convert.ToInt64(dr["id"]);
                         atividade.Codigo = Convert.ToString(dr["codigo"]);
@@ -52,7 +52,7 @@ namespace FluxusApi.Repositories
 
 
 
-        public Atividade GetBy(long id)
+        public Service GetBy(long id)
         {
             try
             {
@@ -64,7 +64,7 @@ namespace FluxusApi.Repositories
 
                 if (dr.HasRows)
                 {
-                    Atividade atividade = new Atividade();
+                    Service atividade = new Service();
                     if (dr.Read())
                     {
                         atividade.Id = Convert.ToInt64(dr["id"]);
@@ -92,7 +92,7 @@ namespace FluxusApi.Repositories
 
 
 
-        public long Insert(Atividade dado)
+        public long Insert(Service dado)
         {
             try
             {
@@ -118,7 +118,7 @@ namespace FluxusApi.Repositories
 
 
 
-        public void Update(long id, Atividade dado)
+        public void Update(long id, Service dado)
         {
             try
             {

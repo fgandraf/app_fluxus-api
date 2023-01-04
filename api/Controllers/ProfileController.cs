@@ -4,8 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using FluxusApi.Entities;
 using FluxusApi.Repositories;
 using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.Primitives;
-
+using System.Text;
 
 namespace FluxusApi.Controllers
 {
@@ -14,51 +13,68 @@ namespace FluxusApi.Controllers
     [Route("api/[controller]")]
 
 
-    public class AgenciaController : ControllerBase
+    public class ProfileController : ControllerBase
     {
         /*
-
 
         Autentication AutenticacaoServico;
 
 
 
-        public AgenciaController(IHttpContextAccessor context)
+        public CadastraisController(IHttpContextAccessor context)
         {
+
             AutenticacaoServico = new Autentication(context);
         }
 
 
 
-        // GET: api/agencia
+        // GET: api/cadastrais
         [HttpGet]
         public ArrayList GetAll()
         {
             try
             {
                 AutenticacaoServico.Autenticar();
+                return new CadastraisRepository().GetAll();
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+
+        }
+
+
+        // GET: api/cadastrais/getlogo
+        [HttpGet]
+        [Route("getlogo")]
+        public string GetLogo()
+        {
+            try
+            {
+                AutenticacaoServico.Autenticar();
+                byte[] pass = new CadastraisRepository().GetLogo();
                 
-                return new AgenciaRepository().GetAll();
+                return Convert.ToBase64String(pass);
             }
             catch (Exception)
             {
                 throw;
             }
 
-
         }
 
 
-
-        // GET: api/agencia/getby/<id>
+        // GET api/cadastrais/gettoprint
         [HttpGet]
-        [Route("getby/{id}")]
-        public Agencia GetBy(long id)
+        [Route("gettoprint")]
+        public ArrayList GetToPrint()
         {
             try
             {
                 AutenticacaoServico.Autenticar();
-                return new AgenciaRepository().GetBy(id);
+                return new CadastraisRepository().GetToPrint();
             }
             catch (Exception)
             {
@@ -70,15 +86,17 @@ namespace FluxusApi.Controllers
 
 
 
-        // GET: api/agencia/getsomeby/<agenciaCodigo>
+
+
+        // GET api/cadastrais/getfantasia
         [HttpGet]
-        [Route("getsomeby/{agenciaCodigo}")]
-        public ArrayList GetSomeBy(string agenciaCodigo)
+        [Route("getfantasia")]
+        public string GetFantasia()
         {
             try
             {
                 AutenticacaoServico.Autenticar();
-                return new AgenciaRepository().GetNomeTelefone1EmailBy(agenciaCodigo);
+                return new CadastraisRepository().GetFantasia();
             }
             catch (Exception)
             {
@@ -91,19 +109,21 @@ namespace FluxusApi.Controllers
 
 
 
-        // POST api/agencia/post
+        // POST api/cadastrais/post
         [HttpPost]
         [Route("post")]
-        public ReturnAllServices Post([FromBody] Agencia agencia)
+        public ReturnAllServices Post([FromBody] Cadastrais cadastrais)
         {
             ReturnAllServices retorno = new ReturnAllServices();
             try
             {
                 AutenticacaoServico.Autenticar();
-                new AgenciaRepository().Insert(agencia);
+
+                new CadastraisRepository().Insert(cadastrais);
 
                 retorno.Result = true;
-                retorno.ErrorMessage = "Agencia Cadastrada!";
+                retorno.ErrorMessage = "Dados Cadastrais Cadastrados!";
+
             }
             catch (Exception ex)
             {
@@ -117,21 +137,20 @@ namespace FluxusApi.Controllers
 
 
 
-
-        // PUT api/agencia/put/<id>
+        // PUT api/cadastrais/put
         [HttpPut]
-        [Route("put/{id}")]
-        public ReturnAllServices Put(long id, [FromBody] Agencia agencia)
+        [Route("put")]
+        public ReturnAllServices Put([FromBody] Cadastrais cadastrais)
         {
             ReturnAllServices retorno = new ReturnAllServices();
             try
             {
                 AutenticacaoServico.Autenticar();
 
-                new AgenciaRepository().Update(id, agencia);
+                new CadastraisRepository().Update(cadastrais);
 
                 retorno.Result = true;
-                retorno.ErrorMessage = "Agencia Alterada!";
+                retorno.ErrorMessage = "Dados Cadastrais Alterados!";
             }
             catch (Exception ex)
             {
@@ -140,35 +159,6 @@ namespace FluxusApi.Controllers
             }
 
             return retorno;
-        }
-
-
-
-
-
-        // DELETE api/agencia/delete/<id>
-        [HttpDelete]
-        [Route("delete/{id}")]
-        public ReturnAllServices Delete(long id)
-        {
-
-            ReturnAllServices retorno = new ReturnAllServices();
-            try
-            {
-                AutenticacaoServico.Autenticar();
-                new AgenciaRepository().Delete(id);
-
-                retorno.Result = true;
-                retorno.ErrorMessage = "Agencia Excluída!";
-            }
-            catch (Exception ex)
-            {
-                retorno.Result = false;
-                retorno.ErrorMessage = ex.Message;
-            }
-
-            return retorno;
-
         }
 
         */

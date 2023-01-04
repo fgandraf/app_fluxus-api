@@ -9,7 +9,7 @@ namespace FluxusApi.Repositories
 {
 
 
-    public class OsRepository
+    public class ServiceOrderRepository
     {
         public ArrayList GetOrdensDoFluxo()
         {
@@ -166,7 +166,7 @@ namespace FluxusApi.Repositories
                 {
                     while (dr.Read())
                     {
-                        Os os = new Os();
+                        ServiceOrder os = new ServiceOrder();
 
                         os.Id = Convert.ToInt64(dr["id"]);
                         os.Referencia = Convert.ToString(dr["referencia"]);
@@ -286,7 +286,7 @@ namespace FluxusApi.Repositories
             }
         }
 
-        public Os GetBy(long id)
+        public ServiceOrder GetBy(long id)
         {
             try
             {
@@ -298,7 +298,7 @@ namespace FluxusApi.Repositories
 
                 if (dr.HasRows)
                 {
-                    Os os = new Os();
+                    ServiceOrder os = new ServiceOrder();
                     if (dr.Read())
                     {
                         os.Id = Convert.ToInt64(dr["id"]);
@@ -352,7 +352,7 @@ namespace FluxusApi.Repositories
             }
         }
 
-        public long Insert(Os dado)
+        public long Insert(ServiceOrder dado)
         {
             try
             {
@@ -391,7 +391,7 @@ namespace FluxusApi.Repositories
             }
         }
 
-        public void Update(long id, Os dado)
+        public void Update(long id, ServiceOrder dado)
         {
             try
             {

@@ -2,7 +2,7 @@
 namespace FluxusApi.Entities
 {
 
-    public class Atividade
+    public class Service
     {
         public long Id { get; set; }
         public string Codigo { get; set; }

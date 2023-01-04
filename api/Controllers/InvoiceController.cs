@@ -12,7 +12,7 @@ namespace FluxusApi.Controllers
     [Route("api/[controller]")]
 
 
-    public class FaturaController : ControllerBase
+    public class InvoiceController : ControllerBase
     {
         /*
 

@@ -3,7 +3,7 @@
 namespace FluxusApi.Entities
 {
 
-    public class Os
+    public class ServiceOrder
     {
         public long Id { get; set; }
         public string Titulo { get; set; }

@@ -2,7 +2,7 @@
 namespace FluxusApi.Entities
 {
 
-    public class Profissional
+    public class Professional
     {
         public long Id { get; set; }
         public string Codigo { get; set; }

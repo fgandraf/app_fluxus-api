@@ -2,7 +2,7 @@
 namespace FluxusApi.Entities
 {
 
-    public class Cadastrais
+    public class Profile
     {
         public long Id { get; set; }
         public string Cnpj { get; set; }

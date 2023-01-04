@@ -7,79 +7,124 @@ using Microsoft.AspNetCore.Http;
 
 namespace FluxusApi.Controllers
 {
-   
-    
+
+
     [Route("api/[controller]")]
 
 
-    public class AtividadeController : ControllerBase
+    public class ProfessionalController : ControllerBase
     {
-
         /*
-         
+
         Autentication AutenticacaoServico;
 
 
 
-        public AtividadeController(IHttpContextAccessor context)
+        public ProfissionalController(IHttpContextAccessor context)
         {
             AutenticacaoServico = new Autentication(context);
         }
 
 
 
-        // GET: api/atividade
+
+        // GET: api/profissional
         [HttpGet]
         public ArrayList GetAll()
         {
             try
             {
                 AutenticacaoServico.Autenticar();
-                return new AtividadeRepository().GetAll();
+                return new ProfissionalRepository().GetAll();
             }
             catch (Exception)
             {
                 throw;
             }
 
-            
         }
 
 
-        // GET api/atividade/getby/<id>
+
+
+
+        // GET api/profissional/getcodigoenomeid
+        [HttpGet]
+        [Route("getcodigoenomeid")]
+        public ArrayList GetCodigoENomeid()
+        {
+            try
+            {
+                AutenticacaoServico.Autenticar();
+                return new ProfissionalRepository().GetCodigoENomeid();
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+
+        }
+
+
+
+
+
+
+        // GET api/profissional/getuserinfo/<userName>
+        [HttpGet]
+        [Route("getuserinfo/{userName}")]
+        public ArrayList GetUserInfo(string userName)
+        {
+            try
+            {
+                AutenticacaoServico.Autenticar();
+                return new ProfissionalRepository().GetUserInfoBy(userName);
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+
+        }
+
+
+
+
+        // GET api/profissional/getby/<id>
         [HttpGet]
         [Route("getby/{id}")]
-        public Atividade GetBy(long id)
+        public Profissional GetBy(long id)
         {
             try
             {
                 AutenticacaoServico.Autenticar();
-                return new AtividadeRepository().GetBy(id);
+                return new ProfissionalRepository().GetBy(id);
             }
             catch (Exception)
             {
                 throw;
             }
+
         }
 
 
 
 
-        // POST api/atividade/post
+
+        // POST api/profissional/post
         [HttpPost]
         [Route("post")]
-        public ReturnAllServices Post([FromBody] Atividade atividade)
+        public ReturnAllServices Post([FromBody] Profissional profissional)
         {
             ReturnAllServices retorno = new ReturnAllServices();
-            AtividadeRepository atividadeDAO = new AtividadeRepository();
             try
             {
                 AutenticacaoServico.Autenticar();
 
-                new AtividadeRepository().Insert(atividade);
+                new ProfissionalRepository().Insert(profissional);
 
                 retorno.Result = true;
-                retorno.ErrorMessage = "Atividade Cadastrada!";
+                retorno.ErrorMessage = "Profissional Cadastrado!";
             }
             catch (Exception ex)
             {
@@ -94,20 +139,20 @@ namespace FluxusApi.Controllers
 
 
 
-        // PUT api/atividade/put/<id>
+        // PUT api/profissional/put/<id>
         [HttpPut]
         [Route("put/{id}")]
-        public ReturnAllServices Put(long id, [FromBody] Atividade atividade)
+        public ReturnAllServices Put(long id, [FromBody] Profissional profissional)
         {
             ReturnAllServices retorno = new ReturnAllServices();
             try
             {
                 AutenticacaoServico.Autenticar();
 
-                new AtividadeRepository().Update(id, atividade);
+                new ProfissionalRepository().Update(id, profissional);
 
                 retorno.Result = true;
-                retorno.ErrorMessage = "Atividade Alterada!";
+                retorno.ErrorMessage = "Profissional Alterado!";
             }
             catch (Exception ex)
             {
@@ -116,14 +161,13 @@ namespace FluxusApi.Controllers
             }
 
             return retorno;
-                
         }
 
 
 
 
 
-        // DELETE api/atividade/delete/<id>
+        // DELETE api/profissional/delete/<id>
         [HttpDelete]
         [Route("delete/{id}")]
         public ReturnAllServices Delete(long id)
@@ -133,10 +177,10 @@ namespace FluxusApi.Controllers
             {
                 AutenticacaoServico.Autenticar();
 
-                new AtividadeRepository().Delete(id);
+                new ProfissionalRepository().Delete(id);
 
                 retorno.Result = true;
-                retorno.ErrorMessage = "Atividade Excluída!";
+                retorno.ErrorMessage = "Profissional Excluído!";
             }
             catch (Exception ex)
             {

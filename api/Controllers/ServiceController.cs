@@ -4,126 +4,82 @@ using Microsoft.AspNetCore.Mvc;
 using FluxusApi.Entities;
 using FluxusApi.Repositories;
 using Microsoft.AspNetCore.Http;
-using System.Text;
 
 namespace FluxusApi.Controllers
 {
-
-
+   
+    
     [Route("api/[controller]")]
 
 
-    public class CadastraisController : ControllerBase
+    public class ServiceController : ControllerBase
     {
-        /*
 
+        /*
+         
         Autentication AutenticacaoServico;
 
 
 
-        public CadastraisController(IHttpContextAccessor context)
+        public AtividadeController(IHttpContextAccessor context)
         {
-
             AutenticacaoServico = new Autentication(context);
         }
 
 
 
-        // GET: api/cadastrais
+        // GET: api/atividade
         [HttpGet]
         public ArrayList GetAll()
         {
             try
             {
                 AutenticacaoServico.Autenticar();
-                return new CadastraisRepository().GetAll();
+                return new AtividadeRepository().GetAll();
             }
             catch (Exception)
             {
                 throw;
             }
 
+            
         }
 
 
-        // GET: api/cadastrais/getlogo
+        // GET api/atividade/getby/<id>
         [HttpGet]
-        [Route("getlogo")]
-        public string GetLogo()
+        [Route("getby/{id}")]
+        public Atividade GetBy(long id)
         {
             try
             {
                 AutenticacaoServico.Autenticar();
-                byte[] pass = new CadastraisRepository().GetLogo();
-                
-                return Convert.ToBase64String(pass);
+                return new AtividadeRepository().GetBy(id);
             }
             catch (Exception)
             {
                 throw;
             }
-
-        }
-
-
-        // GET api/cadastrais/gettoprint
-        [HttpGet]
-        [Route("gettoprint")]
-        public ArrayList GetToPrint()
-        {
-            try
-            {
-                AutenticacaoServico.Autenticar();
-                return new CadastraisRepository().GetToPrint();
-            }
-            catch (Exception)
-            {
-                throw;
-            }
-
         }
 
 
 
 
-
-
-        // GET api/cadastrais/getfantasia
-        [HttpGet]
-        [Route("getfantasia")]
-        public string GetFantasia()
-        {
-            try
-            {
-                AutenticacaoServico.Autenticar();
-                return new CadastraisRepository().GetFantasia();
-            }
-            catch (Exception)
-            {
-                throw;
-            }
-
-        }
-
-
-
-
-
-        // POST api/cadastrais/post
+        // POST api/atividade/post
         [HttpPost]
         [Route("post")]
-        public ReturnAllServices Post([FromBody] Cadastrais cadastrais)
+        public ReturnAllServices Post([FromBody] Atividade atividade)
         {
             ReturnAllServices retorno = new ReturnAllServices();
+            AtividadeRepository atividadeDAO = new AtividadeRepository();
             try
             {
                 AutenticacaoServico.Autenticar();
 
-                new CadastraisRepository().Insert(cadastrais);
+                new AtividadeRepository().Insert(atividade);
 
                 retorno.Result = true;
-                retorno.ErrorMessage = "Dados Cadastrais Cadastrados!";
-
+                retorno.ErrorMessage = "Atividade Cadastrada!";
             }
             catch (Exception ex)
             {
@@ -137,20 +93,21 @@ namespace FluxusApi.Controllers
 
 
 
-        // PUT api/cadastrais/put
+
+        // PUT api/atividade/put/<id>
         [HttpPut]
-        [Route("put")]
-        public ReturnAllServices Put([FromBody] Cadastrais cadastrais)
+        [Route("put/{id}")]
+        public ReturnAllServices Put(long id, [FromBody] Atividade atividade)
         {
             ReturnAllServices retorno = new ReturnAllServices();
             try
             {
                 AutenticacaoServico.Autenticar();
 
-                new CadastraisRepository().Update(cadastrais);
+                new AtividadeRepository().Update(id, atividade);
 
                 retorno.Result = true;
-                retorno.ErrorMessage = "Dados Cadastrais Alterados!";
+                retorno.ErrorMessage = "Atividade Alterada!";
             }
             catch (Exception ex)
             {
@@ -159,6 +116,36 @@ namespace FluxusApi.Controllers
             }
 
             return retorno;
+                
+        }
+
+
+
+
+
+        // DELETE api/atividade/delete/<id>
+        [HttpDelete]
+        [Route("delete/{id}")]
+        public ReturnAllServices Delete(long id)
+        {
+            ReturnAllServices retorno = new ReturnAllServices();
+            try
+            {
+                AutenticacaoServico.Autenticar();
+
+                new AtividadeRepository().Delete(id);
+
+                retorno.Result = true;
+                retorno.ErrorMessage = "Atividade Excluída!";
+            }
+            catch (Exception ex)
+            {
+                retorno.Result = false;
+                retorno.ErrorMessage = ex.Message;
+            }
+
+            return retorno;
+
         }
 
         */

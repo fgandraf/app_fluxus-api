@@ -5,7 +5,7 @@ using System.Collections;
 
 namespace FluxusApi.Repositories
 {
-    public class AgenciaRepository
+    public class BankBranchRepository
     {
         public ArrayList GetAll()
         {
@@ -51,7 +51,7 @@ namespace FluxusApi.Repositories
             }
         }
 
-        public Agencia GetBy(long id)
+        public BankBranch GetBy(long id)
         {
             
             try
@@ -64,7 +64,7 @@ namespace FluxusApi.Repositories
 
                 if (dr.HasRows)
                 {
-                    Agencia agencia = new Agencia();
+                    BankBranch agencia = new BankBranch();
 
                     if (dr.Read())
                     {
@@ -137,7 +137,7 @@ namespace FluxusApi.Repositories
             }
         }
 
-        public long Insert(Agencia dado)
+        public long Insert(BankBranch dado)
         {
             try
             {
@@ -168,7 +168,7 @@ namespace FluxusApi.Repositories
             }
         }
 
-        public void Update(long id, Agencia dado)
+        public void Update(long id, BankBranch dado)
         {
             try
             {

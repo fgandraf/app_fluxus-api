@@ -3,7 +3,7 @@
 namespace FluxusApi.Entities
 {
 
-    public class Fatura
+    public class Invoice
     {
         public long Id { get; set; }
         public string Descricao { get; set; }

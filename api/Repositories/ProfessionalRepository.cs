@@ -7,7 +7,7 @@ namespace FluxusApi.Repositories
 {
 
 
-    public class ProfissionalRepository
+    public class ProfessionalRepository
     {
         public ArrayList GetAll()
         {
@@ -23,7 +23,7 @@ namespace FluxusApi.Repositories
                 {
                     while (dr.Read())
                     {
-                        Profissional profissional = new Profissional();
+                        Professional profissional = new Professional();
 
                         profissional.Id = Convert.ToInt64(dr["id"]);
                         profissional.Codigo = Convert.ToString(dr["codigo"]);
@@ -129,7 +129,7 @@ namespace FluxusApi.Repositories
             
         }
 
-        public Profissional GetBy(long id)
+        public Professional GetBy(long id)
         {
             try
             {
@@ -141,7 +141,7 @@ namespace FluxusApi.Repositories
 
                 if (dr.HasRows)
                 {
-                    Profissional profissional = new Profissional();
+                    Professional profissional = new Professional();
                     if (dr.Read())
                     {
                         profissional.Id = Convert.ToInt64(dr["id"]);
@@ -177,7 +177,7 @@ namespace FluxusApi.Repositories
             }
         }
 
-        public long Insert(Profissional dado)
+        public long Insert(Professional dado)
         {
             try
             {
@@ -211,7 +211,7 @@ namespace FluxusApi.Repositories
             }
         }
 
-        public void Update(long id, Profissional dado)
+        public void Update(long id, Professional dado)
         {
             try
             {

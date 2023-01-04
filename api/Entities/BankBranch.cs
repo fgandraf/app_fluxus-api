@@ -2,7 +2,7 @@
 namespace FluxusApi.Entities
 {
 
-    public class Agencia
+    public class BankBranch
     {
         public long Id { get; set; }
         public string Numero { get; set; }

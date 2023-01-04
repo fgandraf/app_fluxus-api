@@ -100,7 +100,7 @@ DROP TABLE IF EXISTS `invoice`;
 CREATE TABLE `invoice` (
 	`id` INT NOT NULL AUTO_INCREMENT,
 	`description` VARCHAR(20),
-	`date` DATE,
+	`issue_date` DATE,
 	`subtotal_service` DECIMAL(10,2),
 	`subtotal_mileage_allowance` DECIMAL(10,2),
 	`total` DECIMAL(10,2),

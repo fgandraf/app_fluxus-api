@@ -26,11 +26,11 @@ namespace FluxusApi.Repositories
                         Professional profissional = new Professional();
 
                         profissional.Id = Convert.ToInt64(dr["id"]);
-                        profissional.Codigo = Convert.ToString(dr["codigo"]);
-                        profissional.Nome = Convert.ToString(dr["nome"]);
-                        profissional.Profissao = Convert.ToString(dr["profissao"]);
-                        profissional.Telefone1 = Convert.ToString(dr["telefone1"]);
-                        profissional.Usr_ativo = Convert.ToBoolean(dr["usr_ativo"]);
+                        profissional.Tag = Convert.ToString(dr["codigo"]);
+                        profissional.Name = Convert.ToString(dr["nome"]);
+                        profissional.Profession = Convert.ToString(dr["profissao"]);
+                        profissional.Phone1 = Convert.ToString(dr["telefone1"]);
+                        profissional.UserActive = Convert.ToBoolean(dr["usr_ativo"]);
 
                         profissionalArray.Add(profissional);
                     }
@@ -145,22 +145,22 @@ namespace FluxusApi.Repositories
                     if (dr.Read())
                     {
                         profissional.Id = Convert.ToInt64(dr["id"]);
-                        profissional.Codigo = Convert.ToString(dr["codigo"]);
-                        profissional.Nome = Convert.ToString(dr["nome"]);
-                        profissional.Nomeid = Convert.ToString(dr["nomeid"]);
+                        profissional.Tag = Convert.ToString(dr["codigo"]);
+                        profissional.Name = Convert.ToString(dr["nome"]);
+                        profissional.NameId = Convert.ToString(dr["nomeid"]);
                         profissional.Cpf = Convert.ToString(dr["cpf"]);
-                        profissional.Nascimento = Convert.ToString(dr["nascimento"]);
-                        profissional.Profissao = Convert.ToString(dr["profissao"]);
-                        profissional.Carteira = Convert.ToString(dr["carteira"]);
-                        profissional.Entidade = Convert.ToString(dr["entidade"]);
-                        profissional.Telefone1 = Convert.ToString(dr["telefone1"]);
-                        profissional.Telefone2 = Convert.ToString(dr["telefone2"]);
+                        profissional.Birthday = Convert.ToString(dr["nascimento"]);
+                        profissional.Profession = Convert.ToString(dr["profissao"]);
+                        profissional.PermitNumber = Convert.ToString(dr["carteira"]);
+                        profissional.Association = Convert.ToString(dr["entidade"]);
+                        profissional.Phone1 = Convert.ToString(dr["telefone1"]);
+                        profissional.Phone2 = Convert.ToString(dr["telefone2"]);
                         profissional.Email = Convert.ToString(dr["email"]);
-                        profissional.ResponsavelTecnico = Convert.ToBoolean(dr["rt"]);
-                        profissional.ResponsavelLegal = Convert.ToBoolean(dr["rl"]);
-                        profissional.Usr_ativo = Convert.ToBoolean(dr["usr_ativo"]);
-                        profissional.UsuarioNome = Convert.ToString(dr["usr_nome"]);
-                        profissional.UsuarioSenha = Convert.ToString(dr["usr_senha"]);
+                        profissional.TechnicianResponsible = Convert.ToBoolean(dr["rt"]);
+                        profissional.LegalResponsible = Convert.ToBoolean(dr["rl"]);
+                        profissional.UserActive = Convert.ToBoolean(dr["usr_ativo"]);
+                        profissional.UserName = Convert.ToString(dr["usr_nome"]);
+                        profissional.UserPassword = Convert.ToString(dr["usr_senha"]);
                     }
                     conexao.Close();
                     return profissional;
@@ -184,22 +184,22 @@ namespace FluxusApi.Repositories
                 MySqlConnection conexao = new MySqlConnection(ConnectionString.CONNECTION_STRING);
                 conexao.Open();
                 MySqlCommand sql = new MySqlCommand("INSERT INTO tb_profissionais(codigo, nome, nomeid, cpf, nascimento, profissao, carteira, entidade, telefone1, telefone2, email, rt, rl, usr_ativo, usr_nome, usr_senha) VALUES (@codigo, @nome, @nomeid, @cpf, @nascimento, @profissao, @carteira, @entidade, @telefone1, @telefone2, @email, @rt, @rl, @usr_ativo, @usr_nome, @usr_senha)", conexao);
-                sql.Parameters.AddWithValue("@codigo", dado.Codigo);
-                sql.Parameters.AddWithValue("@nome", dado.Nome);
-                sql.Parameters.AddWithValue("@nomeid", dado.Nomeid);
+                sql.Parameters.AddWithValue("@codigo", dado.Tag);
+                sql.Parameters.AddWithValue("@nome", dado.Name);
+                sql.Parameters.AddWithValue("@nomeid", dado.NameId);
                 sql.Parameters.AddWithValue("@cpf", dado.Cpf);
-                sql.Parameters.AddWithValue("@nascimento", Util.DateOrNull(dado.Nascimento));
-                sql.Parameters.AddWithValue("@profissao", dado.Profissao);
-                sql.Parameters.AddWithValue("@carteira", dado.Carteira);
-                sql.Parameters.AddWithValue("@entidade", dado.Entidade);
-                sql.Parameters.AddWithValue("@telefone1", dado.Telefone1);
-                sql.Parameters.AddWithValue("@telefone2", dado.Telefone2);
+                sql.Parameters.AddWithValue("@nascimento", Util.DateOrNull(dado.Birthday));
+                sql.Parameters.AddWithValue("@profissao", dado.Profession);
+                sql.Parameters.AddWithValue("@carteira", dado.PermitNumber);
+                sql.Parameters.AddWithValue("@entidade", dado.Association);
+                sql.Parameters.AddWithValue("@telefone1", dado.Phone1);
+                sql.Parameters.AddWithValue("@telefone2", dado.Phone2);
                 sql.Parameters.AddWithValue("@email", dado.Email);
-                sql.Parameters.AddWithValue("@rt", dado.ResponsavelTecnico);
-                sql.Parameters.AddWithValue("@rl", dado.ResponsavelLegal);
-                sql.Parameters.AddWithValue("@usr_ativo", dado.Usr_ativo);
-                sql.Parameters.AddWithValue("@usr_nome", dado.UsuarioNome);
-                sql.Parameters.AddWithValue("@usr_senha", dado.UsuarioSenha);
+                sql.Parameters.AddWithValue("@rt", dado.TechnicianResponsible);
+                sql.Parameters.AddWithValue("@rl", dado.LegalResponsible);
+                sql.Parameters.AddWithValue("@usr_ativo", dado.UserActive);
+                sql.Parameters.AddWithValue("@usr_nome", dado.UserName);
+                sql.Parameters.AddWithValue("@usr_senha", dado.UserPassword);
 
                 sql.ExecuteNonQuery();
                 conexao.Close();
@@ -219,21 +219,21 @@ namespace FluxusApi.Repositories
                 conexao.Open();
                 MySqlCommand sql = new MySqlCommand("UPDATE tb_profissionais SET nome = @nome, nomeid = @nomeid, cpf = @cpf, nascimento = @nascimento, profissao = @profissao, carteira = @carteira, entidade = @entidade, telefone1 = @telefone1, telefone2 = @telefone2, email = @email, rt = @rt, rl = @rl, usr_ativo = @usr_ativo, usr_nome = @usr_nome, usr_senha = @usr_senha WHERE id = @id", conexao);
                 sql.Parameters.AddWithValue("@id", id);
-                sql.Parameters.AddWithValue("@nome", dado.Nome);
-                sql.Parameters.AddWithValue("@nomeid", dado.Nomeid);
+                sql.Parameters.AddWithValue("@nome", dado.Name);
+                sql.Parameters.AddWithValue("@nomeid", dado.NameId);
                 sql.Parameters.AddWithValue("@cpf", dado.Cpf);
-                sql.Parameters.AddWithValue("@nascimento", Util.DateOrNull(dado.Nascimento));
-                sql.Parameters.AddWithValue("@profissao", dado.Profissao);
-                sql.Parameters.AddWithValue("@carteira", dado.Carteira);
-                sql.Parameters.AddWithValue("@entidade", dado.Entidade);
-                sql.Parameters.AddWithValue("@telefone1", dado.Telefone1);
-                sql.Parameters.AddWithValue("@telefone2", dado.Telefone2);
+                sql.Parameters.AddWithValue("@nascimento", Util.DateOrNull(dado.Birthday));
+                sql.Parameters.AddWithValue("@profissao", dado.Profession);
+                sql.Parameters.AddWithValue("@carteira", dado.PermitNumber);
+                sql.Parameters.AddWithValue("@entidade", dado.Association);
+                sql.Parameters.AddWithValue("@telefone1", dado.Phone1);
+                sql.Parameters.AddWithValue("@telefone2", dado.Phone2);
                 sql.Parameters.AddWithValue("@email", dado.Email);
-                sql.Parameters.AddWithValue("@rt", dado.ResponsavelTecnico);
-                sql.Parameters.AddWithValue("@rl", dado.ResponsavelLegal);
-                sql.Parameters.AddWithValue("@usr_ativo", dado.Usr_ativo);
-                sql.Parameters.AddWithValue("@usr_nome", dado.UsuarioNome);
-                sql.Parameters.AddWithValue("@usr_senha", dado.UsuarioSenha);
+                sql.Parameters.AddWithValue("@rt", dado.TechnicianResponsible);
+                sql.Parameters.AddWithValue("@rl", dado.LegalResponsible);
+                sql.Parameters.AddWithValue("@usr_ativo", dado.UserActive);
+                sql.Parameters.AddWithValue("@usr_nome", dado.UserName);
+                sql.Parameters.AddWithValue("@usr_senha", dado.UserPassword);
                 sql.ExecuteNonQuery();
                 conexao.Close();
             }

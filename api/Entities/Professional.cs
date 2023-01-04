@@ -1,27 +1,24 @@
 ﻿
 namespace FluxusApi.Entities
 {
-
     public class Professional
     {
         public long Id { get; set; }
-        public string Codigo { get; set; }
-        public string Nome { get; set; }
-        public string Nomeid { get; set; }
+        public string Tag { get; set; }
+        public string Name { get; set; }
+        public string NameId { get; set; }
         public string Cpf { get; set; }
-        public string Nascimento { get; set; }
-        public string Profissao { get; set; }
-        public string Carteira { get; set; }
-        public string Entidade { get; set; }
-        public string Telefone1 { get; set; }
-        public string Telefone2 { get; set; }
+        public string Birthday { get; set; }
+        public string Profession { get; set; }
+        public string PermitNumber { get; set; }
+        public string Association { get; set; }
+        public string Phone1 { get; set; }
+        public string Phone2 { get; set; }
         public string Email { get; set; }
-        public bool ResponsavelTecnico { get; set; }
-        public bool ResponsavelLegal { get; set; }
-        public bool Usr_ativo { get; set; }
-        public string UsuarioNome { get; set; }
-        public string UsuarioSenha { get; set; }
+        public bool TechnicianResponsible { get; set; }
+        public bool LegalResponsible { get; set; }
+        public bool UserActive { get; set; }
+        public string UserName { get; set; }
+        public string UserPassword { get; set; }
     }
-
-
 }

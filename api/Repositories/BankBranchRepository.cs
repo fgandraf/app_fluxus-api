@@ -69,16 +69,16 @@ namespace FluxusApi.Repositories
                     if (dr.Read())
                     {
                         agencia.Id = Convert.ToInt64(dr["id"]);
-                        agencia.Numero = Convert.ToString(dr["agencia"]);
-                        agencia.Nome = Convert.ToString(dr["nome"]);
-                        agencia.Endereco = Convert.ToString(dr["endereco"]);
-                        agencia.Complemento = Convert.ToString(dr["complemento"]);
-                        agencia.Bairro = Convert.ToString(dr["bairro"]);
-                        agencia.Cidade = Convert.ToString(dr["cidade"]);
-                        agencia.CEP = Convert.ToString(dr["cep"]);
-                        agencia.UF = Convert.ToString(dr["uf"]);
-                        agencia.Telefone1 = Convert.ToString(dr["telefone1"]);
-                        agencia.Telefone2 = Convert.ToString(dr["telefone2"]);
+                        agencia.BranchNumber = Convert.ToString(dr["agencia"]);
+                        agencia.Name = Convert.ToString(dr["nome"]);
+                        agencia.Address = Convert.ToString(dr["endereco"]);
+                        agencia.Complement = Convert.ToString(dr["complemento"]);
+                        agencia.District = Convert.ToString(dr["bairro"]);
+                        agencia.City = Convert.ToString(dr["cidade"]);
+                        agencia.Zip = Convert.ToString(dr["cep"]);
+                        agencia.State = Convert.ToString(dr["uf"]);
+                        agencia.Phone1 = Convert.ToString(dr["telefone1"]);
+                        agencia.Phone2 = Convert.ToString(dr["telefone2"]);
                         agencia.Email = Convert.ToString(dr["email"]);
                     }
                     conexao.Close();
@@ -145,17 +145,17 @@ namespace FluxusApi.Repositories
                 conexao.Open();
                 MySqlCommand sql = new MySqlCommand("INSERT INTO  tb_agencias(agencia, nome, endereco, complemento, bairro, cidade, CEP, UF, contato, telefone1, telefone2, email) VALUES (@agencia, @nome, @endereco, @complemento, @bairro, @cidade, @CEP, @UF, @contato, @telefone1, @telefone2, @email)", conexao);
 
-                sql.Parameters.AddWithValue("@agencia", dado.Numero);
-                sql.Parameters.AddWithValue("@nome", dado.Nome);
-                sql.Parameters.AddWithValue("@endereco", dado.Endereco);
-                sql.Parameters.AddWithValue("@complemento", dado.Complemento);
-                sql.Parameters.AddWithValue("@bairro", dado.Bairro);
-                sql.Parameters.AddWithValue("@cidade", dado.Cidade);
-                sql.Parameters.AddWithValue("@CEP", dado.CEP);
-                sql.Parameters.AddWithValue("@UF", dado.UF);
-                sql.Parameters.AddWithValue("@contato", dado.Contato);
-                sql.Parameters.AddWithValue("@telefone1", dado.Telefone1);
-                sql.Parameters.AddWithValue("@telefone2", dado.Telefone2);
+                sql.Parameters.AddWithValue("@agencia", dado.BranchNumber);
+                sql.Parameters.AddWithValue("@nome", dado.Name);
+                sql.Parameters.AddWithValue("@endereco", dado.Address);
+                sql.Parameters.AddWithValue("@complemento", dado.Complement);
+                sql.Parameters.AddWithValue("@bairro", dado.District);
+                sql.Parameters.AddWithValue("@cidade", dado.City);
+                sql.Parameters.AddWithValue("@CEP", dado.Zip);
+                sql.Parameters.AddWithValue("@UF", dado.State);
+                sql.Parameters.AddWithValue("@contato", dado.ContactName);
+                sql.Parameters.AddWithValue("@telefone1", dado.Phone1);
+                sql.Parameters.AddWithValue("@telefone2", dado.Phone2);
                 sql.Parameters.AddWithValue("@email", dado.Email);
                 sql.ExecuteNonQuery();
 
@@ -176,17 +176,17 @@ namespace FluxusApi.Repositories
                 conexao.Open();
                 MySqlCommand sql = new MySqlCommand("UPDATE tb_agencias SET agencia = @agencia, nome = @nome, endereco = @endereco, complemento = @complemento, bairro = @bairro, cidade = @cidade, CEP = @CEP, UF = @UF, contato = @contato, telefone1 = @telefone1, telefone2 = @telefone2, email = @email WHERE id = @id", conexao);
 
-                sql.Parameters.AddWithValue("@agencia", dado.Numero);
-                sql.Parameters.AddWithValue("@nome", dado.Nome);
-                sql.Parameters.AddWithValue("@endereco", dado.Endereco);
-                sql.Parameters.AddWithValue("@complemento", dado.Complemento);
-                sql.Parameters.AddWithValue("@bairro", dado.Bairro);
-                sql.Parameters.AddWithValue("@cidade", dado.Cidade);
-                sql.Parameters.AddWithValue("@CEP", dado.CEP);
-                sql.Parameters.AddWithValue("@UF", dado.UF);
-                sql.Parameters.AddWithValue("@contato", dado.Contato);
-                sql.Parameters.AddWithValue("@telefone1", dado.Telefone1);
-                sql.Parameters.AddWithValue("@telefone2", dado.Telefone2);
+                sql.Parameters.AddWithValue("@agencia", dado.BranchNumber);
+                sql.Parameters.AddWithValue("@nome", dado.Name);
+                sql.Parameters.AddWithValue("@endereco", dado.Address);
+                sql.Parameters.AddWithValue("@complemento", dado.Complement);
+                sql.Parameters.AddWithValue("@bairro", dado.District);
+                sql.Parameters.AddWithValue("@cidade", dado.City);
+                sql.Parameters.AddWithValue("@CEP", dado.Zip);
+                sql.Parameters.AddWithValue("@UF", dado.State);
+                sql.Parameters.AddWithValue("@contato", dado.ContactName);
+                sql.Parameters.AddWithValue("@telefone1", dado.Phone1);
+                sql.Parameters.AddWithValue("@telefone2", dado.Phone2);
                 sql.Parameters.AddWithValue("@email", dado.Email);
                 sql.Parameters.AddWithValue("@id", id);
                 sql.ExecuteNonQuery();

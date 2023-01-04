@@ -14,6 +14,7 @@ namespace FluxusApi.Controllers
 
     public class OsController : ControllerBase
     {
+        /*
 
         Autentication AutenticacaoServico;
 
@@ -308,6 +309,7 @@ namespace FluxusApi.Controllers
 
         }
 
+        */
 
     }
 

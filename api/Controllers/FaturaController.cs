@@ -14,6 +14,7 @@ namespace FluxusApi.Controllers
 
     public class FaturaController : ControllerBase
     {
+        /*
 
         Autentication AutenticacaoServico;
 
@@ -142,6 +143,7 @@ namespace FluxusApi.Controllers
             return retorno;
         }
 
+        */
 
     }
 

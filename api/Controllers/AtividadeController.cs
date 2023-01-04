@@ -15,7 +15,8 @@ namespace FluxusApi.Controllers
     public class AtividadeController : ControllerBase
     {
 
-        
+        /*
+         
         Autentication AutenticacaoServico;
 
 
@@ -147,6 +148,7 @@ namespace FluxusApi.Controllers
 
         }
 
+        */
 
     }
 

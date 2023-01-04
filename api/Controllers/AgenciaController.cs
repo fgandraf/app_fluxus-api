@@ -16,7 +16,7 @@ namespace FluxusApi.Controllers
 
     public class AgenciaController : ControllerBase
     {
-
+        /*
 
 
         Autentication AutenticacaoServico;
@@ -171,6 +171,7 @@ namespace FluxusApi.Controllers
 
         }
 
+        */
 
     }
 

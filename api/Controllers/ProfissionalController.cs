@@ -14,7 +14,7 @@ namespace FluxusApi.Controllers
 
     public class ProfissionalController : ControllerBase
     {
-
+        /*
 
         Autentication AutenticacaoServico;
 
@@ -192,6 +192,7 @@ namespace FluxusApi.Controllers
 
         }
 
+        */
 
     }
 

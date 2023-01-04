@@ -15,6 +15,7 @@ namespace FluxusApi.Controllers
 
     public class CadastraisController : ControllerBase
     {
+        /*
 
         Autentication AutenticacaoServico;
 
@@ -160,6 +161,7 @@ namespace FluxusApi.Controllers
             return retorno;
         }
 
+        */
 
     }
 

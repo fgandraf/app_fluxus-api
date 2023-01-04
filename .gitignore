@@ -7,3 +7,6 @@
 # Visual Studio cache
 .vs/
 .vscode/
+
+# Ignore directory
+ignore/

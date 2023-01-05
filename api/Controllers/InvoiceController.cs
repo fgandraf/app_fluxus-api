@@ -77,12 +77,12 @@ namespace FluxusApi.Controllers
         {
             AutenticacaoServico.Autenticar();
 
-            int result = new InvoiceRepository().Delete(id);
+            bool deleted = new InvoiceRepository().Delete(id);
 
-            if (result == 0)
-                return NotFound();
+            if (deleted)
+                return Ok(); 
             else
-                return Ok();
+                return NotFound();
         }
     }
 }

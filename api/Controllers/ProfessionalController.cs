@@ -1,200 +1,118 @@
-﻿using System;
-using System.Collections;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using FluxusApi.Entities;
 using FluxusApi.Repositories;
-using Microsoft.AspNetCore.Http;
 
 namespace FluxusApi.Controllers
 {
 
-
     [Route("api/[controller]")]
-
 
     public class ProfessionalController : ControllerBase
     {
-        /*
-
         Autentication AutenticacaoServico;
 
-
-
-        public ProfissionalController(IHttpContextAccessor context)
+        public ProfessionalController(IHttpContextAccessor context)
         {
             AutenticacaoServico = new Autentication(context);
         }
 
 
-
-
-        // GET: api/profissional
+        // GET: api/Professional
         [HttpGet]
-        public ArrayList GetAll()
+        public IActionResult GetAll()
         {
-            try
-            {
-                AutenticacaoServico.Autenticar();
-                return new ProfissionalRepository().GetAll();
-            }
-            catch (Exception)
-            {
-                throw;
-            }
+            AutenticacaoServico.Autenticar();
 
+            var result = new ProfessionalRepository().GetAll();
+
+            if (result == null)
+                return NotFound();
+
+            return Ok(result);
         }
 
 
-
-
-
-        // GET api/profissional/getcodigoenomeid
-        [HttpGet]
-        [Route("getcodigoenomeid")]
-        public ArrayList GetCodigoENomeid()
+        // GET api/Professional/GetTagNameId
+        [HttpGet("GetTagNameId")]
+        public IActionResult GetCodigoENomeid()
         {
-            try
-            {
-                AutenticacaoServico.Autenticar();
-                return new ProfissionalRepository().GetCodigoENomeid();
-            }
-            catch (Exception)
-            {
-                throw;
-            }
+            AutenticacaoServico.Autenticar();
 
+            var result = new ProfessionalRepository().GetCodigoENomeid();
+
+            if (result == null)
+                return NotFound();
+
+            return Ok(result);
         }
 
 
-
-
-
-
-        // GET api/profissional/getuserinfo/<userName>
-        [HttpGet]
-        [Route("getuserinfo/{userName}")]
-        public ArrayList GetUserInfo(string userName)
+        // GET api/Professional/GetUserInfo/<userName>
+        [HttpGet("GetUserInfo/{userName}")]
+        public IActionResult GetUserInfo(string userName)
         {
-            try
-            {
-                AutenticacaoServico.Autenticar();
-                return new ProfissionalRepository().GetUserInfoBy(userName);
-            }
-            catch (Exception)
-            {
-                throw;
-            }
+            AutenticacaoServico.Autenticar();
 
+            var result = new ProfessionalRepository().GetUserInfoBy(userName);
+
+            if (result == null)
+                return NotFound();
+
+            return Ok(result);
         }
 
 
-
-
-        // GET api/profissional/getby/<id>
-        [HttpGet]
-        [Route("getby/{id}")]
-        public Profissional GetBy(long id)
+        // GET api/Professional/<id>
+        [HttpGet("{id}")]
+        public IActionResult GetBy(long id)
         {
-            try
-            {
-                AutenticacaoServico.Autenticar();
-                return new ProfissionalRepository().GetBy(id);
-            }
-            catch (Exception)
-            {
-                throw;
-            }
+            AutenticacaoServico.Autenticar();
 
+            var result = new ProfessionalRepository().GetBy(id);
+
+            if (result == null)
+                return NotFound();
+
+            return Ok(result);
         }
 
 
-
-
-
-        // POST api/profissional/post
+        // POST api/Professional
         [HttpPost]
-        [Route("post")]
-        public ReturnAllServices Post([FromBody] Profissional profissional)
+        public IActionResult Post([FromBody] Professional profissional)
         {
-            ReturnAllServices retorno = new ReturnAllServices();
-            try
-            {
-                AutenticacaoServico.Autenticar();
+            AutenticacaoServico.Autenticar();
 
-                new ProfissionalRepository().Insert(profissional);
+            new ProfessionalRepository().Insert(profissional);
 
-                retorno.Result = true;
-                retorno.ErrorMessage = "Profissional Cadastrado!";
-            }
-            catch (Exception ex)
-            {
-                retorno.Result = false;
-                retorno.ErrorMessage = ex.Message;
-            }
-
-            return retorno;
+            return Ok();
         }
 
 
-
-
-
-        // PUT api/profissional/put/<id>
-        [HttpPut]
-        [Route("put/{id}")]
-        public ReturnAllServices Put(long id, [FromBody] Profissional profissional)
+        // PUT api/Professional/<id>
+        [HttpPut("{id}")]
+        public IActionResult Put(long id, [FromBody] Professional profissional)
         {
-            ReturnAllServices retorno = new ReturnAllServices();
-            try
-            {
-                AutenticacaoServico.Autenticar();
+            AutenticacaoServico.Autenticar();
 
-                new ProfissionalRepository().Update(id, profissional);
+            new ProfessionalRepository().Update(id, profissional);
 
-                retorno.Result = true;
-                retorno.ErrorMessage = "Profissional Alterado!";
-            }
-            catch (Exception ex)
-            {
-                retorno.Result = false;
-                retorno.ErrorMessage = ex.Message;
-            }
-
-            return retorno;
+            return Ok();
         }
 
 
-
-
-
-        // DELETE api/profissional/delete/<id>
-        [HttpDelete]
-        [Route("delete/{id}")]
-        public ReturnAllServices Delete(long id)
+        // DELETE api/Professional/<id>
+        [HttpDelete("{id}")]
+        public IActionResult Delete(long id)
         {
-            ReturnAllServices retorno = new ReturnAllServices();
-            try
-            {
-                AutenticacaoServico.Autenticar();
+            AutenticacaoServico.Autenticar();
 
-                new ProfissionalRepository().Delete(id);
+            bool deleted = new ProfessionalRepository().Delete(id);
 
-                retorno.Result = true;
-                retorno.ErrorMessage = "Profissional Excluído!";
-            }
-            catch (Exception ex)
-            {
-                retorno.Result = false;
-                retorno.ErrorMessage = ex.Message;
-            }
-
-            return retorno;
-
+            if (deleted)
+                return Ok();
+            else
+                return NotFound();
         }
-
-        */
-
     }
-
-
 }

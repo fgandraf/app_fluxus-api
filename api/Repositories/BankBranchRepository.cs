@@ -279,7 +279,7 @@ namespace FluxusApi.Repositories
             }
         }
 
-        public int Delete(long id)
+        public bool Delete(long id)
         {
             try
             {
@@ -300,7 +300,7 @@ namespace FluxusApi.Repositories
                     MySqlDataReader dr = sqlSelect.ExecuteReader();
 
                     if (!dr.HasRows)
-                        return 0;
+                        return false;
                 }
 
                 using (var connection = new MySqlConnection(_connectionString))
@@ -317,7 +317,7 @@ namespace FluxusApi.Repositories
                     sql.Parameters.AddWithValue("@id", id);
                     sql.ExecuteNonQuery();
 
-                    return 1;
+                    return true;
                 }
             }
             catch (Exception ex)

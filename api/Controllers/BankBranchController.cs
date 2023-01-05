@@ -92,12 +92,12 @@ namespace FluxusApi.Controllers
         {
             AutenticacaoServico.Autenticar();
 
-            int result = new BankBranchRepository().Delete(id);
+            bool deleted = new BankBranchRepository().Delete(id);
 
-            if (result == 0)
-                return NotFound();
+            if (deleted)
+                return Ok(); 
             else
-                return Ok();
+                return NotFound();
         }
 
 

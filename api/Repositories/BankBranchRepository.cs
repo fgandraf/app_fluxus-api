@@ -2,169 +2,225 @@
 using MySql.Data.MySqlClient;
 using FluxusApi.Entities;
 using System.Collections;
+using System.Xml.Linq;
 
 namespace FluxusApi.Repositories
 {
     public class BankBranchRepository
     {
+        private string _connectionString = string.Empty;
+        public BankBranchRepository()
+        {
+            _connectionString = ConnectionString.Get();
+        }
+
         public ArrayList GetAll()
         {
+            ArrayList bankBranches = new ArrayList();
+            
             try
             {
-                MySqlConnection conexao = new MySqlConnection(ConnectionString.CONNECTION_STRING);
-                conexao.Open();
-                MySqlCommand sql = new MySqlCommand("SELECT id, agencia, nome, cidade, telefone1, email FROM tb_agencias ORDER BY agencia", conexao);
-
-                MySqlDataReader dr = sql.ExecuteReader();
-
-                ArrayList agenciaArray = new ArrayList();
-
-                if (dr.HasRows)
+                using (var connection = new MySqlConnection(_connectionString))
                 {
-                    while (dr.Read())
+                    connection.Open();
+
+                    var sql = new MySqlCommand(@"
+                        SELECT 
+                            id, 
+                            branch_number, 
+                            name, 
+                            city, 
+                            phone1, 
+                            email 
+                        FROM 
+                            bank_branch 
+                        ORDER BY 
+                            branch_number", 
+                        connection);
+                    
+                    MySqlDataReader dr = sql.ExecuteReader();
+                    
+                    if (dr.HasRows)
                     {
-                        dynamic agencia = new
+                        while (dr.Read())
                         {
-                            Id = Convert.ToInt64(dr["id"]),
-                            Numero = Convert.ToString(dr["agencia"]),
-                            Nome = Convert.ToString(dr["nome"]),
-                            Cidade = Convert.ToString(dr["cidade"]),
-                            Telefone1 = Convert.ToString(dr["telefone1"]),
-                            Email = Convert.ToString(dr["email"])
-                        };
-                        agenciaArray.Add(agencia);
+                            dynamic branch = new
+                            {
+                                Id = Convert.ToInt64(dr["id"]),
+                                BranchNumber = Convert.ToString(dr["branch_number"]),
+                                Name = Convert.ToString(dr["name"]),
+                                City = Convert.ToString(dr["city"]),
+                                Phone1 = Convert.ToString(dr["phone1"]),
+                                Email = Convert.ToString(dr["email"])
+                            };
+                            bankBranches.Add(branch);
+                        }
                     }
-
-                    conexao.Close();
-                    return agenciaArray;
-
-                }
-                else
-                {
-                    conexao.Close();
-                    return null;
                 }
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                throw;
+                throw ex.InnerException;
             }
+
+            return bankBranches;
         }
 
         public BankBranch GetBy(long id)
         {
-            
+            var bankBranch = new BankBranch();
+
             try
             {
-                MySqlConnection conexao = new MySqlConnection(ConnectionString.CONNECTION_STRING);
-                conexao.Open();
-                MySqlCommand sql = new MySqlCommand("SELECT * FROM tb_agencias WHERE id = @id", conexao);
-                sql.Parameters.AddWithValue("@id", id);
-                MySqlDataReader dr = sql.ExecuteReader();
-
-                if (dr.HasRows)
+                using (var connection = new MySqlConnection(_connectionString))
                 {
-                    BankBranch agencia = new BankBranch();
+                    connection.Open();
 
-                    if (dr.Read())
+                    var sql = new MySqlCommand(@"
+                        SELECT 
+                            * 
+                        FROM 
+                            bank_branch 
+                        WHERE 
+                            id = @id", 
+                        connection);
+
+                    sql.Parameters.AddWithValue("@id", id);
+                    MySqlDataReader dr = sql.ExecuteReader();
+
+                    if (dr.HasRows)
                     {
-                        agencia.Id = Convert.ToInt64(dr["id"]);
-                        agencia.BranchNumber = Convert.ToString(dr["agencia"]);
-                        agencia.Name = Convert.ToString(dr["nome"]);
-                        agencia.Address = Convert.ToString(dr["endereco"]);
-                        agencia.Complement = Convert.ToString(dr["complemento"]);
-                        agencia.District = Convert.ToString(dr["bairro"]);
-                        agencia.City = Convert.ToString(dr["cidade"]);
-                        agencia.Zip = Convert.ToString(dr["cep"]);
-                        agencia.State = Convert.ToString(dr["uf"]);
-                        agencia.Phone1 = Convert.ToString(dr["telefone1"]);
-                        agencia.Phone2 = Convert.ToString(dr["telefone2"]);
-                        agencia.Email = Convert.ToString(dr["email"]);
-                    }
-                    conexao.Close();
-                    return agencia;
-                }
-                else
-                {
-                    conexao.Close();
-                    return null;
-                }
-            }
-            catch (Exception)
-            {
-                throw;
-            }
-        }
-
-        public ArrayList GetNomeTelefone1EmailBy(string agenciaCodigo)
-        {
-            try
-            {
-                MySqlConnection conexao = new MySqlConnection(ConnectionString.CONNECTION_STRING);
-                conexao.Open();
-                MySqlCommand sql = new MySqlCommand("SELECT agencia, nome, telefone1, email FROM tb_agencias WHERE agencia = @agencia", conexao);
-                sql.Parameters.AddWithValue("@agencia", agenciaCodigo);
-                MySqlDataReader dr = sql.ExecuteReader();
-
-                ArrayList agenciaArray = new ArrayList();
-
-                if (dr.HasRows)
-                {
-                    if (dr.Read())
-                    {
-                        dynamic agencia = new
+                        if (dr.Read())
                         {
-                            Agencia = Convert.ToString(dr["agencia"]),
-                            Nome = Convert.ToString(dr["nome"]),
-                            Telefone1 = Convert.ToString(dr["telefone1"]),
-                            Email = Convert.ToString(dr["email"])
-                        };
-
-                        agenciaArray.Add(agencia);
+                            bankBranch.Id = Convert.ToInt64(dr["id"]);
+                            bankBranch.BranchNumber = Convert.ToString(dr["branch_number"]);
+                            bankBranch.Name = Convert.ToString(dr["name"]);
+                            bankBranch.Address = Convert.ToString(dr["address"]);
+                            bankBranch.Complement = Convert.ToString(dr["complement"]);
+                            bankBranch.District = Convert.ToString(dr["district"]);
+                            bankBranch.City = Convert.ToString(dr["city"]);
+                            bankBranch.Zip = Convert.ToString(dr["zip"]);
+                            bankBranch.State = Convert.ToString(dr["state"]);
+                            bankBranch.Phone1 = Convert.ToString(dr["phone1"]);
+                            bankBranch.Phone2 = Convert.ToString(dr["phone2"]);
+                            bankBranch.Email = Convert.ToString(dr["email"]);
+                        }
                     }
-                    conexao.Close();
-                    return agenciaArray;
-                }
-                else
-                {
-                    conexao.Close();
-                    return null;
                 }
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                throw;
+                throw ex.InnerException;
             }
+
+            return bankBranch;
         }
 
-        public long Insert(BankBranch dado)
+        public ArrayList GetNamePhoneEmailBy(string branch_number)
+        {
+            var bankBranches = new ArrayList();
+
+            try
+            {
+                using (var connection = new MySqlConnection(_connectionString))
+                {
+                    connection.Open();
+
+                    var sql = new MySqlCommand(@"
+                        SELECT 
+                            branch_number, 
+                            name, 
+                            phone1, 
+                            email 
+                        FROM 
+                            bank_branch 
+                        WHERE 
+                            branch_number = @branch_number", 
+                        connection);
+                    
+                    sql.Parameters.AddWithValue("@branch_number", branch_number);
+                    MySqlDataReader dr = sql.ExecuteReader();
+
+                    if (dr.HasRows)
+                    {
+                        if (dr.Read())
+                        {
+                            dynamic bankBranch = new
+                            {
+                                BranchNumber = Convert.ToString(dr["branch_number"]),
+                                Name = Convert.ToString(dr["name"]),
+                                Phone1 = Convert.ToString(dr["phone1"]),
+                                Email = Convert.ToString(dr["email"])
+                            };
+                            bankBranches.Add(bankBranch);
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex.InnerException;
+            }
+
+            return bankBranches;
+        }
+
+        public void Insert(BankBranch dado)
         {
             try
             {
-                MySqlConnection conexao = new MySqlConnection(ConnectionString.CONNECTION_STRING);
-                conexao.Open();
-                MySqlCommand sql = new MySqlCommand("INSERT INTO  tb_agencias(agencia, nome, endereco, complemento, bairro, cidade, CEP, UF, contato, telefone1, telefone2, email) VALUES (@agencia, @nome, @endereco, @complemento, @bairro, @cidade, @CEP, @UF, @contato, @telefone1, @telefone2, @email)", conexao);
+                using (var connection = new MySqlConnection(_connectionString))
+                {
+                    connection.Open();
 
-                sql.Parameters.AddWithValue("@agencia", dado.BranchNumber);
-                sql.Parameters.AddWithValue("@nome", dado.Name);
-                sql.Parameters.AddWithValue("@endereco", dado.Address);
-                sql.Parameters.AddWithValue("@complemento", dado.Complement);
-                sql.Parameters.AddWithValue("@bairro", dado.District);
-                sql.Parameters.AddWithValue("@cidade", dado.City);
-                sql.Parameters.AddWithValue("@CEP", dado.Zip);
-                sql.Parameters.AddWithValue("@UF", dado.State);
-                sql.Parameters.AddWithValue("@contato", dado.ContactName);
-                sql.Parameters.AddWithValue("@telefone1", dado.Phone1);
-                sql.Parameters.AddWithValue("@telefone2", dado.Phone2);
-                sql.Parameters.AddWithValue("@email", dado.Email);
-                sql.ExecuteNonQuery();
+                    var sql = new MySqlCommand(@"
+                        INSERT INTO 
+                            bank_branch(
+                                branch_number, 
+                                name, 
+                                address, 
+                                complement, 
+                                district, 
+                                city, 
+                                zip, 
+                                state, 
+                                contact_name, 
+                                phone1, 
+                                phone2, 
+                                email) 
+                        VALUES(
+                                @branch_number, 
+                                @name, 
+                                @address, 
+                                @complement, 
+                                @district, 
+                                @city, 
+                                @zip, 
+                                @state, 
+                                @contact_name, 
+                                @phone1, 
+                                @phone2, 
+                                @email)",
+                        connection);
 
-                conexao.Close();
-                return sql.LastInsertedId;
+                    sql.Parameters.AddWithValue("@branch_number", dado.BranchNumber);
+                    sql.Parameters.AddWithValue("@name", dado.Name);
+                    sql.Parameters.AddWithValue("@address", dado.Address);
+                    sql.Parameters.AddWithValue("@complement", dado.Complement);
+                    sql.Parameters.AddWithValue("@district", dado.District);
+                    sql.Parameters.AddWithValue("@city", dado.City);
+                    sql.Parameters.AddWithValue("@zip", dado.Zip);
+                    sql.Parameters.AddWithValue("@state", dado.State);
+                    sql.Parameters.AddWithValue("@contact_name", dado.ContactName);
+                    sql.Parameters.AddWithValue("@phone1", dado.Phone1);
+                    sql.Parameters.AddWithValue("@phone2", dado.Phone2);
+                    sql.Parameters.AddWithValue("@email", dado.Email);
+                    sql.ExecuteNonQuery();
+                }
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                throw;
+                throw ex.InnerException;
             }
         }
 
@@ -172,30 +228,49 @@ namespace FluxusApi.Repositories
         {
             try
             {
-                MySqlConnection conexao = new MySqlConnection(ConnectionString.CONNECTION_STRING);
-                conexao.Open();
-                MySqlCommand sql = new MySqlCommand("UPDATE tb_agencias SET agencia = @agencia, nome = @nome, endereco = @endereco, complemento = @complemento, bairro = @bairro, cidade = @cidade, CEP = @CEP, UF = @UF, contato = @contato, telefone1 = @telefone1, telefone2 = @telefone2, email = @email WHERE id = @id", conexao);
+                using (var connection = new MySqlConnection(_connectionString))
+                {
+                    connection.Open();
 
-                sql.Parameters.AddWithValue("@agencia", dado.BranchNumber);
-                sql.Parameters.AddWithValue("@nome", dado.Name);
-                sql.Parameters.AddWithValue("@endereco", dado.Address);
-                sql.Parameters.AddWithValue("@complemento", dado.Complement);
-                sql.Parameters.AddWithValue("@bairro", dado.District);
-                sql.Parameters.AddWithValue("@cidade", dado.City);
-                sql.Parameters.AddWithValue("@CEP", dado.Zip);
-                sql.Parameters.AddWithValue("@UF", dado.State);
-                sql.Parameters.AddWithValue("@contato", dado.ContactName);
-                sql.Parameters.AddWithValue("@telefone1", dado.Phone1);
-                sql.Parameters.AddWithValue("@telefone2", dado.Phone2);
-                sql.Parameters.AddWithValue("@email", dado.Email);
-                sql.Parameters.AddWithValue("@id", id);
-                sql.ExecuteNonQuery();
+                    var sql = new MySqlCommand(@"
+                        UPDATE 
+                            bank_branch
+                        SET
+                            branch_number = @branch_number, 
+                            name = @name, 
+                            address = @address, 
+                            complement = @complement, 
+                            district = @district, 
+                            city = @city, 
+                            zip = @zip, 
+                            state = @state, 
+                            contact_name = @contact_name, 
+                            phone1 = @phone1, 
+                            phone2 = @phone2, 
+                            email = @email 
+                        WHERE 
+                            id = @id",
+                        connection);
 
-                conexao.Close();
+                    sql.Parameters.AddWithValue("@branch_number", dado.BranchNumber);
+                    sql.Parameters.AddWithValue("@name", dado.Name);
+                    sql.Parameters.AddWithValue("@address", dado.Address);
+                    sql.Parameters.AddWithValue("@complement", dado.Complement);
+                    sql.Parameters.AddWithValue("@district", dado.District);
+                    sql.Parameters.AddWithValue("@city", dado.City);
+                    sql.Parameters.AddWithValue("@zip", dado.Zip);
+                    sql.Parameters.AddWithValue("@state", dado.State);
+                    sql.Parameters.AddWithValue("@contact_name", dado.ContactName);
+                    sql.Parameters.AddWithValue("@phone1", dado.Phone1);
+                    sql.Parameters.AddWithValue("@phone2", dado.Phone2);
+                    sql.Parameters.AddWithValue("@email", dado.Email);
+                    sql.Parameters.AddWithValue("@id", id);
+                    sql.ExecuteNonQuery();
+                }
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                throw;
+                throw ex.InnerException;
             }
         }
 
@@ -203,16 +278,24 @@ namespace FluxusApi.Repositories
         {
             try
             {
-                MySqlConnection conexao = new MySqlConnection(ConnectionString.CONNECTION_STRING);
-                conexao.Open();
-                MySqlCommand sql = new MySqlCommand("DELETE FROM tb_agencias WHERE id = @id", conexao);
-                sql.Parameters.AddWithValue("@id", id);
-                sql.ExecuteNonQuery();
-                conexao.Close();
+                using (var connection = new MySqlConnection(_connectionString))
+                {
+                    connection.Open();
+                    
+                    var sql = new MySqlCommand(@"
+                        DELETE FROM 
+                            bank_branch 
+                        WHERE 
+                            id = @id", 
+                        connection);
+                    
+                    sql.Parameters.AddWithValue("@id", id);
+                    sql.ExecuteNonQuery();
+                }
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                throw;
+                throw ex.InnerException;
             }
         }
 

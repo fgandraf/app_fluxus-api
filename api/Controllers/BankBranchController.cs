@@ -16,21 +16,21 @@ namespace FluxusApi.Controllers
 
     public class BankBranchController : ControllerBase
     {
-        /*
+
 
 
         Autentication AutenticacaoServico;
 
 
 
-        public AgenciaController(IHttpContextAccessor context)
+        public BankBranchController(IHttpContextAccessor context)
         {
             AutenticacaoServico = new Autentication(context);
         }
 
 
 
-        // GET: api/agencia
+        // GET: api/BankBranch
         [HttpGet]
         public ArrayList GetAll()
         {
@@ -38,7 +38,7 @@ namespace FluxusApi.Controllers
             {
                 AutenticacaoServico.Autenticar();
                 
-                return new AgenciaRepository().GetAll();
+                return new BankBranchRepository().GetAll();
             }
             catch (Exception)
             {
@@ -50,15 +50,15 @@ namespace FluxusApi.Controllers
 
 
 
-        // GET: api/agencia/getby/<id>
+        // GET: api/BankBranch/GetBy/<id>
         [HttpGet]
-        [Route("getby/{id}")]
-        public Agencia GetBy(long id)
+        [Route("GetBy/{id}")]
+        public BankBranch GetBy(long id)
         {
             try
             {
                 AutenticacaoServico.Autenticar();
-                return new AgenciaRepository().GetBy(id);
+                return new BankBranchRepository().GetBy(id);
             }
             catch (Exception)
             {
@@ -70,15 +70,15 @@ namespace FluxusApi.Controllers
 
 
 
-        // GET: api/agencia/getsomeby/<agenciaCodigo>
+        // GET: api/BankBranch/GetNamePhoneEmailBy/<agenciaCodigo>
         [HttpGet]
-        [Route("getsomeby/{agenciaCodigo}")]
-        public ArrayList GetSomeBy(string agenciaCodigo)
+        [Route("GetNamePhoneEmailBy/{branch_number}")]
+        public ArrayList GetSomeBy(string branch_number)
         {
             try
             {
                 AutenticacaoServico.Autenticar();
-                return new AgenciaRepository().GetNomeTelefone1EmailBy(agenciaCodigo);
+                return new BankBranchRepository().GetNamePhoneEmailBy(branch_number);
             }
             catch (Exception)
             {
@@ -91,16 +91,16 @@ namespace FluxusApi.Controllers
 
 
 
-        // POST api/agencia/post
+        // POST api/BankBranch/Post
         [HttpPost]
-        [Route("post")]
-        public ReturnAllServices Post([FromBody] Agencia agencia)
+        [Route("Post")]
+        public ReturnAllServices Post([FromBody] BankBranch bankBranch)
         {
             ReturnAllServices retorno = new ReturnAllServices();
             try
             {
                 AutenticacaoServico.Autenticar();
-                new AgenciaRepository().Insert(agencia);
+                new BankBranchRepository().Insert(bankBranch);
 
                 retorno.Result = true;
                 retorno.ErrorMessage = "Agencia Cadastrada!";
@@ -118,17 +118,17 @@ namespace FluxusApi.Controllers
 
 
 
-        // PUT api/agencia/put/<id>
+        // PUT api/BankBranch/Put/<id>
         [HttpPut]
-        [Route("put/{id}")]
-        public ReturnAllServices Put(long id, [FromBody] Agencia agencia)
+        [Route("Put/{id}")]
+        public ReturnAllServices Put(long id, [FromBody] BankBranch bankBranch)
         {
             ReturnAllServices retorno = new ReturnAllServices();
             try
             {
                 AutenticacaoServico.Autenticar();
 
-                new AgenciaRepository().Update(id, agencia);
+                new BankBranchRepository().Update(id, bankBranch);
 
                 retorno.Result = true;
                 retorno.ErrorMessage = "Agencia Alterada!";
@@ -146,9 +146,9 @@ namespace FluxusApi.Controllers
 
 
 
-        // DELETE api/agencia/delete/<id>
+        // DELETE api/BankBranch/Delete/<id>
         [HttpDelete]
-        [Route("delete/{id}")]
+        [Route("Delete/{id}")]
         public ReturnAllServices Delete(long id)
         {
 
@@ -156,7 +156,7 @@ namespace FluxusApi.Controllers
             try
             {
                 AutenticacaoServico.Autenticar();
-                new AgenciaRepository().Delete(id);
+                new BankBranchRepository().Delete(id);
 
                 retorno.Result = true;
                 retorno.ErrorMessage = "Agencia Excluída!";
@@ -171,7 +171,6 @@ namespace FluxusApi.Controllers
 
         }
 
-        */
 
     }
 

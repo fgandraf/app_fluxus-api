@@ -1,5 +1,4 @@
-﻿using System;
-using MySql.Data.MySqlClient;
+﻿using MySql.Data.MySqlClient;
 using FluxusApi.Entities;
 using System.Collections;
 
@@ -7,142 +6,220 @@ namespace FluxusApi.Repositories
 {
 
 
-    class InvoiceRepository
+    public class InvoiceRepository
     {
+        private string _connectionString = string.Empty;
+        public InvoiceRepository()
+        {
+            _connectionString = ConnectionString.Get();
+        }
+
+
         public ArrayList GetAll()
         {
             try
             {
-                ArrayList faturaArray = new ArrayList();
-                MySqlConnection conexao = new MySqlConnection(ConnectionString.CONNECTION_STRING);
-                conexao.Open();
-                MySqlCommand sql = new MySqlCommand("SELECT * FROM tb_fatura ORDER BY data DESC", conexao);
-                MySqlDataReader dr = sql.ExecuteReader();
-
-
-                if (dr.HasRows)
+                using (var connection = new MySqlConnection(_connectionString))
                 {
-                    while (dr.Read())
+                    connection.Open();
+
+                    var sql = new MySqlCommand(@"
+                        SELECT 
+                            * 
+                        FROM 
+                            invoice 
+                        ORDER BY 
+                            issue_date
+                        DESC",
+                        connection);
+
+                    MySqlDataReader dr = sql.ExecuteReader();
+
+
+                    if (dr.HasRows)
                     {
-                        Invoice fatura = new Invoice();
+                        var invoices = new ArrayList();
 
-                        fatura.Id = Convert.ToInt32(dr["id"]);
-                        fatura.Description = Convert.ToString(dr["descricao"]);
-                        fatura.IssueDate = Convert.ToDateTime(dr["data"]);
-                        fatura.SubtotalService = Convert.ToDouble(dr["subtotal_os"]);
-                        fatura.SubtotalMileageAllowance = Convert.ToDouble(dr["subtotal_desloc"]);
-                        fatura.Total = Convert.ToDouble(dr["total"]);
+                        while (dr.Read())
+                        {
+                            Invoice invoice = new Invoice();
 
-                        faturaArray.Add(fatura);
+                            invoice.Id = Convert.ToInt32(dr["id"]);
+                            invoice.Description = Convert.ToString(dr["descricao"]);
+                            invoice.IssueDate = Convert.ToDateTime(dr["data"]);
+                            invoice.SubtotalService = Convert.ToDouble(dr["subtotal_os"]);
+                            invoice.SubtotalMileageAllowance = Convert.ToDouble(dr["subtotal_desloc"]);
+                            invoice.Total = Convert.ToDouble(dr["total"]);
+
+                            invoices.Add(invoice);
+                        }
+
+                        return invoices;
                     }
-                    conexao.Close();
-                    return faturaArray;
-                }
-                else
-                {
-                    conexao.Close();
-                    return null;
                 }
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                throw;
+                throw ex.InnerException;
             }
+
+            return null;
         }
 
-        public string GetDescricaoBy(string id)
+
+        public string GetDescription(string id)
         {
             try
             {
-                MySqlConnection conexao = new MySqlConnection(ConnectionString.CONNECTION_STRING);
-                conexao.Open();
-                MySqlCommand sql = new MySqlCommand("SELECT descricao FROM tb_fatura WHERE id = @id", conexao);
-                sql.Parameters.AddWithValue("@id", id);
-                MySqlDataReader dr = sql.ExecuteReader();
-                if (dr.HasRows)
+                using (var connection = new MySqlConnection(_connectionString))
                 {
-                    dr.Read();
-                    conexao.Close();
-                    return Convert.ToString(dr["descricao"]);
-                }
-                else
-                {
-                    conexao.Close();
-                    return null;
+                    connection.Open();
+
+                    var sql = new MySqlCommand(@"
+                        SELECT 
+                            description 
+                        FROM 
+                            invoice 
+                        WHERE 
+                            id = @id",
+                        connection);
+
+                    sql.Parameters.AddWithValue("@id", id);
+                    MySqlDataReader dr = sql.ExecuteReader();
+
+                    if (dr.HasRows)
+                    {
+                        dr.Read();
+                        return Convert.ToString(dr["description"]);
+                    }
                 }
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                throw;
+                throw ex.InnerException;
             }
+
+            return null;
         }
 
-        public long Insert(Invoice dado)
+
+        public void Insert(Invoice dado)
         {
             try
             {
-                MySqlConnection conexao = new MySqlConnection(ConnectionString.CONNECTION_STRING);
-                conexao.Open();
-                MySqlCommand sql = new MySqlCommand("INSERT INTO tb_fatura(descricao, data, subtotal_os, subtotal_desloc, total) VALUES (@descricao, @data, @subtotal_os, @subtotal_desloc, @total)", conexao);
-                sql.Parameters.AddWithValue("@descricao", dado.Description);
-                sql.Parameters.AddWithValue("@data", dado.IssueDate);
-                sql.Parameters.AddWithValue("@subtotal_os", dado.SubtotalService);
-                sql.Parameters.AddWithValue("@subtotal_desloc", dado.SubtotalMileageAllowance);
-                sql.Parameters.AddWithValue("@total", dado.Total);
-                sql.ExecuteNonQuery();
-                conexao.Close();
-                return sql.LastInsertedId;
+                using (var connection = new MySqlConnection(_connectionString))
+                {
+                    connection.Open();
 
+                    var sql = new MySqlCommand(@"
+                        INSERT INTO 
+                            invoice(
+                                description, 
+                                issue_date, 
+                                subtotal_service, 
+                                subtotal_mileage_allowance, 
+                                total) 
+                        VALUES (
+                            @description, 
+                            @issue_date, 
+                            @subtotal_service, 
+                            @subtotal_mileage_allowance, 
+                            @total)",
+                        connection);
+
+                    sql.Parameters.AddWithValue("@description", dado.Description);
+                    sql.Parameters.AddWithValue("@issue_date", dado.IssueDate);
+                    sql.Parameters.AddWithValue("@subtotal_service", dado.SubtotalService);
+                    sql.Parameters.AddWithValue("@subtotal_mileage_allowance", dado.SubtotalMileageAllowance);
+                    sql.Parameters.AddWithValue("@total", dado.Total);
+                    sql.ExecuteNonQuery();
+                }
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                throw;
+                throw ex.InnerException;
             }
         }
+
 
         public void UpdateTotals(long id, Invoice dado)
         {
             try
             {
-                MySqlConnection conexao = new MySqlConnection(ConnectionString.CONNECTION_STRING);
-                conexao.Open();
+                using (var connection = new MySqlConnection(_connectionString))
+                {
+                    connection.Open();
 
-                MySqlCommand sql = new MySqlCommand("UPDATE tb_fatura SET subtotal_os = @subtotal_os, subtotal_desloc = @subtotal_desloc, total = @total WHERE id = @id", conexao);
-                sql.Parameters.AddWithValue("@id", id);
-                sql.Parameters.AddWithValue("@subtotal_os", dado.SubtotalService);
-                sql.Parameters.AddWithValue("@subtotal_desloc", dado.SubtotalMileageAllowance);
-                sql.Parameters.AddWithValue("@total", dado.Total);
-                sql.ExecuteNonQuery();
-                conexao.Close();
+                    var sql = new MySqlCommand(@"
+                        UPDATE 
+                            invoice
+                        SET
+                            subtotal_service = @subtotal_service, 
+                            subtotal_mileage_allowance = @subtotal_mileage_allowance, 
+                            total = @total) 
+                        WHERE
+                            id = @id)",
+                        connection);
 
+                    sql.Parameters.AddWithValue("@subtotal_service", dado.SubtotalService);
+                    sql.Parameters.AddWithValue("@subtotal_mileage_allowance", dado.SubtotalMileageAllowance);
+                    sql.Parameters.AddWithValue("@total", dado.Total);
+                    sql.Parameters.AddWithValue("@id", id);
+                    sql.ExecuteNonQuery();
+                }
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                throw;
+                throw ex.InnerException;
             }
         }
 
-        public void Delete(string id)
+
+        public int Delete(string id)
         {
             try
             {
-                MySqlConnection conexao = new MySqlConnection(ConnectionString.CONNECTION_STRING);
-                conexao.Open();
+                using (var connection = new MySqlConnection(_connectionString))
+                {
+                    connection.Open();
 
-                MySqlCommand sql = new MySqlCommand("DELETE FROM tb_fatura WHERE id = @id", conexao);
-                sql.Parameters.AddWithValue("@id", id);
-                sql.ExecuteNonQuery();
-                conexao.Close();
+                    var sqlSelect = new MySqlCommand(@"
+                        SELECT 
+                            id 
+                        FROM 
+                            invoice 
+                        WHERE 
+                            id = @id",
+                        connection);
 
+                    sqlSelect.Parameters.AddWithValue("@id", id);
+                    MySqlDataReader dr = sqlSelect.ExecuteReader();
+
+                    if (!dr.HasRows)
+                        return 0;
+                }
+
+                using (var connection = new MySqlConnection(_connectionString))
+                {
+                    connection.Open();
+
+                    var sql = new MySqlCommand(@"
+                        DELETE FROM 
+                            invoice 
+                        WHERE 
+                            id = @id",
+                        connection);
+
+                    sql.Parameters.AddWithValue("@id", id);
+                    sql.ExecuteNonQuery();
+
+                    return 1;
+                }
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                throw;
+                throw ex.InnerException;
             }
         }
-
-
     }
-
-
 }

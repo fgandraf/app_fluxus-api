@@ -16,8 +16,6 @@ namespace FluxusApi.Repositories
 
         public ArrayList GetAll()
         {
-            ArrayList bankBranches = new ArrayList();
-            
             try
             {
                 using (var connection = new MySqlConnection(_connectionString))
@@ -39,9 +37,11 @@ namespace FluxusApi.Repositories
                         connection);
                     
                     MySqlDataReader dr = sql.ExecuteReader();
-                    
+
                     if (dr.HasRows)
                     {
+                        var bankBranches = new ArrayList();
+
                         while (dr.Read())
                         {
                             dynamic branch = new
@@ -55,6 +55,7 @@ namespace FluxusApi.Repositories
                             };
                             bankBranches.Add(branch);
                         }
+                        return bankBranches;
                     }
                 }
             }
@@ -63,15 +64,15 @@ namespace FluxusApi.Repositories
                 throw ex.InnerException;
             }
 
-            return bankBranches;
+            return null;
         }
 
         public BankBranch GetBy(long id)
         {
-            var bankBranch = new BankBranch();
-
             try
             {
+
+
                 using (var connection = new MySqlConnection(_connectionString))
                 {
                     connection.Open();
@@ -90,6 +91,8 @@ namespace FluxusApi.Repositories
 
                     if (dr.HasRows)
                     {
+                        var bankBranch = new BankBranch();
+
                         if (dr.Read())
                         {
                             bankBranch.Id = Convert.ToInt64(dr["id"]);
@@ -105,6 +108,7 @@ namespace FluxusApi.Repositories
                             bankBranch.Phone2 = Convert.ToString(dr["phone2"]);
                             bankBranch.Email = Convert.ToString(dr["email"]);
                         }
+                        return bankBranch;
                     }
                 }
             }
@@ -113,13 +117,11 @@ namespace FluxusApi.Repositories
                 throw ex.InnerException;
             }
 
-            return bankBranch;
+            return null;
         }
 
         public ArrayList GetNamePhoneEmailBy(string branch_number)
         {
-            var bankBranches = new ArrayList();
-
             try
             {
                 using (var connection = new MySqlConnection(_connectionString))
@@ -143,6 +145,8 @@ namespace FluxusApi.Repositories
 
                     if (dr.HasRows)
                     {
+                        var bankBranches = new ArrayList();
+
                         if (dr.Read())
                         {
                             dynamic bankBranch = new
@@ -154,6 +158,7 @@ namespace FluxusApi.Repositories
                             };
                             bankBranches.Add(bankBranch);
                         }
+                        return bankBranches;
                     }
                 }
             }
@@ -162,7 +167,7 @@ namespace FluxusApi.Repositories
                 throw ex.InnerException;
             }
 
-            return bankBranches;
+            return null;
         }
 
         public void Insert(BankBranch dado)
@@ -274,23 +279,45 @@ namespace FluxusApi.Repositories
             }
         }
 
-        public void Delete(long id)
+        public int Delete(long id)
         {
             try
             {
                 using (var connection = new MySqlConnection(_connectionString))
                 {
                     connection.Open();
-                    
-                    var sql = new MySqlCommand(@"
-                        DELETE FROM 
+
+                    var sqlSelect = new MySqlCommand(@"
+                        SELECT 
+                            id 
+                        FROM 
                             bank_branch 
                         WHERE 
-                            id = @id", 
-                        connection);
-                    
+                            id = @id",
+                            connection);
+
+                    sqlSelect.Parameters.AddWithValue("@id", id);
+                    MySqlDataReader dr = sqlSelect.ExecuteReader();
+
+                    if (!dr.HasRows)
+                        return 0;
+                }
+
+                using (var connection = new MySqlConnection(_connectionString))
+                {
+                    connection.Open();
+
+                    var sql = new MySqlCommand(@"
+                    DELETE FROM 
+                        bank_branch 
+                    WHERE 
+                        id = @id",
+                    connection);
+
                     sql.Parameters.AddWithValue("@id", id);
                     sql.ExecuteNonQuery();
+
+                    return 1;
                 }
             }
             catch (Exception ex)

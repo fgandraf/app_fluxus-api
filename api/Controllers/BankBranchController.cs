@@ -10,18 +10,11 @@ using Microsoft.Extensions.Primitives;
 namespace FluxusApi.Controllers
 {
 
-
     [Route("api/[controller]")]
-
 
     public class BankBranchController : ControllerBase
     {
-
-
-
         Autentication AutenticacaoServico;
-
-
 
         public BankBranchController(IHttpContextAccessor context)
         {
@@ -29,150 +22,89 @@ namespace FluxusApi.Controllers
         }
 
 
-
         // GET: api/BankBranch
         [HttpGet]
-        public ArrayList GetAll()
+        public IActionResult GetAll()
         {
-            try
-            {
-                AutenticacaoServico.Autenticar();
-                
-                return new BankBranchRepository().GetAll();
-            }
-            catch (Exception)
-            {
-                throw;
-            }
+            AutenticacaoServico.Autenticar();
 
+            var result = new BankBranchRepository().GetAll();
 
+            if (result == null)
+                return NotFound();
+
+            return Ok(result);
         }
 
 
-
-        // GET: api/BankBranch/GetBy/<id>
-        [HttpGet]
-        [Route("GetBy/{id}")]
-        public BankBranch GetBy(long id)
+        // GET: api/BankBranch/<id>
+        [HttpGet("{id}")]
+        public IActionResult GetBy(long id)
         {
-            try
-            {
-                AutenticacaoServico.Autenticar();
-                return new BankBranchRepository().GetBy(id);
-            }
-            catch (Exception)
-            {
-                throw;
-            }
+            AutenticacaoServico.Autenticar();
 
+            var result = new BankBranchRepository().GetBy(id);
+
+            if (result == null)
+                return NotFound();
+
+            return Ok(result);
         }
 
 
-
-
-        // GET: api/BankBranch/GetNamePhoneEmailBy/<agenciaCodigo>
-        [HttpGet]
-        [Route("GetNamePhoneEmailBy/{branch_number}")]
-        public ArrayList GetSomeBy(string branch_number)
+        // GET: api/BankBranch/GetContacts/<branch_number>
+        [HttpGet("GetContacts/{branch_number}")]
+        public IActionResult GetSomeBy(string branch_number)
         {
-            try
-            {
-                AutenticacaoServico.Autenticar();
-                return new BankBranchRepository().GetNamePhoneEmailBy(branch_number);
-            }
-            catch (Exception)
-            {
-                throw;
-            }
+            AutenticacaoServico.Autenticar();
 
+            var result = new BankBranchRepository().GetNamePhoneEmailBy(branch_number);
+
+            if (result == null)
+                return NotFound();
+
+            return Ok(result);
         }
 
 
-
-
-
-        // POST api/BankBranch/Post
+        // POST api/BankBranch
         [HttpPost]
-        [Route("Post")]
-        public ReturnAllServices Post([FromBody] BankBranch bankBranch)
+        public IActionResult Post([FromBody] BankBranch bankBranch)
         {
-            ReturnAllServices retorno = new ReturnAllServices();
-            try
-            {
-                AutenticacaoServico.Autenticar();
-                new BankBranchRepository().Insert(bankBranch);
+            AutenticacaoServico.Autenticar();
 
-                retorno.Result = true;
-                retorno.ErrorMessage = "Agencia Cadastrada!";
-            }
-            catch (Exception ex)
-            {
-                retorno.Result = false;
-                retorno.ErrorMessage = ex.Message;
-            }
+            new BankBranchRepository().Insert(bankBranch);
 
-            return retorno;
+            return Ok();
         }
 
 
-
-
-
-        // PUT api/BankBranch/Put/<id>
-        [HttpPut]
-        [Route("Put/{id}")]
-        public ReturnAllServices Put(long id, [FromBody] BankBranch bankBranch)
+        // PUT api/BankBranch/<id>
+        [HttpPut("{id}")]
+        public IActionResult Put(long id, [FromBody] BankBranch bankBranch)
         {
-            ReturnAllServices retorno = new ReturnAllServices();
-            try
-            {
-                AutenticacaoServico.Autenticar();
+            AutenticacaoServico.Autenticar();
 
-                new BankBranchRepository().Update(id, bankBranch);
+            new BankBranchRepository().Update(id, bankBranch);
 
-                retorno.Result = true;
-                retorno.ErrorMessage = "Agencia Alterada!";
-            }
-            catch (Exception ex)
-            {
-                retorno.Result = false;
-                retorno.ErrorMessage = ex.Message;
-            }
-
-            return retorno;
+            return Ok();
         }
 
 
-
-
-
-        // DELETE api/BankBranch/Delete/<id>
-        [HttpDelete]
-        [Route("Delete/{id}")]
-        public ReturnAllServices Delete(long id)
+        // DELETE api/BankBranch/<id>
+        [HttpDelete("{id}")]
+        public IActionResult Delete(long id)
         {
+            AutenticacaoServico.Autenticar();
 
-            ReturnAllServices retorno = new ReturnAllServices();
-            try
-            {
-                AutenticacaoServico.Autenticar();
-                new BankBranchRepository().Delete(id);
+            int result = new BankBranchRepository().Delete(id);
 
-                retorno.Result = true;
-                retorno.ErrorMessage = "Agencia Excluída!";
-            }
-            catch (Exception ex)
-            {
-                retorno.Result = false;
-                retorno.ErrorMessage = ex.Message;
-            }
-
-            return retorno;
-
+            if (result == 0)
+                return NotFound();
+            else
+                return Ok();
         }
 
 
     }
-
-
 }

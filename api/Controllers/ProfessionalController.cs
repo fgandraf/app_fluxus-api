@@ -79,11 +79,11 @@ namespace FluxusApi.Controllers
 
         // POST api/Professional
         [HttpPost]
-        public IActionResult Post([FromBody] Professional profissional)
+        public IActionResult Post([FromBody] Professional professional)
         {
             AutenticacaoServico.Autenticar();
 
-            new ProfessionalRepository().Insert(profissional);
+            new ProfessionalRepository().Insert(professional);
 
             return Ok();
         }

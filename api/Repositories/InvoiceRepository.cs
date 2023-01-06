@@ -45,10 +45,10 @@ namespace FluxusApi.Repositories
                             Invoice invoice = new Invoice();
 
                             invoice.Id = Convert.ToInt32(dr["id"]);
-                            invoice.Description = Convert.ToString(dr["descricao"]);
-                            invoice.IssueDate = Convert.ToDateTime(dr["data"]);
-                            invoice.SubtotalService = Convert.ToDouble(dr["subtotal_os"]);
-                            invoice.SubtotalMileageAllowance = Convert.ToDouble(dr["subtotal_desloc"]);
+                            invoice.Description = Convert.ToString(dr["description"]);
+                            invoice.IssueDate = Convert.ToDateTime(dr["issue_date"]);
+                            invoice.SubtotalService = Convert.ToDouble(dr["subtotal_service"]);
+                            invoice.SubtotalMileageAllowance = Convert.ToDouble(dr["subtotal_mileage_allowance"]);
                             invoice.Total = Convert.ToDouble(dr["total"]);
 
                             invoices.Add(invoice);
@@ -156,9 +156,9 @@ namespace FluxusApi.Repositories
                         SET
                             subtotal_service = @subtotal_service, 
                             subtotal_mileage_allowance = @subtotal_mileage_allowance, 
-                            total = @total) 
+                            total = @total
                         WHERE
-                            id = @id)",
+                            id = @id",
                         connection);
 
                     sql.Parameters.AddWithValue("@subtotal_service", dado.SubtotalService);

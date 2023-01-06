@@ -137,6 +137,5 @@ CREATE TABLE `service_order` (
 	PRIMARY KEY (`id`),
     
 	CONSTRAINT FK_Professional FOREIGN KEY (professional_id) REFERENCES professional(id),
-	CONSTRAINT FK_Service FOREIGN KEY (service_id) REFERENCES service(id),
-    CONSTRAINT FK_Invoice FOREIGN KEY (invoice_id) REFERENCES invoice(id)
+	CONSTRAINT FK_Service FOREIGN KEY (service_id) REFERENCES service(id)
 );

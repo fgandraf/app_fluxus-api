@@ -226,7 +226,7 @@ namespace FluxusApi.Repositories
         }
 
 
-        public long Insert(Professional pro)
+        public long Insert(Professional professional)
         {
             try
             {
@@ -272,22 +272,22 @@ namespace FluxusApi.Repositories
                             @user_password)", 
                         connection);
                     
-                    sql.Parameters.AddWithValue("@tag", pro.Tag);
-                    sql.Parameters.AddWithValue("@name", pro.Name);
-                    sql.Parameters.AddWithValue("@nameid", pro.NameId);
-                    sql.Parameters.AddWithValue("@cpf", pro.Cpf);
-                    sql.Parameters.AddWithValue("@birthday", Util.DateOrNull(pro.Birthday));
-                    sql.Parameters.AddWithValue("@profession", pro.Profession);
-                    sql.Parameters.AddWithValue("@permit_number", pro.PermitNumber);
-                    sql.Parameters.AddWithValue("@association", pro.Association);
-                    sql.Parameters.AddWithValue("@phone1", pro.Phone1);
-                    sql.Parameters.AddWithValue("@phone2", pro.Phone2);
-                    sql.Parameters.AddWithValue("@email", pro.Email);
-                    sql.Parameters.AddWithValue("@technician_responsible", pro.TechnicianResponsible);
-                    sql.Parameters.AddWithValue("@legal_responsible", pro.LegalResponsible);
-                    sql.Parameters.AddWithValue("@user_active", pro.UserActive);
-                    sql.Parameters.AddWithValue("@user_name", pro.UserName);
-                    sql.Parameters.AddWithValue("@user_password", pro.UserPassword);
+                    sql.Parameters.AddWithValue("@tag", professional.Tag);
+                    sql.Parameters.AddWithValue("@name", professional.Name);
+                    sql.Parameters.AddWithValue("@nameid", professional.NameId);
+                    sql.Parameters.AddWithValue("@cpf", professional.Cpf);
+                    sql.Parameters.AddWithValue("@birthday", Util.DateOrNull(professional.Birthday));
+                    sql.Parameters.AddWithValue("@profession", professional.Profession);
+                    sql.Parameters.AddWithValue("@permit_number", professional.PermitNumber);
+                    sql.Parameters.AddWithValue("@association", professional.Association);
+                    sql.Parameters.AddWithValue("@phone1", professional.Phone1);
+                    sql.Parameters.AddWithValue("@phone2", professional.Phone2);
+                    sql.Parameters.AddWithValue("@email", professional.Email);
+                    sql.Parameters.AddWithValue("@technician_responsible", professional.TechnicianResponsible);
+                    sql.Parameters.AddWithValue("@legal_responsible", professional.LegalResponsible);
+                    sql.Parameters.AddWithValue("@user_active", professional.UserActive);
+                    sql.Parameters.AddWithValue("@user_name", professional.UserName);
+                    sql.Parameters.AddWithValue("@user_password", professional.UserPassword);
 
                     sql.ExecuteNonQuery();
                     return sql.LastInsertedId;

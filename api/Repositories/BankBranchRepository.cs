@@ -179,33 +179,12 @@ namespace FluxusApi.Repositories
                     connection.Open();
 
                     var sql = new MySqlCommand(@"
-                        INSERT INTO 
-                            bank_branch(
-                                branch_number, 
-                                name, 
-                                address, 
-                                complement, 
-                                district, 
-                                city, 
-                                zip, 
-                                state, 
-                                contact_name, 
-                                phone1, 
-                                phone2, 
-                                email) 
-                        VALUES(
-                                @branch_number, 
-                                @name, 
-                                @address, 
-                                @complement, 
-                                @district, 
-                                @city, 
-                                @zip, 
-                                @state, 
-                                @contact_name, 
-                                @phone1, 
-                                @phone2, 
-                                @email)",
+                        INSERT INTO bank_branch
+                            (branch_number, name, address, complement,district,city, 
+                            zip, state, contact_name, phone1, phone2, email) 
+                        VALUES
+                            (@branch_number, @name, @address, @complement, @district, @city, 
+                            @zip, @state, @contact_name, @phone1, @phone2, @email)",
                         connection);
 
                     sql.Parameters.AddWithValue("@branch_number", dado.BranchNumber);

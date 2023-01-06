@@ -1,169 +1,105 @@
-﻿using System;
-using System.Collections;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using FluxusApi.Entities;
 using FluxusApi.Repositories;
-using Microsoft.AspNetCore.Http;
-using System.Text;
 
 namespace FluxusApi.Controllers
 {
 
-
     [Route("api/[controller]")]
-
 
     public class ProfileController : ControllerBase
     {
-        /*
-
         Autentication AutenticacaoServico;
 
-
-
-        public CadastraisController(IHttpContextAccessor context)
+        public ProfileController(IHttpContextAccessor context)
         {
 
             AutenticacaoServico = new Autentication(context);
         }
 
 
-
-        // GET: api/cadastrais
+        // GET: api/Profile
         [HttpGet]
-        public ArrayList GetAll()
+        public IActionResult GetAll()
         {
-            try
-            {
-                AutenticacaoServico.Autenticar();
-                return new CadastraisRepository().GetAll();
-            }
-            catch (Exception)
-            {
-                throw;
-            }
+            AutenticacaoServico.Autenticar();
 
+            var result = new ProfileRepository().GetAll();
+
+            if (result == null)
+                return NotFound();
+
+            return Ok(result);
         }
 
 
-        // GET: api/cadastrais/getlogo
-        [HttpGet]
-        [Route("getlogo")]
-        public string GetLogo()
+        // GET: api/Profile/GetLogo
+        [HttpGet("GetLogo")]
+        public IActionResult GetLogo()
         {
-            try
-            {
-                AutenticacaoServico.Autenticar();
-                byte[] pass = new CadastraisRepository().GetLogo();
-                
-                return Convert.ToBase64String(pass);
-            }
-            catch (Exception)
-            {
-                throw;
-            }
+            AutenticacaoServico.Autenticar();
 
+            var result = new ProfileRepository().GetLogo();
+
+            if (result == null)
+                return NotFound();
+
+            return Ok(result);
         }
 
 
-        // GET api/cadastrais/gettoprint
-        [HttpGet]
-        [Route("gettoprint")]
-        public ArrayList GetToPrint()
+        // GET api/Profile/GetToPrint
+        [HttpGet("GetToPrint")]
+        public IActionResult GetToPrint()
         {
-            try
-            {
-                AutenticacaoServico.Autenticar();
-                return new CadastraisRepository().GetToPrint();
-            }
-            catch (Exception)
-            {
-                throw;
-            }
+            AutenticacaoServico.Autenticar();
 
+            var result = new ProfileRepository().GetToPrint();
+
+            if (result == null)
+                return NotFound();
+
+            return Ok(result);
         }
 
 
-
-
-
-
-        // GET api/cadastrais/getfantasia
+        // GET api/Profile/GetTradingName
         [HttpGet]
-        [Route("getfantasia")]
-        public string GetFantasia()
+        [Route("GetTradingName")]
+        public IActionResult GetTradingName()
         {
-            try
-            {
-                AutenticacaoServico.Autenticar();
-                return new CadastraisRepository().GetFantasia();
-            }
-            catch (Exception)
-            {
-                throw;
-            }
+            AutenticacaoServico.Autenticar();
 
+            var result = new ProfileRepository().GetTradingName();
+
+            if (result == null)
+                return NotFound();
+
+            return Ok(result);
         }
 
 
-
-
-
-        // POST api/cadastrais/post
+        // POST api/Profile
         [HttpPost]
-        [Route("post")]
-        public ReturnAllServices Post([FromBody] Cadastrais cadastrais)
+        public IActionResult Post([FromBody] Profile profile)
         {
-            ReturnAllServices retorno = new ReturnAllServices();
-            try
-            {
-                AutenticacaoServico.Autenticar();
+            AutenticacaoServico.Autenticar();
 
-                new CadastraisRepository().Insert(cadastrais);
+            new ProfileRepository().Insert(profile);
 
-                retorno.Result = true;
-                retorno.ErrorMessage = "Dados Cadastrais Cadastrados!";
-
-            }
-            catch (Exception ex)
-            {
-                retorno.Result = false;
-                retorno.ErrorMessage = ex.Message;
-            }
-
-            return retorno;
+            return Ok();
         }
 
 
-
-
-        // PUT api/cadastrais/put
+        // PUT api/Profile
         [HttpPut]
-        [Route("put")]
-        public ReturnAllServices Put([FromBody] Cadastrais cadastrais)
+        public IActionResult Put([FromBody] Profile profile)
         {
-            ReturnAllServices retorno = new ReturnAllServices();
-            try
-            {
-                AutenticacaoServico.Autenticar();
+            AutenticacaoServico.Autenticar();
 
-                new CadastraisRepository().Update(cadastrais);
-
-                retorno.Result = true;
-                retorno.ErrorMessage = "Dados Cadastrais Alterados!";
-            }
-            catch (Exception ex)
-            {
-                retorno.Result = false;
-                retorno.ErrorMessage = ex.Message;
-            }
-
-            return retorno;
+            new ProfileRepository().Update(profile);
+            
+            return Ok();
         }
-
-        */
-
     }
-
-
 }

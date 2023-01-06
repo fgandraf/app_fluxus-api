@@ -235,41 +235,14 @@ namespace FluxusApi.Repositories
                     connection.Open();
                     
                     var sql = new MySqlCommand(@"
-                        INSERT INTO 
-                            professional(
-                                tag, 
-                                name, 
-                                nameid, 
-                                cpf, 
-                                birthday, 
-                                profession, 
-                                permit_number, 
-                                association, 
-                                phone1, 
-                                phone2, 
-                                email, 
-                                technician_responsible, 
-                                legal_responsible, 
-                                user_active, 
-                                user_name, 
-                                user_password) 
-                        VALUES (
-                            @tag, 
-                            @name, 
-                            @nameid, 
-                            @cpf, 
-                            @birthday, 
-                            @profession, 
-                            @permit_number, 
-                            @association, 
-                            @phone1, 
-                            @phone2, 
-                            @email, 
-                            @technician_responsible, 
-                            @legal_responsible, 
-                            @user_active, 
-                            @user_name, 
-                            @user_password)", 
+                        INSERT INTO professional
+                            (tag, name, nameid, cpf, birthday, profession, permit_number, 
+                            association, phone1, phone2, email, technician_responsible, 
+                            legal_responsible, user_active, user_name, user_password) 
+                        VALUES
+                            (@tag, @name, @nameid, @cpf, @birthday, @profession, @permit_number, 
+                            @association, @phone1, @phone2, @email, @technician_responsible, 
+                            @legal_responsible, @user_active, @user_name, @user_password)", 
                         connection);
                     
                     sql.Parameters.AddWithValue("@tag", professional.Tag);

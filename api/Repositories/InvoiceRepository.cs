@@ -112,19 +112,12 @@ namespace FluxusApi.Repositories
                     connection.Open();
 
                     var sql = new MySqlCommand(@"
-                        INSERT INTO 
-                            invoice(
-                                description, 
-                                issue_date, 
-                                subtotal_service, 
-                                subtotal_mileage_allowance, 
-                                total) 
-                        VALUES (
-                            @description, 
-                            @issue_date, 
-                            @subtotal_service, 
-                            @subtotal_mileage_allowance, 
-                            @total)",
+                        INSERT INTO invoice
+                            (description,  issue_date, subtotal_service, 
+                            subtotal_mileage_allowance, total) 
+                        VALUES
+                            (@description, @issue_date, @subtotal_service, 
+                            @subtotal_mileage_allowance, @total)",
                         connection);
 
                     sql.Parameters.AddWithValue("@description", dado.Description);

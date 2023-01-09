@@ -7,160 +7,225 @@ namespace FluxusApi.Repositories
 {
     public class ServiceRepository
     {
+        private string _connectionString = string.Empty;
+
+        public ServiceRepository()
+        {
+            _connectionString = ConnectionString.Get();
+        }
+
+
         public ArrayList GetAll()
         {
             try
             {
-                MySqlConnection conexao = new MySqlConnection(ConnectionString.CONNECTION_STRING);
-                conexao.Open();
-                MySqlCommand sql = new MySqlCommand("SELECT id, codigo, descricao, valor_atividade, valor_deslocamento FROM tb_atividades ORDER BY codigo", conexao);
-                MySqlDataReader dr = sql.ExecuteReader();
-
-                ArrayList atividadesArray = new ArrayList();
-
-                if (dr.HasRows)
+                using (var connection = new MySqlConnection(_connectionString))
                 {
-                    while (dr.Read())
+                    connection.Open();
+
+                    var sql = new MySqlCommand(@"
+                    SELECT 
+                        id, 
+                        tag, 
+                        description, 
+                        service_amount, 
+                        mileage_allowance 
+                    FROM 
+                        service 
+                    ORDER BY 
+                        tag",
+                        connection);
+
+                    MySqlDataReader dr = sql.ExecuteReader();
+
+                    if (dr.HasRows)
                     {
-                        Service atividade = new Service();
+                        var services = new ArrayList();
 
-                        atividade.Id = Convert.ToInt64(dr["id"]);
-                        atividade.Tag = Convert.ToString(dr["codigo"]);
-                        atividade.Description = Convert.ToString(dr["descricao"]);
-                        atividade.ServiceAmount = Convert.ToString(dr["valor_atividade"]);
-                        atividade.MileageAllowance = Convert.ToString(dr["valor_deslocamento"]);
+                        while (dr.Read())
+                        {
+                            var service = new Service();
 
-                        atividadesArray.Add(atividade);
+                            service.Id = Convert.ToInt64(dr["id"]);
+                            service.Tag = Convert.ToString(dr["tag"]);
+                            service.Description = Convert.ToString(dr["description"]);
+                            service.ServiceAmount = Convert.ToString(dr["service_amount"]);
+                            service.MileageAllowance = Convert.ToString(dr["mileage_allowance"]);
+
+                            services.Add(service);
+                        }
+
+                        return services;
                     }
-                    conexao.Close();
-                    return atividadesArray;
                 }
-                else
-                {
-                    conexao.Close();
-                    return null;
-                }
-
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                throw;
+                throw ex.InnerException;
             }
+
+            return null;
         }
-
-
-
 
 
         public Service GetBy(long id)
         {
             try
             {
-                MySqlConnection conexao = new MySqlConnection(ConnectionString.CONNECTION_STRING);
-                conexao.Open();
-                MySqlCommand sql = new MySqlCommand("SELECT * FROM tb_atividades WHERE id = @id", conexao);
-                sql.Parameters.AddWithValue("@id", id);
-                MySqlDataReader dr = sql.ExecuteReader();
-
-                if (dr.HasRows)
+                using (var connection = new MySqlConnection(_connectionString))
                 {
-                    Service atividade = new Service();
-                    if (dr.Read())
+                    connection.Open();
+
+                    var sql = new MySqlCommand(@"
+                    SELECT 
+                        * 
+                    FROM 
+                        service 
+                    WHERE 
+                        id = @id",
+                        connection);
+
+                    sql.Parameters.AddWithValue("@id", id);
+
+                    MySqlDataReader dr = sql.ExecuteReader();
+
+                    if (dr.HasRows)
                     {
-                        atividade.Id = Convert.ToInt64(dr["id"]);
-                        atividade.Tag = Convert.ToString(dr["codigo"]);
-                        atividade.Description = Convert.ToString(dr["descricao"]);
-                        atividade.ServiceAmount = Convert.ToString(dr["valor_atividade"]);
-                        atividade.MileageAllowance = Convert.ToString(dr["valor_deslocamento"]);
+                        var service = new Service();
+
+                        if (dr.Read())
+                        {
+                            service.Id = Convert.ToInt64(dr["id"]);
+                            service.Tag = Convert.ToString(dr["tag"]);
+                            service.Description = Convert.ToString(dr["description"]);
+                            service.ServiceAmount = Convert.ToString(dr["service_amount"]);
+                            service.MileageAllowance = Convert.ToString(dr["mileage_allowance"]);
+                        }
+
+                        return service;
                     }
-                    conexao.Close();
-                    return atividade;
-                }
-                else
-                {
-                    conexao.Close();
-                    return null;
                 }
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                throw;
+                throw ex.InnerException;
             }
+
+            return null;
         }
-
-
-
 
 
         public long Insert(Service dado)
         {
             try
             {
-                MySqlConnection conexao = new MySqlConnection(ConnectionString.CONNECTION_STRING);
-                conexao.Open();
-                MySqlCommand sql = new MySqlCommand("INSERT INTO tb_atividades(codigo, descricao, valor_atividade, valor_deslocamento) VALUES (@codigo, @descricao, @valor_atividade, @valor_deslocamento)", conexao);
-                sql.Parameters.AddWithValue("@codigo", dado.Tag);
-                sql.Parameters.AddWithValue("@descricao", dado.Description);
-                sql.Parameters.AddWithValue("@valor_atividade", dado.ServiceAmount);
-                sql.Parameters.AddWithValue("@valor_deslocamento", dado.MileageAllowance);
-                sql.ExecuteNonQuery();
+                using (var connection = new MySqlConnection(_connectionString))
+                {
+                    connection.Open();
 
-                conexao.Close();
-                return sql.LastInsertedId;
+                    var sql = new MySqlCommand(@"
+                    INSERT INTO service
+                        (tag, description, service_amount, mileage_allowance) 
+                    VALUES 
+                        (@tag, @description, @service_amount, @mileage_allowance)",
+                        connection);
+
+                    sql.Parameters.AddWithValue("@tag", dado.Tag);
+                    sql.Parameters.AddWithValue("@description", dado.Description);
+                    sql.Parameters.AddWithValue("@service_amount", dado.ServiceAmount);
+                    sql.Parameters.AddWithValue("@mileage_allowance", dado.MileageAllowance);
+
+                    sql.ExecuteNonQuery();
+
+                    return sql.LastInsertedId;
+                }
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                throw;
+                throw ex.InnerException;
             }
         }
-
-
-
 
 
         public void Update(long id, Service dado)
         {
             try
             {
-                MySqlConnection conexao = new MySqlConnection(ConnectionString.CONNECTION_STRING);
-                conexao.Open();
-                MySqlCommand sql = new MySqlCommand("UPDATE tb_atividades SET descricao = @descricao, valor_atividade = @valor_atividade, valor_deslocamento = @valor_deslocamento WHERE id = @id", conexao);
-                sql.Parameters.AddWithValue("@id", id);
-                sql.Parameters.AddWithValue("@descricao", dado.Description);
-                sql.Parameters.AddWithValue("@valor_atividade", dado.ServiceAmount);
-                sql.Parameters.AddWithValue("@valor_deslocamento", dado.MileageAllowance);
-                sql.ExecuteNonQuery();
-                conexao.Close();
+                using (var connection = new MySqlConnection(_connectionString))
+                {
+                    connection.Open();
+
+                    var sql = new MySqlCommand(@"
+                    UPDATE 
+                        service 
+                    SET 
+                        description = @description, 
+                        service_amount = @service_amount, 
+                        mileage_allowance = @mileage_allowance 
+                    WHERE 
+                        id = @id",
+                        connection);
+
+                    sql.Parameters.AddWithValue("@id", id);
+                    sql.Parameters.AddWithValue("@description", dado.Description);
+                    sql.Parameters.AddWithValue("@service_amount", dado.ServiceAmount);
+                    sql.Parameters.AddWithValue("@mileage_allowance", dado.MileageAllowance);
+
+                    sql.ExecuteNonQuery();
+                }
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                throw;
+                throw ex.InnerException;
             }
         }
 
 
-
-
-
-        public void Delete(long id)
+        public bool Delete(long id)
         {
             try
             {
-                MySqlConnection conexao = new MySqlConnection(ConnectionString.CONNECTION_STRING);
-                conexao.Open();
-                MySqlCommand sql = new MySqlCommand("DELETE FROM tb_atividades WHERE id = @id", conexao);
-                sql.Parameters.AddWithValue("@id", id);
-                sql.ExecuteNonQuery();
-                conexao.Close();
+                using (var connection = new MySqlConnection(_connectionString))
+                {
+                    connection.Open();
+
+                    var sqlSelect = new MySqlCommand(@"
+                        SELECT 
+                            id 
+                        FROM 
+                            service 
+                        WHERE 
+                            id = @id",
+                        connection);
+
+                    sqlSelect.Parameters.AddWithValue("@id", id);
+                    MySqlDataReader dr = sqlSelect.ExecuteReader();
+
+                    if (!dr.HasRows)
+                        return false;
+                }
+
+                using (var connection = new MySqlConnection(_connectionString))
+                {
+                    connection.Open();
+
+                    var sql = new MySqlCommand(@"
+                    DELETE FROM 
+                        service 
+                    WHERE 
+                        id = @id",
+                    connection);
+
+                    sql.Parameters.AddWithValue("@id", id);
+                    sql.ExecuteNonQuery();
+
+                    return true;
+                }
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                throw;
+                throw ex.InnerException;
             }
         }
-
-
     }
-
-
 }

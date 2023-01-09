@@ -7,150 +7,85 @@ using Microsoft.AspNetCore.Http;
 
 namespace FluxusApi.Controllers
 {
-   
-    
-    [Route("api/[controller]")]
 
+    [Route("api/[controller]")]
 
     public class ServiceController : ControllerBase
     {
-
-        /*
-         
         Autentication AutenticacaoServico;
 
-
-
-        public AtividadeController(IHttpContextAccessor context)
+        public ServiceController(IHttpContextAccessor context)
         {
             AutenticacaoServico = new Autentication(context);
         }
 
 
-
-        // GET: api/atividade
+        // GET: api/Service
         [HttpGet]
-        public ArrayList GetAll()
+        public IActionResult GetAll()
         {
-            try
-            {
-                AutenticacaoServico.Autenticar();
-                return new AtividadeRepository().GetAll();
-            }
-            catch (Exception)
-            {
-                throw;
-            }
+            AutenticacaoServico.Autenticar();
 
-            
+            var result = new ServiceRepository().GetAll();
+
+            if (result == null)
+                return NotFound();
+
+            return Ok(result);
         }
 
 
-        // GET api/atividade/getby/<id>
-        [HttpGet]
-        [Route("getby/{id}")]
-        public Atividade GetBy(long id)
+        // GET api/Service/<id>
+        [HttpGet("{id}")]
+        public IActionResult GetBy(long id)
         {
-            try
-            {
-                AutenticacaoServico.Autenticar();
-                return new AtividadeRepository().GetBy(id);
-            }
-            catch (Exception)
-            {
-                throw;
-            }
+            AutenticacaoServico.Autenticar();
+
+            var result = new ServiceRepository().GetBy(id);
+
+            if (result == null)
+                return NotFound();
+
+            return Ok(result);
         }
 
 
-
-
-        // POST api/atividade/post
+        // POST api/Service
         [HttpPost]
-        [Route("post")]
-        public ReturnAllServices Post([FromBody] Atividade atividade)
+        public IActionResult Post([FromBody] Service atividade)
         {
-            ReturnAllServices retorno = new ReturnAllServices();
-            AtividadeRepository atividadeDAO = new AtividadeRepository();
-            try
-            {
-                AutenticacaoServico.Autenticar();
+            AutenticacaoServico.Autenticar();
 
-                new AtividadeRepository().Insert(atividade);
+            new ServiceRepository().Insert(atividade);
 
-                retorno.Result = true;
-                retorno.ErrorMessage = "Atividade Cadastrada!";
-            }
-            catch (Exception ex)
-            {
-                retorno.Result = false;
-                retorno.ErrorMessage = ex.Message;
-            }
-
-            return retorno;
+            return Ok();
         }
 
 
-
-
-
-        // PUT api/atividade/put/<id>
-        [HttpPut]
-        [Route("put/{id}")]
-        public ReturnAllServices Put(long id, [FromBody] Atividade atividade)
+        // PUT api/Service/<id>
+        [HttpPut("{id}")]
+        public IActionResult Put(long id, [FromBody] Service atividade)
         {
-            ReturnAllServices retorno = new ReturnAllServices();
-            try
-            {
-                AutenticacaoServico.Autenticar();
+            AutenticacaoServico.Autenticar();
 
-                new AtividadeRepository().Update(id, atividade);
+            new ServiceRepository().Update(id, atividade);
 
-                retorno.Result = true;
-                retorno.ErrorMessage = "Atividade Alterada!";
-            }
-            catch (Exception ex)
-            {
-                retorno.Result = false;
-                retorno.ErrorMessage = ex.Message;
-            }
-
-            return retorno;
-                
+            return Ok();
         }
 
 
-
-
-
-        // DELETE api/atividade/delete/<id>
-        [HttpDelete]
-        [Route("delete/{id}")]
-        public ReturnAllServices Delete(long id)
+        // DELETE api/Service/<id>
+        [HttpDelete("{id}")]
+        public IActionResult Delete(long id)
         {
-            ReturnAllServices retorno = new ReturnAllServices();
-            try
-            {
-                AutenticacaoServico.Autenticar();
+            AutenticacaoServico.Autenticar();
 
-                new AtividadeRepository().Delete(id);
+            bool deleted = new ServiceRepository().Delete(id);
 
-                retorno.Result = true;
-                retorno.ErrorMessage = "Atividade Excluída!";
-            }
-            catch (Exception ex)
-            {
-                retorno.Result = false;
-                retorno.ErrorMessage = ex.Message;
-            }
-
-            return retorno;
-
+            if (deleted)
+                return Ok();
+            else
+                return NotFound();
         }
-
-        */
-
     }
-
-
 }

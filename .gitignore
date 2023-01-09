@@ -9,4 +9,4 @@
 .vscode/
 
 # Ignore directory
-ignore/
+database/ignore/

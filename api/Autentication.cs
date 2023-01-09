@@ -14,7 +14,7 @@ namespace FluxusApi
          }
 
 
-        public void Autenticar()
+        public void Authenticate()
         {
             try
             {
@@ -22,11 +22,11 @@ namespace FluxusApi
                 string TokenRecebido = "xz8wM6zr2RfF18GBM0B5yrkoo";
 
                 if (String.Equals(TOKEN, TokenRecebido) == false)
-                    throw new Exception("Token inválido");
+                    throw new Exception("Invalid token");
             }
             catch
             {
-                throw new Exception("Não foi possível estabelecer a conexão!");
+                throw new Exception("Impossible to establish the connection!");
             }
 
         }

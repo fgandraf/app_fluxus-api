@@ -19,7 +19,7 @@ namespace FluxusApi.Repositories
         }
 
 
-        public ArrayList GetOrdensDoFluxo()
+        public ArrayList GetOrdersFlow()
         {
             try
             {
@@ -75,7 +75,7 @@ namespace FluxusApi.Repositories
         }
 
 
-        public ArrayList GetOrdensFaturadasBy(long invoice_id)
+        public ArrayList GetInvoiced(long invoice_id)
         {
             try
             {
@@ -138,7 +138,7 @@ namespace FluxusApi.Repositories
         }
 
 
-        public ArrayList GetOrdensConcluidasAFaturar()
+        public ArrayList GetDoneToInvoice()
         {
             try
             {
@@ -255,7 +255,7 @@ namespace FluxusApi.Repositories
         }
 
 
-        public ArrayList GetProfissionaisDaFatura(long invoice_id)
+        public ArrayList GetProfessionals(long invoice_id)
         {
             try
             {
@@ -311,7 +311,7 @@ namespace FluxusApi.Repositories
         }
 
 
-        public ArrayList GetCidadesDasOrdens()
+        public ArrayList GetOrderedCities()
         {
             try
             {
@@ -548,7 +548,7 @@ namespace FluxusApi.Repositories
         }
 
 
-        public void UpdateFaturaCod(long id, long invoice_id)
+        public void UpdateInvoiceId(long id, long invoice_id)
         {
             try
             {

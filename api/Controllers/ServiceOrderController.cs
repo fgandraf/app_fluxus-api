@@ -19,13 +19,13 @@ namespace FluxusApi.Controllers
         }
 
 
-        // GET: api/ServiceOrder/GetOrdensDoFluxo
-        [HttpGet("GetOrdensDoFluxo")]
-        public IActionResult GetOrdensDoFluxo()
+        // GET: api/ServiceOrder/OrdersFlow
+        [HttpGet("OrdersFlow")]
+        public IActionResult GetOrdersFlow()
         {
-            AutenticacaoServico.Autenticar();
+            AutenticacaoServico.Authenticate();
 
-            var result = new ServiceOrderRepository().GetOrdensDoFluxo();
+            var result = new ServiceOrderRepository().GetOrdersFlow();
 
             if (result == null)
                 return NotFound();
@@ -34,13 +34,13 @@ namespace FluxusApi.Controllers
         }
 
 
-        // GET: api/ServiceOrder/GetCidadesDasOrdens
-        [HttpGet("GetCidadesDasOrdens")]
-        public IActionResult GetCidadesDasOrdens()
+        // GET: api/ServiceOrder/OrderedCities
+        [HttpGet("OrderedCities")]
+        public IActionResult GetOrderedCities()
         {
-            AutenticacaoServico.Autenticar();
+            AutenticacaoServico.Authenticate();
 
-            var result = new ServiceOrderRepository().GetCidadesDasOrdens();
+            var result = new ServiceOrderRepository().GetOrderedCities();
 
             if (result == null)
                 return NotFound();
@@ -49,13 +49,13 @@ namespace FluxusApi.Controllers
         }
 
 
-        // GET: api/ServiceOrder/GetOrdensConcluidasAFaturar
-        [HttpGet("GetOrdensConcluidasAFaturar")]
-        public IActionResult GetOrdensConcluidasAFaturar()
+        // GET: api/ServiceOrder/DoneToInvoice
+        [HttpGet("DoneToInvoice")]
+        public IActionResult GetDoneToInvoice()
         {
-            AutenticacaoServico.Autenticar();
+            AutenticacaoServico.Authenticate();
 
-            var result = new ServiceOrderRepository().GetOrdensConcluidasAFaturar();
+            var result = new ServiceOrderRepository().GetDoneToInvoice();
 
             if (result == null)
                 return NotFound();
@@ -64,13 +64,13 @@ namespace FluxusApi.Controllers
         }
 
 
-        // GET: api/ServiceOrder/GetFiltered/<filtro>
-        [HttpGet("GetFiltered/{filtro}")]
-        public IActionResult GetFiltered(string filtro)
+        // GET: api/ServiceOrder/Filtered/<parameters>
+        [HttpGet("Filtered/{parameters}")]
+        public IActionResult GetFiltered(string parameters)
         {
-            AutenticacaoServico.Autenticar();
+            AutenticacaoServico.Authenticate();
 
-            var result = new ServiceOrderRepository().GetFiltered(filtro);
+            var result = new ServiceOrderRepository().GetFiltered(parameters);
 
             if (result == null)
                 return NotFound();
@@ -79,13 +79,13 @@ namespace FluxusApi.Controllers
         }
 
 
-        // GET api/ServiceOrder/GetOrdensFaturadas/<fatura_cod>
-        [HttpGet("GetOrdensFaturadas/{fatura_cod}")]
-        public IActionResult GetOrdensFaturadas(int fatura_cod)
+        // GET api/ServiceOrder/Invoiced/<invoice_id>
+        [HttpGet("Invoiced/{invoice_id}")]
+        public IActionResult GetInvoiced(int invoice_id)
         {
-            AutenticacaoServico.Autenticar();
+            AutenticacaoServico.Authenticate();
 
-            var result = new ServiceOrderRepository().GetOrdensFaturadasBy(fatura_cod);
+            var result = new ServiceOrderRepository().GetInvoiced(invoice_id);
 
             if (result == null)
                 return NotFound();
@@ -94,13 +94,13 @@ namespace FluxusApi.Controllers
         }
 
 
-        // GET api/ServiceOrder/GetProfissionaisDaFatura/<fatura_cod>
-        [HttpGet("GetProfissionaisDaFatura/{fatura_cod}")]
-        public IActionResult GetProfissionaisDaFatura(int fatura_cod)
+        // GET api/ServiceOrder/Professionals/<fatura_cod>
+        [HttpGet("Professionals/{fatura_cod}")]
+        public IActionResult GetProfessionals(int fatura_cod)
         {
-            AutenticacaoServico.Autenticar();
+            AutenticacaoServico.Authenticate();
 
-            var result = new ServiceOrderRepository().GetProfissionaisDaFatura(fatura_cod);
+            var result = new ServiceOrderRepository().GetProfessionals(fatura_cod);
 
             if (result == null)
                 return NotFound();
@@ -113,7 +113,7 @@ namespace FluxusApi.Controllers
         [HttpGet("{id}")]
         public IActionResult GetBy(long id)
         {
-            AutenticacaoServico.Autenticar();
+            AutenticacaoServico.Authenticate();
 
             var result = new ServiceOrderRepository().GetBy(id);
 
@@ -128,7 +128,7 @@ namespace FluxusApi.Controllers
         [HttpPost]
         public IActionResult Post([FromBody] ServiceOrder os)
         {
-            AutenticacaoServico.Autenticar();
+            AutenticacaoServico.Authenticate();
 
             new ServiceOrderRepository().Insert(os);
 
@@ -140,7 +140,7 @@ namespace FluxusApi.Controllers
         [HttpPut("{id}")]
         public IActionResult Put(long id, [FromBody] ServiceOrder os)
         {
-            AutenticacaoServico.Autenticar();
+            AutenticacaoServico.Authenticate();
 
             new ServiceOrderRepository().Update(id, os);
 
@@ -148,13 +148,13 @@ namespace FluxusApi.Controllers
         }
 
 
-        // PUT api/ServiceOrder/UpdateFaturaCod/<id>,<fatura_cod>
-        [HttpPut("UpdateFaturaCod/{id},{fatura_cod}")]
-        public IActionResult UpdateFaturaCod(long id, long fatura_cod)
+        // PUT api/ServiceOrder/UpdateInvoiceId/<id>,<invoice_id>
+        [HttpPut("UpdateInvoiceId/{id},{invoice_id}")]
+        public IActionResult UpdateInvoiceId(long id, long invoice_id)
         {
-            AutenticacaoServico.Autenticar();
+            AutenticacaoServico.Authenticate();
 
-            new ServiceOrderRepository().UpdateFaturaCod(id, fatura_cod);
+            new ServiceOrderRepository().UpdateInvoiceId(id, invoice_id);
 
             return Ok();
         }
@@ -164,7 +164,7 @@ namespace FluxusApi.Controllers
         [HttpPut("UpdateStatus/{id},{status}")]
         public IActionResult UpdateStatus(long id, string status)
         {
-            AutenticacaoServico.Autenticar();
+            AutenticacaoServico.Authenticate();
 
             new ServiceOrderRepository().UpdateStatus(id, status);
 
@@ -176,7 +176,7 @@ namespace FluxusApi.Controllers
         [HttpDelete("{id}")]
         public IActionResult Delete(long id)
         {
-            AutenticacaoServico.Autenticar();
+            AutenticacaoServico.Authenticate();
 
             bool deleted = new ServiceOrderRepository().Delete(id);
 

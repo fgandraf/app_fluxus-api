@@ -24,7 +24,7 @@ namespace FluxusApi.Controllers
         [HttpGet]
         public IActionResult GetAll()
         {
-            AutenticacaoServico.Autenticar();
+            AutenticacaoServico.Authenticate();
 
             var result = new ServiceRepository().GetAll();
 
@@ -39,7 +39,7 @@ namespace FluxusApi.Controllers
         [HttpGet("{id}")]
         public IActionResult GetBy(long id)
         {
-            AutenticacaoServico.Autenticar();
+            AutenticacaoServico.Authenticate();
 
             var result = new ServiceRepository().GetBy(id);
 
@@ -54,7 +54,7 @@ namespace FluxusApi.Controllers
         [HttpPost]
         public IActionResult Post([FromBody] Service atividade)
         {
-            AutenticacaoServico.Autenticar();
+            AutenticacaoServico.Authenticate();
 
             new ServiceRepository().Insert(atividade);
 
@@ -66,7 +66,7 @@ namespace FluxusApi.Controllers
         [HttpPut("{id}")]
         public IActionResult Put(long id, [FromBody] Service atividade)
         {
-            AutenticacaoServico.Autenticar();
+            AutenticacaoServico.Authenticate();
 
             new ServiceRepository().Update(id, atividade);
 
@@ -78,7 +78,7 @@ namespace FluxusApi.Controllers
         [HttpDelete("{id}")]
         public IActionResult Delete(long id)
         {
-            AutenticacaoServico.Autenticar();
+            AutenticacaoServico.Authenticate();
 
             bool deleted = new ServiceRepository().Delete(id);
 

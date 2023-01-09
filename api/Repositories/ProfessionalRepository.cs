@@ -69,7 +69,7 @@ namespace FluxusApi.Repositories
         }
 
 
-        public ArrayList GetCodigoENomeid()
+        public ArrayList GetTagNameid()
         {
             try
             {

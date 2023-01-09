@@ -22,7 +22,7 @@ namespace FluxusApi.Controllers
         [HttpGet]
         public IActionResult GetAll()
         {
-            AutenticacaoServico.Autenticar();
+            AutenticacaoServico.Authenticate();
 
             var result = new ProfileRepository().GetAll();
 
@@ -33,11 +33,11 @@ namespace FluxusApi.Controllers
         }
 
 
-        // GET: api/Profile/GetLogo
-        [HttpGet("GetLogo")]
+        // GET: api/Profile/Logo
+        [HttpGet("Logo")]
         public IActionResult GetLogo()
         {
-            AutenticacaoServico.Autenticar();
+            AutenticacaoServico.Authenticate();
 
             var result = new ProfileRepository().GetLogo();
 
@@ -48,11 +48,11 @@ namespace FluxusApi.Controllers
         }
 
 
-        // GET api/Profile/GetToPrint
-        [HttpGet("GetToPrint")]
+        // GET api/Profile/ToPrint
+        [HttpGet("ToPrint")]
         public IActionResult GetToPrint()
         {
-            AutenticacaoServico.Autenticar();
+            AutenticacaoServico.Authenticate();
 
             var result = new ProfileRepository().GetToPrint();
 
@@ -63,12 +63,12 @@ namespace FluxusApi.Controllers
         }
 
 
-        // GET api/Profile/GetTradingName
+        // GET api/Profile/TradingName
         [HttpGet]
-        [Route("GetTradingName")]
+        [Route("TradingName")]
         public IActionResult GetTradingName()
         {
-            AutenticacaoServico.Autenticar();
+            AutenticacaoServico.Authenticate();
 
             var result = new ProfileRepository().GetTradingName();
 
@@ -83,7 +83,7 @@ namespace FluxusApi.Controllers
         [HttpPost]
         public IActionResult Post([FromBody] Profile profile)
         {
-            AutenticacaoServico.Autenticar();
+            AutenticacaoServico.Authenticate();
 
             new ProfileRepository().Insert(profile);
 
@@ -95,7 +95,7 @@ namespace FluxusApi.Controllers
         [HttpPut]
         public IActionResult Put([FromBody] Profile profile)
         {
-            AutenticacaoServico.Autenticar();
+            AutenticacaoServico.Authenticate();
 
             new ProfileRepository().Update(profile);
             

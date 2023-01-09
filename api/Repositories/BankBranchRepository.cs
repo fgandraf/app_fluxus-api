@@ -120,7 +120,7 @@ namespace FluxusApi.Repositories
             return null;
         }
 
-        public ArrayList GetNamePhoneEmailBy(string branch_number)
+        public ArrayList GetContacts(string branch_number)
         {
             try
             {

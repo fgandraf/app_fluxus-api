@@ -21,7 +21,7 @@ namespace FluxusApi.Controllers
         [HttpGet]
         public IActionResult GetAll()
         {
-            AutenticacaoServico.Autenticar();
+            AutenticacaoServico.Authenticate();
 
             var result = new InvoiceRepository().GetAll();
 
@@ -32,11 +32,11 @@ namespace FluxusApi.Controllers
         }
 
 
-        // GET api/Invoice/GetDescription/<id>
-        [HttpGet("GetDescription/{id}")]
+        // GET api/Invoice/Description/<id>
+        [HttpGet("Description/{id}")]
         public IActionResult GetDescription(string id)
         {
-            AutenticacaoServico.Autenticar();
+            AutenticacaoServico.Authenticate();
 
             var result = new InvoiceRepository().GetDescription(id);
 
@@ -51,7 +51,7 @@ namespace FluxusApi.Controllers
         [HttpPost]
         public IActionResult Post([FromBody] Invoice invoice)
         {
-            AutenticacaoServico.Autenticar();
+            AutenticacaoServico.Authenticate();
 
             new InvoiceRepository().Insert(invoice);
 
@@ -63,7 +63,7 @@ namespace FluxusApi.Controllers
         [HttpPut("Totals/{id}")]
         public IActionResult PutTotals(long id, [FromBody] Invoice invoice)
         {
-            AutenticacaoServico.Autenticar();
+            AutenticacaoServico.Authenticate();
 
             new InvoiceRepository().UpdateTotals(id, invoice);
 
@@ -75,7 +75,7 @@ namespace FluxusApi.Controllers
         [HttpDelete("{id}")]
         public IActionResult Delete(string id)
         {
-            AutenticacaoServico.Autenticar();
+            AutenticacaoServico.Authenticate();
 
             bool deleted = new InvoiceRepository().Delete(id);
 

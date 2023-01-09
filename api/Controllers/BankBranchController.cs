@@ -9,11 +9,11 @@ namespace FluxusApi.Controllers
 
     public class BankBranchController : ControllerBase
     {
-        Autentication AutenticacaoServico;
+        Autentication Authenticator;
 
         public BankBranchController(IHttpContextAccessor context)
         {
-            AutenticacaoServico = new Autentication(context);
+            Authenticator = new Autentication(context);
         }
 
 
@@ -21,7 +21,7 @@ namespace FluxusApi.Controllers
         [HttpGet]
         public IActionResult GetAll()
         {
-            AutenticacaoServico.Autenticar();
+            Authenticator.Authenticate();
 
             var result = new BankBranchRepository().GetAll();
 
@@ -36,7 +36,7 @@ namespace FluxusApi.Controllers
         [HttpGet("{id}")]
         public IActionResult GetBy(long id)
         {
-            AutenticacaoServico.Autenticar();
+            Authenticator.Authenticate();
 
             var result = new BankBranchRepository().GetBy(id);
 
@@ -47,13 +47,13 @@ namespace FluxusApi.Controllers
         }
 
 
-        // GET: api/BankBranch/GetContacts/<branch_number>
-        [HttpGet("GetContacts/{branch_number}")]
-        public IActionResult GetSomeBy(string branch_number)
+        // GET: api/BankBranch/Contacts/<branch_number>
+        [HttpGet("Contacts/{branch_number}")]
+        public IActionResult GetContacts(string branch_number)
         {
-            AutenticacaoServico.Autenticar();
+            Authenticator.Authenticate();
 
-            var result = new BankBranchRepository().GetNamePhoneEmailBy(branch_number);
+            var result = new BankBranchRepository().GetContacts(branch_number);
 
             if (result == null)
                 return NotFound();
@@ -66,7 +66,7 @@ namespace FluxusApi.Controllers
         [HttpPost]
         public IActionResult Post([FromBody] BankBranch bankBranch)
         {
-            AutenticacaoServico.Autenticar();
+            Authenticator.Authenticate();
 
             new BankBranchRepository().Insert(bankBranch);
 
@@ -78,7 +78,7 @@ namespace FluxusApi.Controllers
         [HttpPut("{id}")]
         public IActionResult Put(long id, [FromBody] BankBranch bankBranch)
         {
-            AutenticacaoServico.Autenticar();
+            Authenticator.Authenticate();
 
             new BankBranchRepository().Update(id, bankBranch);
 
@@ -90,7 +90,7 @@ namespace FluxusApi.Controllers
         [HttpDelete("{id}")]
         public IActionResult Delete(long id)
         {
-            AutenticacaoServico.Autenticar();
+            Authenticator.Authenticate();
 
             bool deleted = new BankBranchRepository().Delete(id);
 
@@ -99,7 +99,5 @@ namespace FluxusApi.Controllers
             else
                 return NotFound();
         }
-
-
     }
 }

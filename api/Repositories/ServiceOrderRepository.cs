@@ -11,498 +11,671 @@ namespace FluxusApi.Repositories
 
     public class ServiceOrderRepository
     {
+        private string _connectionString = string.Empty;
+
+        public ServiceOrderRepository()
+        {
+            _connectionString = ConnectionString.Get();
+        }
+
+
         public ArrayList GetOrdensDoFluxo()
         {
             try
             {
-                ArrayList osArray = new ArrayList();
-                MySqlConnection conexao = new MySqlConnection(ConnectionString.CONNECTION_STRING);
-                conexao.Open();
-                MySqlCommand sql = new MySqlCommand("SELECT id, referencia, titulo, status, profissional_cod FROM tb_os WHERE fatura_cod = 0 ORDER BY data_ordem", conexao);
-                MySqlDataReader dr = sql.ExecuteReader();
-
-                if (dr.HasRows)
+                using (var connection = new MySqlConnection(_connectionString))
                 {
-                    while (dr.Read())
+                    connection.Open();
+
+                    var sql = new MySqlCommand(@"
+                    SELECT 
+                        id, 
+                        reference_code, 
+                        title, 
+                        status, 
+                        professional_id 
+                    FROM 
+                        service_order 
+                    WHERE 
+                        invoice_id = 0 
+                    ORDER BY 
+                        order_date",
+                        connection);
+
+                    MySqlDataReader dr = sql.ExecuteReader();
+
+                    if (dr.HasRows)
                     {
-                        dynamic osFluxo = new
-                        {
-                            Id = Convert.ToInt64(dr["id"]),
-                            Referencia = Convert.ToString(dr["referencia"]),
-                            Titulo = Convert.ToString(dr["titulo"]),
-                            Status = Convert.ToString(dr["status"]),
-                            Profissional_cod = Convert.ToString(dr["profissional_cod"])
-                        };
+                        var orders = new ArrayList();
 
-                        osArray.Add(osFluxo);
+                        while (dr.Read())
+                        {
+                            dynamic order = new
+                            {
+                                Id = Convert.ToInt64(dr["id"]),
+                                ReferenceCode = Convert.ToString(dr["reference_code"]),
+                                Titulo = Convert.ToString(dr["title"]),
+                                Status = Convert.ToString(dr["status"]),
+                                ProfessionalId = Convert.ToString(dr["professional_id"])
+                            };
+
+                            orders.Add(order);
+                        }
+
+                        return orders;
                     }
-                    conexao.Close();
-                    return osArray;
-                }
-                else
-                {
-                    conexao.Close();
-                    return null;
                 }
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                throw;
+                throw ex.InnerException;
             }
+
+            return null;
         }
 
-        public ArrayList GetOrdensFaturadasBy(long fatura_cod)
+
+        public ArrayList GetOrdensFaturadasBy(long invoice_id)
         {
             try
             {
-                ArrayList osArray = new ArrayList();
-
-                MySqlConnection conexao = new MySqlConnection(ConnectionString.CONNECTION_STRING);
-                conexao.Open();
-                //MySqlCommand sql = new MySqlCommand("SELECT t1.id, t1.data_ordem, t1.referencia, t1.profissional_cod, t1.atividade_cod, t1.cidade, t1.nome_cliente, t1.data_vistoria, t1.data_concluida, t1.fatura_cod, t1.status, t2.valor_atividade, t2.valor_deslocamento FROM tb_os t1 INNER JOIN tb_atividades t2 on t1.atividade_cod = t2.codigo WHERE t1.fatura_cod = @fatura_cod ORDER BY t1.data_concluida", conexao);
-                MySqlCommand sql = new MySqlCommand("SELECT id, data_ordem, referencia, profissional_cod, atividade_cod, cidade, nome_cliente, data_vistoria, data_concluida, fatura_cod, status, valor_atividade, valor_deslocamento FROM tb_os WHERE fatura_cod = @fatura_cod ORDER BY data_concluida", conexao);
-                sql.Parameters.AddWithValue("@fatura_cod", fatura_cod);
-                MySqlDataReader dr = sql.ExecuteReader();
-
-                if (dr.HasRows)
+                using (var connection = new MySqlConnection(_connectionString))
                 {
-                    while (dr.Read())
+                    connection.Open();
+
+                    var sql = new MySqlCommand(@"
+                    SELECT 
+                        id, order_date, reference_code, professional_id, service_id, 
+                        city, customer_name, survey_date, done_date, invoice_id, 
+                        status, service_amount, mileage_allowance 
+                    FROM 
+                        service_order 
+                    WHERE 
+                        invoice_id = @invoice_id 
+                    ORDER BY 
+                        done_date",
+                        connection);
+
+                    sql.Parameters.AddWithValue("@invoice_id", invoice_id);
+
+                    MySqlDataReader dr = sql.ExecuteReader();
+
+                    if (dr.HasRows)
                     {
+                        var orders = new ArrayList();
 
-                        dynamic osFatura = new
+                        while (dr.Read())
                         {
-                            Id = Convert.ToInt64(dr["id"]),
-                            Data_ordem = Convert.ToDateTime(dr["data_ordem"]),
-                            Referencia = Convert.ToString(dr["referencia"]),
-                            Profissional_cod = Convert.ToString(dr["profissional_cod"]),
-                            Atividade_cod = Convert.ToString(dr["atividade_cod"]),
-                            Cidade = Convert.ToString(dr["cidade"]),
-                            Nome_cliente = Convert.ToString(dr["nome_cliente"]),
-                            Data_vistoria = Convert.ToDateTime(dr["data_vistoria"]),
-                            Data_concluida = Convert.ToDateTime(dr["data_concluida"]),
-                            Fatura_cod = Convert.ToInt64(dr["fatura_cod"]),
-                            Status = Convert.ToString(dr["status"]),
-                            Valor_atividade = Convert.ToDouble(dr["valor_atividade"]),
-                            Valor_deslocamento = Convert.ToDouble(dr["valor_deslocamento"])
-                        };
+                            dynamic order = new
+                            {
+                                Id = Convert.ToInt64(dr["id"]),
+                                OrderDate = Convert.ToDateTime(dr["order_date"]),
+                                ReferenceCode = Convert.ToString(dr["reference_code"]),
+                                ProfessionalId = Convert.ToString(dr["professional_id"]),
+                                ServiceId = Convert.ToString(dr["service_id"]),
+                                City = Convert.ToString(dr["city"]),
+                                CustomerName = Convert.ToString(dr["customer_name"]),
+                                SurveyDate = Convert.ToDateTime(dr["survey_date"]),
+                                DoneDate = Convert.ToDateTime(dr["done_date"]),
+                                Fatura_cod = Convert.ToInt64(dr["invoice_id"]),
+                                Status = Convert.ToString(dr["status"]),
+                                ServiceAmount = Convert.ToDouble(dr["service_amount"]),
+                                MileageAllowance = Convert.ToDouble(dr["mileage_allowance"])
+                            };
+                            orders.Add(order);
+                        }
 
-                        osArray.Add(osFatura);
-
+                        return orders;
                     }
-                    conexao.Close();
-                    return osArray;
-                }
-                else
-                {
-                    conexao.Close();
-                    return null;
                 }
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                throw;
+                throw ex.InnerException;
             }
+
+            return null;
         }
+
 
         public ArrayList GetOrdensConcluidasAFaturar()
         {
             try
             {
-                ArrayList osArray = new ArrayList();
-
-                MySqlConnection conexao = new MySqlConnection(ConnectionString.CONNECTION_STRING);
-                conexao.Open();
-                //MySqlCommand sql = new MySqlCommand("SELECT t1.id, t1.data_ordem, t1.referencia, t1.profissional_cod, t1.atividade_cod, t1.cidade, t1.nome_cliente, t1.data_vistoria, t1.data_concluida, t2.valor_atividade, t2.valor_deslocamento FROM tb_os t1 INNER JOIN tb_atividades t2 on t1.atividade_cod = t2.codigo WHERE t1.fatura_cod = 0 AND status = 'CONCLUÍDA' ORDER BY t1.data_concluida", conexao);
-                MySqlCommand sql = new MySqlCommand("SELECT id, data_ordem, referencia, profissional_cod, atividade_cod, cidade, nome_cliente, data_vistoria, data_concluida, valor_atividade, valor_deslocamento FROM tb_os WHERE fatura_cod = 0 AND status = 'CONCLUÍDA' ORDER BY data_concluida", conexao);
-                MySqlDataReader dr = sql.ExecuteReader();
-
-                if (dr.HasRows)
+                using (var connection = new MySqlConnection(_connectionString))
                 {
-                    while (dr.Read())
+                    connection.Open();
+
+                    var sql = new MySqlCommand(@"
+                    SELECT 
+                        id, order_date, reference_code, professional_id, service_id, city, 
+                        customer_name, survey_date, done_date, service_amount, mileage_allowance 
+                    FROM 
+                        service_order 
+                    WHERE 
+                        invoice_id = 0 
+                    AND 
+                        status = 'CONCLUÍDA' 
+                    ORDER BY 
+                        done_date",
+                        connection);
+
+                    MySqlDataReader dr = sql.ExecuteReader();
+
+                    if (dr.HasRows)
                     {
-                        dynamic osFatura = new
-                        {
-                            Id = Convert.ToInt64(dr["id"]),
-                            Data_ordem = Convert.ToDateTime(dr["data_ordem"]),
-                            Referencia = Convert.ToString(dr["referencia"]),
-                            Profissional_cod = Convert.ToString(dr["profissional_cod"]),
-                            Atividade_cod = Convert.ToString(dr["atividade_cod"]),
-                            Cidade = Convert.ToString(dr["cidade"]),
-                            Nome_cliente = Convert.ToString(dr["nome_cliente"]),
-                            Data_vistoria = Convert.ToDateTime(dr["data_vistoria"]),
-                            Data_concluida = Convert.ToDateTime(dr["data_concluida"]),
-                            Valor_atividade = Convert.ToDouble(dr["valor_atividade"]),
-                            Valor_deslocamento = Convert.ToDouble(dr["valor_deslocamento"])
-                        };
+                        var orders = new ArrayList();
 
-                        osArray.Add(osFatura);
+                        while (dr.Read())
+                        {
+                            dynamic order = new
+                            {
+                                Id = Convert.ToInt64(dr["id"]),
+                                OrderDate = Convert.ToDateTime(dr["order_date"]),
+                                ReferenceCode = Convert.ToString(dr["reference_code"]),
+                                ProfessionalId = Convert.ToString(dr["professional_id"]),
+                                ServiceId = Convert.ToString(dr["service_id"]),
+                                City = Convert.ToString(dr["city"]),
+                                CustomerName = Convert.ToString(dr["customer_name"]),
+                                SurveyDate = Convert.ToDateTime(dr["survey_date"]),
+                                DoneDate = Convert.ToDateTime(dr["done_date"]),
+                                ServiceAmount = Convert.ToDouble(dr["service_amount"]),
+                                MileageAllowance = Convert.ToDouble(dr["mileage_allowance"])
+                            };
+                            orders.Add(order);
+                        }
+
+                        return orders;
                     }
-                    conexao.Close();
-                    return osArray;
-                }
-                else
-                {
-                    conexao.Close();
-                    return null;
                 }
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                throw;
+                throw ex.InnerException;
             }
+
+            return null;
         }
 
         public ArrayList GetFiltered(string filtro)
         {
             try
             {
-                ArrayList osArray = new ArrayList();
-                MySqlConnection conexao = new MySqlConnection(ConnectionString.CONNECTION_STRING);
-                conexao.Open();
-                MySqlCommand sql = new MySqlCommand(filtro, conexao);
-                MySqlDataReader dr = sql.ExecuteReader();
-
-                if (dr.HasRows)
+                using (var connection = new MySqlConnection(_connectionString))
                 {
-                    while (dr.Read())
+                    connection.Open();
+
+                    var sql = new MySqlCommand(filtro, connection);
+
+                    MySqlDataReader dr = sql.ExecuteReader();
+
+                    if (dr.HasRows)
                     {
-                        ServiceOrder os = new ServiceOrder();
+                        var orders = new ArrayList();
 
-                        os.Id = Convert.ToInt64(dr["id"]);
-                        os.ReferenceCode = Convert.ToString(dr["referencia"]);
-                        os.Branch = Convert.ToString(dr["agencia"]);
-                        os.Title = Convert.ToString(dr["titulo"]);
-                        os.OrderDate = Util.DateTimeToShortDateString(Convert.ToString(dr["data_ordem"]));
-                        os.Deadline = Convert.ToDateTime(dr["prazo_execucao"]);
-                        os.ProfessionalId = Convert.ToString(dr["profissional_cod"]);
-                        os.ServiceId = Convert.ToString(dr["atividade_cod"]);
-                        os.ServiceAmount = Convert.ToString(dr["valor_atividade"]);
-                        os.MileageAllowance = Convert.ToString(dr["valor_deslocamento"]);
-                        os.Siopi = Convert.ToBoolean(dr["siopi"]);
-                        os.CustomerName = Convert.ToString(dr["nome_cliente"]);
-                        os.City = Convert.ToString(dr["cidade"]);
-                        os.ContactName = Convert.ToString(dr["nome_contato"]);
-                        os.ContactPhone = Convert.ToString(dr["telefone_contato"]);
-                        os.Coordinates = Convert.ToString(dr["coordenada"]);
-                        os.Status = Convert.ToString(dr["status"]);
-                        os.PendingDate = Util.DateTimeToShortDateString(Convert.ToString(dr["data_pendente"]));
-                        os.SurveyDate = Util.DateTimeToShortDateString(Convert.ToString(dr["data_vistoria"]));
-                        os.DoneDate = Util.DateTimeToShortDateString(Convert.ToString(dr["data_concluida"]));
-                        os.Comments = Convert.ToString(dr["obs"]);
-                        os.InvoiceId = Convert.ToInt64(dr["fatura_cod"]);
-                        osArray.Add(os);
+                        while (dr.Read())
+                        {
+                            ServiceOrder order = new ServiceOrder();
+
+                            order.Id = Convert.ToInt64(dr["id"]);
+                            order.ReferenceCode = Convert.ToString(dr["reference_code"]);
+                            order.Branch = Convert.ToString(dr["branch"]);
+                            order.Title = Convert.ToString(dr["title"]);
+                            order.OrderDate = Util.DateTimeToShortDateString(Convert.ToString(dr["order_date"]));
+                            order.Deadline = Convert.ToDateTime(dr["deadline"]);
+                            order.ProfessionalId = Convert.ToString(dr["professional_id"]);
+                            order.ServiceId = Convert.ToString(dr["service_id"]);
+                            order.ServiceAmount = Convert.ToString(dr["service_amount"]);
+                            order.MileageAllowance = Convert.ToString(dr["mileage_allowance"]);
+                            order.Siopi = Convert.ToBoolean(dr["siopi"]);
+                            order.CustomerName = Convert.ToString(dr["customer_name"]);
+                            order.City = Convert.ToString(dr["city"]);
+                            order.ContactName = Convert.ToString(dr["contact_name"]);
+                            order.ContactPhone = Convert.ToString(dr["contact_phone"]);
+                            order.Coordinates = Convert.ToString(dr["coordinates"]);
+                            order.Status = Convert.ToString(dr["status"]);
+                            order.PendingDate = Util.DateTimeToShortDateString(Convert.ToString(dr["pending_date"]));
+                            order.SurveyDate = Util.DateTimeToShortDateString(Convert.ToString(dr["survey_date"]));
+                            order.DoneDate = Util.DateTimeToShortDateString(Convert.ToString(dr["done_date"]));
+                            order.Comments = Convert.ToString(dr["comments"]);
+                            order.InvoiceId = Convert.ToInt64(dr["invoice_id"]);
+                            orders.Add(order);
+                        }
+
+                        return orders;
                     }
-                    conexao.Close();
-                    return osArray;
-                }
-                else
-                {
-                    conexao.Close();
-                    return null;
                 }
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                throw;
+                throw ex.InnerException;
             }
+
+            return null;
         }
 
-        public ArrayList GetProfissionaisDaFatura(long fatura_cod)
+
+        public ArrayList GetProfissionaisDaFatura(long invoice_id)
         {
             try
             {
-                ArrayList profissionaisArray = new ArrayList();
-
-                MySqlConnection conexao = new MySqlConnection(ConnectionString.CONNECTION_STRING);
-                conexao.Open();
-                MySqlCommand sql = new MySqlCommand("SELECT DISTINCT t1.profissional_cod, t2.nomeid FROM tb_os t1 INNER JOIN tb_profissionais t2 on t1.profissional_cod = t2.codigo WHERE t1.fatura_cod = @fatura_cod ORDER BY t2.nomeid", conexao);
-                sql.Parameters.AddWithValue("@fatura_cod", fatura_cod);
-
-                MySqlDataReader dr = sql.ExecuteReader();
-
-
-                if (dr.HasRows)
+                using (var connection = new MySqlConnection(_connectionString))
                 {
-                    while (dr.Read())
+                    connection.Open();
+
+                    var sql = new MySqlCommand(@"
+                    SELECT DISTINCT 
+                        t1.professional_id, 
+                        t2.nameid 
+                    FROM 
+                        service_order t1 
+                    INNER JOIN 
+                        professional t2 
+                    on 
+                        t1.professional_id = t2.id 
+                    WHERE 
+                        t1.invoice_id = @invoice_id 
+                    ORDER BY 
+                        t2.nameid",
+                        connection);
+
+                    sql.Parameters.AddWithValue("@invoice_id", invoice_id);
+
+                    MySqlDataReader dr = sql.ExecuteReader();
+
+
+                    if (dr.HasRows)
                     {
-                        dynamic profissionais = new
+                        var professionals = new ArrayList();
+
+                        while (dr.Read())
                         {
-                            Codigo = Convert.ToString(dr["profissional_cod"]),
-                            Nomeid = Convert.ToString(dr["nomeid"])
-                        };
+                            dynamic professional = new
+                            {
+                                ProfessionalId = Convert.ToString(dr["professional_id"]),
+                                Nameid = Convert.ToString(dr["nameid"])
+                            };
+                            professionals.Add(professional);
+                        }
 
-                        profissionaisArray.Add(profissionais);
-
+                        return professionals;
                     }
-                    conexao.Close();
-                    return profissionaisArray;
-                }
-                else
-                {
-                    conexao.Close();
-                    return null;
                 }
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                throw;
+                throw ex.InnerException;
             }
+
+            return null;
         }
+
 
         public ArrayList GetCidadesDasOrdens()
         {
             try
             {
-                ArrayList cidadesArray = new ArrayList();
-
-                MySqlConnection conexao = new MySqlConnection(ConnectionString.CONNECTION_STRING);
-                conexao.Open();
-                MySqlCommand sql = new MySqlCommand("SELECT DISTINCT cidade FROM tb_os ORDER BY cidade", conexao);
-                MySqlDataReader dr = sql.ExecuteReader();
-
-                if (dr.HasRows)
+                using (var connection = new MySqlConnection(_connectionString))
                 {
-                    while (dr.Read())
+                    connection.Open();
+
+                    var sql = new MySqlCommand(@"
+                    SELECT DISTINCT 
+                        city 
+                    FROM 
+                        service_order 
+                    ORDER BY 
+                        city",
+                        connection);
+
+                    MySqlDataReader dr = sql.ExecuteReader();
+
+                    if (dr.HasRows)
                     {
-                        dynamic cidade = new
-                        {
-                            Cidade = Convert.ToString(dr["cidade"])
-                        };
+                        var cities = new ArrayList();
 
-                        cidadesArray.Add(cidade);
+                        while (dr.Read())
+                        {
+                            dynamic city = new
+                            {
+                                City = Convert.ToString(dr["city"])
+                            };
+                            cities.Add(city);
+                        }
+
+                        return cities;
                     }
-                    conexao.Close();
-                    return cidadesArray;
-                }
-                else
-                {
-                    conexao.Close();
-                    return null;
                 }
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                throw;
+                throw ex.InnerException;
             }
+
+            return null;
         }
+
 
         public ServiceOrder GetBy(long id)
         {
             try
             {
-                MySqlConnection conexao = new MySqlConnection(ConnectionString.CONNECTION_STRING);
-                conexao.Open();
-                MySqlCommand sql = new MySqlCommand("SELECT * FROM tb_os WHERE id = @id", conexao);
-                sql.Parameters.AddWithValue("@id", id);
-                MySqlDataReader dr = sql.ExecuteReader();
-
-                if (dr.HasRows)
+                using (var connection = new MySqlConnection(_connectionString))
                 {
-                    ServiceOrder os = new ServiceOrder();
-                    if (dr.Read())
+                    connection.Open();
+
+                    var sql = new MySqlCommand(@"
+                    SELECT 
+                        * 
+                    FROM 
+                        service_order 
+                    WHERE 
+                        id = @id",
+                        connection);
+
+                    sql.Parameters.AddWithValue("@id", id);
+
+                    MySqlDataReader dr = sql.ExecuteReader();
+
+                    if (dr.HasRows)
                     {
-                        os.Id = Convert.ToInt64(dr["id"]);
-                        os.ReferenceCode = Convert.ToString(dr["referencia"]);
-                        os.Branch = Convert.ToString(dr["agencia"]);
-                        os.Title = Convert.ToString(dr["titulo"]);
-                        os.OrderDate = Convert.ToString(dr["data_ordem"]);
-                        os.Deadline = Convert.ToDateTime(dr["prazo_execucao"]);
-                        os.ProfessionalId = Convert.ToString(dr["profissional_cod"]);
-                        os.ServiceId = Convert.ToString(dr["atividade_cod"]);
-                        os.ServiceAmount = Convert.ToString(dr["valor_atividade"]);
-                        os.MileageAllowance = Convert.ToString(dr["valor_deslocamento"]);
-                        os.Siopi = Convert.ToBoolean(dr["siopi"]);
-                        os.CustomerName = Convert.ToString(dr["nome_cliente"]);
-                        os.City = Convert.ToString(dr["cidade"]);
-                        os.ContactName = Convert.ToString(dr["nome_contato"]);
-                        os.ContactPhone = Convert.ToString(dr["telefone_contato"]);
-                        os.Coordinates = Convert.ToString(dr["coordenada"]);
-                        os.Status = Convert.ToString(dr["status"]);
-                        os.PendingDate = Convert.ToString(dr["data_pendente"]);
-                        os.SurveyDate = Convert.ToString(dr["data_vistoria"]);
-                        os.DoneDate = Convert.ToString(dr["data_concluida"]);
-                        os.Comments = Convert.ToString(dr["obs"]);
-                        os.InvoiceId = Convert.ToInt64(dr["fatura_cod"]);
+                        var order = new ServiceOrder();
+
+                        if (dr.Read())
+                        {
+                            order.Id = Convert.ToInt64(dr["id"]);
+                            order.ReferenceCode = Convert.ToString(dr["reference_code"]);
+                            order.Branch = Convert.ToString(dr["branch"]);
+                            order.Title = Convert.ToString(dr["title"]);
+                            order.OrderDate = Convert.ToString(dr["order_date"]);
+                            order.Deadline = Convert.ToDateTime(dr["deadline"]);
+                            order.ProfessionalId = Convert.ToString(dr["professional_id"]);
+                            order.ServiceId = Convert.ToString(dr["service_id"]);
+                            order.ServiceAmount = Convert.ToString(dr["service_amount"]);
+                            order.MileageAllowance = Convert.ToString(dr["mileage_allowance"]);
+                            order.Siopi = Convert.ToBoolean(dr["siopi"]);
+                            order.CustomerName = Convert.ToString(dr["customer_name"]);
+                            order.City = Convert.ToString(dr["city"]);
+                            order.ContactName = Convert.ToString(dr["contact_name"]);
+                            order.ContactPhone = Convert.ToString(dr["contact_phone"]);
+                            order.Coordinates = Convert.ToString(dr["coordinates"]);
+                            order.Status = Convert.ToString(dr["status"]);
+                            order.PendingDate = Convert.ToString(dr["pending_date"]);
+                            order.SurveyDate = Convert.ToString(dr["survey_date"]);
+                            order.DoneDate = Convert.ToString(dr["done_date"]);
+                            order.Comments = Convert.ToString(dr["comments"]);
+                            order.InvoiceId = Convert.ToInt64(dr["invoice_id"]);
+                        }
+
+                        if (order.OrderDate == "01/01/0001 00:00:00")
+                            order.OrderDate = string.Empty;
+
+                        if (order.PendingDate == "01/01/0001 00:00:00")
+                            order.PendingDate = string.Empty;
+
+                        if (order.SurveyDate == "01/01/0001 00:00:00")
+                            order.SurveyDate = string.Empty;
+
+                        if (order.DoneDate == "01/01/0001 00:00:00")
+                            order.DoneDate = string.Empty;
+
+                        return order;
                     }
-
-                    if (os.OrderDate == "01/01/0001 00:00:00")
-                        os.OrderDate = string.Empty;
-
-                    if (os.PendingDate == "01/01/0001 00:00:00")
-                        os.PendingDate = string.Empty;
-
-                    if (os.SurveyDate == "01/01/0001 00:00:00")
-                        os.SurveyDate = string.Empty;
-
-                    if (os.DoneDate == "01/01/0001 00:00:00")
-                        os.DoneDate = string.Empty;
-
-                    conexao.Close();
-                    return os;
-                }
-                else
-                {
-                    conexao.Close();
-                    return null;
                 }
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                throw;
+                throw ex.InnerException;
             }
+
+            return null;
         }
+
 
         public long Insert(ServiceOrder dado)
         {
             try
             {
-                MySqlConnection conexao = new MySqlConnection(ConnectionString.CONNECTION_STRING);
-                conexao.Open();
-                MySqlCommand sql = new MySqlCommand("INSERT INTO tb_os(titulo, referencia, agencia, data_ordem, prazo_execucao, profissional_cod, atividade_cod, valor_atividade, valor_deslocamento, siopi, nome_cliente, cidade, nome_contato, telefone_contato, coordenada, status, data_pendente, data_vistoria, data_concluida, obs) VALUES (@titulo, @referencia, @agencia, @data_ordem, @prazo_execucao, @profissional_cod, @atividade_cod, @valor_atividade, @valor_deslocamento, @siopi, @nome_cliente, @cidade, @nome_contato, @telefone_contato, @coordenada, @status, @data_pendente, @data_vistoria, @data_concluida, @obs)", conexao);
+                using (var connection = new MySqlConnection(_connectionString))
+                {
+                    connection.Open();
 
-                sql.Parameters.AddWithValue("@titulo", dado.Title);
-                sql.Parameters.AddWithValue("@referencia", dado.ReferenceCode);
-                sql.Parameters.AddWithValue("@agencia", dado.Branch);
-                sql.Parameters.AddWithValue("@data_ordem", Util.DateOrNull(dado.OrderDate));
-                sql.Parameters.AddWithValue("@prazo_execucao", dado.Deadline);
-                sql.Parameters.AddWithValue("@profissional_cod", dado.ProfessionalId);
-                sql.Parameters.AddWithValue("@atividade_cod", dado.ServiceId);
-                sql.Parameters.AddWithValue("@valor_atividade", dado.ServiceAmount);
-                sql.Parameters.AddWithValue("@valor_deslocamento", dado.MileageAllowance);
-                sql.Parameters.AddWithValue("@siopi", dado.Siopi);
-                sql.Parameters.AddWithValue("@nome_cliente", dado.CustomerName);
-                sql.Parameters.AddWithValue("@cidade", dado.City);
-                sql.Parameters.AddWithValue("@nome_contato", dado.ContactName);
-                sql.Parameters.AddWithValue("@telefone_contato", dado.ContactPhone);
-                sql.Parameters.AddWithValue("@coordenada", dado.Coordinates);
-                sql.Parameters.AddWithValue("@status", dado.Status);
-                sql.Parameters.AddWithValue("@data_pendente", Util.DateOrNull(dado.PendingDate));
-                sql.Parameters.AddWithValue("@data_vistoria", Util.DateOrNull(dado.SurveyDate));
-                sql.Parameters.AddWithValue("@data_concluida", Util.DateOrNull(dado.DoneDate));
-                sql.Parameters.AddWithValue("@obs", dado.Comments);
+                    var sql = new MySqlCommand(@"
+                    INSERT INTO service_order
+                        (title, reference_code, branch, order_date, deadline, professional_id, service_id, 
+                        service_amount, mileage_allowance, siopi, customer_name, city, contact_name, 
+                        contact_phone, coordinates, status, pending_date, survey_date, done_date, comments) 
+                    VALUES 
+                        (@title, @reference_code, @branch, @order_date, @deadline, @professional_id, @service_id, 
+                        @service_amount, @mileage_allowance, @siopi, @customer_name, @city, @contact_name, 
+                        @contact_phone, @coordinates, @status, @pending_date, @survey_date, @done_date, @comments)",
+                        connection);
 
-                sql.ExecuteNonQuery();
-                conexao.Close();
-                return sql.LastInsertedId;
+                    sql.Parameters.AddWithValue("@title", dado.Title);
+                    sql.Parameters.AddWithValue("@reference_code", dado.ReferenceCode);
+                    sql.Parameters.AddWithValue("@branch", dado.Branch);
+                    sql.Parameters.AddWithValue("@order_date", Util.DateOrNull(dado.OrderDate));
+                    sql.Parameters.AddWithValue("@deadline", dado.Deadline);
+                    sql.Parameters.AddWithValue("@professional_id", dado.ProfessionalId);
+                    sql.Parameters.AddWithValue("@service_id", dado.ServiceId);
+                    sql.Parameters.AddWithValue("@service_amount", dado.ServiceAmount);
+                    sql.Parameters.AddWithValue("@mileage_allowance", dado.MileageAllowance);
+                    sql.Parameters.AddWithValue("@siopi", dado.Siopi);
+                    sql.Parameters.AddWithValue("@customer_name", dado.CustomerName);
+                    sql.Parameters.AddWithValue("@city", dado.City);
+                    sql.Parameters.AddWithValue("@contact_name", dado.ContactName);
+                    sql.Parameters.AddWithValue("@contact_phone", dado.ContactPhone);
+                    sql.Parameters.AddWithValue("@coordinates", dado.Coordinates);
+                    sql.Parameters.AddWithValue("@status", dado.Status);
+                    sql.Parameters.AddWithValue("@pending_date", Util.DateOrNull(dado.PendingDate));
+                    sql.Parameters.AddWithValue("@survey_date", Util.DateOrNull(dado.SurveyDate));
+                    sql.Parameters.AddWithValue("@done_date", Util.DateOrNull(dado.DoneDate));
+                    sql.Parameters.AddWithValue("@comments", dado.Comments);
+
+                    sql.ExecuteNonQuery();
+
+                    return sql.LastInsertedId;
+                }
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                throw;
+                throw ex.InnerException;
             }
         }
+
 
         public void Update(long id, ServiceOrder dado)
         {
             try
             {
-                MySqlConnection conexao = new MySqlConnection(ConnectionString.CONNECTION_STRING);
-                conexao.Open();
-                MySqlCommand sql = new MySqlCommand("UPDATE tb_os SET titulo = @titulo, data_ordem = @data_ordem, prazo_execucao = @prazo_execucao, profissional_cod = @profissional_cod, atividade_cod = @atividade_cod, valor_atividade = valor_atividade, valor_deslocamento = valor_deslocamento, siopi = @siopi, nome_cliente = @nome_cliente, cidade = @cidade, nome_contato = @nome_contato, telefone_contato = @telefone_contato, coordenada = @coordenada, status = @status, data_pendente = @data_pendente, data_vistoria = @data_vistoria, data_concluida = @data_concluida, obs = @obs WHERE id = @id", conexao);
-                sql.Parameters.AddWithValue("@titulo", dado.Title);
-                sql.Parameters.AddWithValue("@data_ordem", Util.DateOrNull(dado.OrderDate));
-                sql.Parameters.AddWithValue("@prazo_execucao", dado.Deadline);
-                sql.Parameters.AddWithValue("@profissional_cod", dado.ProfessionalId);
-                sql.Parameters.AddWithValue("@atividade_cod", dado.ServiceId);
-                sql.Parameters.AddWithValue("@valor_atividade", dado.ServiceAmount);
-                sql.Parameters.AddWithValue("@valor_deslocamento", dado.MileageAllowance);
-                sql.Parameters.AddWithValue("@siopi", dado.Siopi);
-                sql.Parameters.AddWithValue("@nome_cliente", dado.CustomerName);
-                sql.Parameters.AddWithValue("@cidade", dado.City);
-                sql.Parameters.AddWithValue("@nome_contato", dado.ContactName);
-                sql.Parameters.AddWithValue("@telefone_contato", dado.ContactPhone);
-                sql.Parameters.AddWithValue("@coordenada", dado.Coordinates);
-                sql.Parameters.AddWithValue("@status", dado.Status);
-                sql.Parameters.AddWithValue("@data_pendente", Util.DateOrNull(dado.PendingDate));
-                sql.Parameters.AddWithValue("@data_vistoria", Util.DateOrNull(dado.SurveyDate));
-                sql.Parameters.AddWithValue("@data_concluida", Util.DateOrNull(dado.DoneDate));
-                sql.Parameters.AddWithValue("@obs", dado.Comments);
-                sql.Parameters.AddWithValue("@id", id);
-                sql.ExecuteNonQuery();
-                conexao.Close();
+                using (var connection = new MySqlConnection(_connectionString))
+                {
+                    connection.Open();
+
+                    var sql = new MySqlCommand(@"
+                    UPDATE 
+                        service_order 
+                    SET 
+                        title = @title, 
+                        order_date = @order_date, 
+                        deadline = @deadline, 
+                        professional_id = @professional_id, 
+                        service_id = @service_id, 
+                        service_amount = service_amount, 
+                        mileage_allowance = mileage_allowance, 
+                        siopi = @siopi, 
+                        customer_name = @customer_name, 
+                        city = @city, 
+                        contact_name = @contact_name, 
+                        contact_phone = @contact_phone, 
+                        coordinates = @coordinates, 
+                        status = @status, 
+                        pending_date = @pending_date, 
+                        survey_date = @survey_date, 
+                        done_date = @done_date, 
+                        comments = @comments 
+                    WHERE 
+                        id = @id",
+                        connection);
+
+                    sql.Parameters.AddWithValue("@title", dado.Title);
+                    sql.Parameters.AddWithValue("@order_date", Util.DateOrNull(dado.OrderDate));
+                    sql.Parameters.AddWithValue("@deadline", dado.Deadline);
+                    sql.Parameters.AddWithValue("@professional_id", dado.ProfessionalId);
+                    sql.Parameters.AddWithValue("@service_id", dado.ServiceId);
+                    sql.Parameters.AddWithValue("@service_amount", dado.ServiceAmount);
+                    sql.Parameters.AddWithValue("@mileage_allowance", dado.MileageAllowance);
+                    sql.Parameters.AddWithValue("@siopi", dado.Siopi);
+                    sql.Parameters.AddWithValue("@customer_name", dado.CustomerName);
+                    sql.Parameters.AddWithValue("@city", dado.City);
+                    sql.Parameters.AddWithValue("@contact_name", dado.ContactName);
+                    sql.Parameters.AddWithValue("@contact_phone", dado.ContactPhone);
+                    sql.Parameters.AddWithValue("@coordinates", dado.Coordinates);
+                    sql.Parameters.AddWithValue("@status", dado.Status);
+                    sql.Parameters.AddWithValue("@pending_date", Util.DateOrNull(dado.PendingDate));
+                    sql.Parameters.AddWithValue("@survey_date", Util.DateOrNull(dado.SurveyDate));
+                    sql.Parameters.AddWithValue("@done_date", Util.DateOrNull(dado.DoneDate));
+                    sql.Parameters.AddWithValue("@comments", dado.Comments);
+                    sql.Parameters.AddWithValue("@id", id);
+
+                    sql.ExecuteNonQuery();
+                }
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                throw;
+                throw ex.InnerException;
             }
         }
 
-        public void UpdateFaturaCod(long id, long fatura_cod)
+
+        public void UpdateFaturaCod(long id, long invoice_id)
         {
             try
             {
-                MySqlConnection conexao = new MySqlConnection(ConnectionString.CONNECTION_STRING);
-                conexao.Open();
-                MySqlCommand sql = new MySqlCommand("UPDATE tb_os SET fatura_cod = @fatura_cod WHERE id = @id", conexao);
-                sql.Parameters.AddWithValue("@id", id);
-                sql.Parameters.AddWithValue("@fatura_cod", fatura_cod);
-                sql.ExecuteNonQuery();
-                conexao.Close();
+                using (var connection = new MySqlConnection(_connectionString))
+                {
+                    connection.Open();
+
+                    var sql = new MySqlCommand(@"
+                    UPDATE 
+                        service_order 
+                    SET 
+                        invoice_id = @invoice_id 
+                    WHERE 
+                        id = @id",
+                        connection);
+
+                    sql.Parameters.AddWithValue("@id", id);
+                    sql.Parameters.AddWithValue("@invoice_id", invoice_id);
+
+                    sql.ExecuteNonQuery();
+                }
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                throw;
+                throw ex.InnerException;
             }
         }
+
 
         public void UpdateStatus(long id, string status)
         {
             try
             {
-                MySqlConnection conexao = new MySqlConnection(ConnectionString.CONNECTION_STRING);
-                conexao.Open();
-                MySqlCommand sql = new MySqlCommand();
-                string changeDate = "";
-
-                switch (status)
+                using (var connection = new MySqlConnection(_connectionString))
                 {
-                    case "RECEBIDA":
-                        break;
+                    connection.Open();
 
-                    case "PENDENTE":
-                        changeDate = ", data_pendente = @data";
-                        break;
+                    string changeDate = "";
 
-                    case "VISTORIADA":
-                        changeDate = ", data_vistoria = @data";
-                        break;
+                    switch (status)
+                    {
+                        case "RECEBIDA":
+                            break;
 
-                    case "CONCLUÍDA":
-                        changeDate = ", data_concluida = @data";
-                        break;
+                        case "PENDENTE":
+                            changeDate = ", pending_date = @date";
+                            break;
+
+                        case "VISTORIADA":
+                            changeDate = ", survey_date = @date";
+                            break;
+
+                        case "CONCLUÍDA":
+                            changeDate = ", done_date = @date";
+                            break;
+                    }
+
+                    var sql = new MySqlCommand(@$"
+                    UPDATE 
+                        service_order 
+                    SET 
+                        status = @status 
+                        {changeDate} 
+                    WHERE 
+                        id = @id",
+                        connection);
+
+                    sql.Parameters.AddWithValue("@status", status);
+                    sql.Parameters.AddWithValue("@date", DateTime.Now);
+                    sql.Parameters.AddWithValue("@id", id);
+
+                    sql.ExecuteNonQuery();
                 }
-
-                sql = new MySqlCommand($"UPDATE tb_os SET status = @status {changeDate} WHERE id = @id", conexao);
-                sql.Parameters.AddWithValue("@status", status);
-                sql.Parameters.AddWithValue("@data", DateTime.Now);
-                sql.Parameters.AddWithValue("@id", id);
-
-                sql.ExecuteNonQuery();
-                conexao.Close();
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                throw;
+                throw ex.InnerException;
             }
         }
 
-        public void Delete(long id)
+
+        public bool Delete(long id)
         {
             try
             {
-                MySqlConnection conexao = new MySqlConnection(ConnectionString.CONNECTION_STRING);
-                conexao.Open();
-                MySqlCommand sql = new MySqlCommand("DELETE FROM tb_os WHERE id = @id", conexao);
-                sql.Parameters.AddWithValue("@id", id);
-                sql.ExecuteNonQuery();
-                conexao.Close();
+                using (var connection = new MySqlConnection(_connectionString))
+                {
+                    connection.Open();
+
+                    var sqlSelect = new MySqlCommand(@"
+                        SELECT 
+                            id 
+                        FROM 
+                            service_order 
+                        WHERE 
+                            id = @id",
+                        connection);
+
+                    sqlSelect.Parameters.AddWithValue("@id", id);
+                    MySqlDataReader dr = sqlSelect.ExecuteReader();
+
+                    if (!dr.HasRows)
+                        return false;
+                }
+
+                using (var connection = new MySqlConnection(_connectionString))
+                {
+                    connection.Open();
+
+                    var sql = new MySqlCommand(@"
+                    DELETE FROM 
+                        service_order 
+                    WHERE 
+                        id = @id",
+                        connection);
+
+                    sql.Parameters.AddWithValue("@id", id);
+
+                    sql.ExecuteNonQuery();
+
+                    return true;
+                }
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                throw;
+                throw ex.InnerException;
             }
-
         }
-
     }
-
 }

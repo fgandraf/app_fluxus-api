@@ -8,310 +8,182 @@ using Microsoft.AspNetCore.Http;
 namespace FluxusApi.Controllers
 {
 
-
     [Route("api/[controller]")]
-
 
     public class ServiceOrderController : ControllerBase
     {
-        /*
-
         Autentication AutenticacaoServico;
-
-
-
-        public OsController(IHttpContextAccessor context)
+        public ServiceOrderController(IHttpContextAccessor context)
         {
             AutenticacaoServico = new Autentication(context);
         }
 
 
-
-
-        // GET: api/os/getordensdofluxo
-        [HttpGet]
-        [Route("getordensdofluxo")]
-        public ArrayList GetOrdensDoFluxo()
+        // GET: api/ServiceOrder/GetOrdensDoFluxo
+        [HttpGet("GetOrdensDoFluxo")]
+        public IActionResult GetOrdensDoFluxo()
         {
-            try
-            {
-                AutenticacaoServico.Autenticar();
-                return new OsRepository().GetOrdensDoFluxo();
-            }
-            catch (Exception)
-            {
-                throw;
-            }
+            AutenticacaoServico.Autenticar();
 
+            var result = new ServiceOrderRepository().GetOrdensDoFluxo();
+
+            if (result == null)
+                return NotFound();
+
+            return Ok(result);
         }
 
 
-
-
-
-        // GET: api/os/getcidadesdasordens
-        [HttpGet]
-        [Route("getcidadesdasordens")]
-        public ArrayList GetCidadesDasOrdens()
+        // GET: api/ServiceOrder/GetCidadesDasOrdens
+        [HttpGet("GetCidadesDasOrdens")]
+        public IActionResult GetCidadesDasOrdens()
         {
-            try
-            {
-                AutenticacaoServico.Autenticar();
-                return new OsRepository().GetCidadesDasOrdens();
-            }
-            catch (Exception)
-            {
-                throw;
-            }
+            AutenticacaoServico.Autenticar();
 
+            var result = new ServiceOrderRepository().GetCidadesDasOrdens();
+
+            if (result == null)
+                return NotFound();
+
+            return Ok(result);
         }
 
 
-
-
-        // GET: api/os/getordensconcluidasafaturar
-        [HttpGet]
-        [Route("getordensconcluidasafaturar")]
-        public ArrayList GetOrdensConcluidasAFaturar()
+        // GET: api/ServiceOrder/GetOrdensConcluidasAFaturar
+        [HttpGet("GetOrdensConcluidasAFaturar")]
+        public IActionResult GetOrdensConcluidasAFaturar()
         {
-            try
-            {
-                AutenticacaoServico.Autenticar();
-                return new OsRepository().GetOrdensConcluidasAFaturar();
-            }
-            catch (Exception)
-            {
-                throw;
-            }
+            AutenticacaoServico.Autenticar();
 
+            var result = new ServiceOrderRepository().GetOrdensConcluidasAFaturar();
+
+            if (result == null)
+                return NotFound();
+
+            return Ok(result);
         }
 
 
-
-
-
-        // GET: api/os/getfiltered/<filtro>
-        [HttpGet]
-        [Route("getfiltered/{filtro}")]
-        public ArrayList GetFiltered(string filtro)
+        // GET: api/ServiceOrder/GetFiltered/<filtro>
+        [HttpGet("GetFiltered/{filtro}")]
+        public IActionResult GetFiltered(string filtro)
         {
-            try
-            {
-                AutenticacaoServico.Autenticar();
-                return new OsRepository().GetFiltered(filtro);
-            }
-            catch (Exception)
-            {
-                throw;
-            }
+            AutenticacaoServico.Autenticar();
 
+            var result = new ServiceOrderRepository().GetFiltered(filtro);
+
+            if (result == null)
+                return NotFound();
+
+            return Ok(result);
         }
 
 
-
-
-        // GET api/os/getordensfaturadas/<fatura_cod>
-        [HttpGet]
-        [Route("getordensfaturadas/{fatura_cod}")]
-        public ArrayList GetOrdensFaturadas(int fatura_cod)
+        // GET api/ServiceOrder/GetOrdensFaturadas/<fatura_cod>
+        [HttpGet("GetOrdensFaturadas/{fatura_cod}")]
+        public IActionResult GetOrdensFaturadas(int fatura_cod)
         {
-            try
-            {
-                AutenticacaoServico.Autenticar();
-                return new OsRepository().GetOrdensFaturadasBy(fatura_cod);
-            }
-            catch (Exception)
-            {
-                throw;
-            }
+            AutenticacaoServico.Autenticar();
 
+            var result = new ServiceOrderRepository().GetOrdensFaturadasBy(fatura_cod);
+
+            if (result == null)
+                return NotFound();
+
+            return Ok(result);
         }
 
 
-
-
-
-        // GET api/os/getprofissionaisdafatura/<fatura_cod>
-        [HttpGet]
-        [Route("getprofissionaisdafatura/{fatura_cod}")]
-        public ArrayList GetProfissionaisDaFatura(int fatura_cod)
+        // GET api/ServiceOrder/GetProfissionaisDaFatura/<fatura_cod>
+        [HttpGet("GetProfissionaisDaFatura/{fatura_cod}")]
+        public IActionResult GetProfissionaisDaFatura(int fatura_cod)
         {
-            try
-            {
-                AutenticacaoServico.Autenticar();
-                return new OsRepository().GetProfissionaisDaFatura(fatura_cod);
-            }
-            catch (Exception)
-            {
-                throw;
-            }
+            AutenticacaoServico.Autenticar();
 
+            var result = new ServiceOrderRepository().GetProfissionaisDaFatura(fatura_cod);
+
+            if (result == null)
+                return NotFound();
+
+            return Ok(result);
         }
 
 
-
-
-
-        // GET api/os/getby/<id>
-        [HttpGet]
-        [Route("getby/{id}")]
-        public Os GetBy(long id)
+        // GET api/ServiceOrder/<id>
+        [HttpGet("{id}")]
+        public IActionResult GetBy(long id)
         {
-            try
-            {
-                AutenticacaoServico.Autenticar();
-                return new OsRepository().GetBy(id);
-            }
-            catch (Exception)
-            {
-                throw;
-            }
+            AutenticacaoServico.Autenticar();
 
+            var result = new ServiceOrderRepository().GetBy(id);
+
+            if (result == null)
+                return NotFound();
+
+            return Ok(result);
         }
 
 
-
-
-
-        // POST api/os/post
+        // POST api/ServiceOrder
         [HttpPost]
-        [Route("post")]
-        public ReturnAllServices Post([FromBody] Os os)
+        public IActionResult Post([FromBody] ServiceOrder os)
         {
-            ReturnAllServices retorno = new ReturnAllServices();
-            try
-            {
-                AutenticacaoServico.Autenticar();
+            AutenticacaoServico.Autenticar();
 
-                new OsRepository().Insert(os);
+            new ServiceOrderRepository().Insert(os);
 
-                retorno.Result = true;
-                retorno.ErrorMessage = "O.S. Cadastrada!";
-            }
-            catch (Exception ex)
-            {
-                retorno.Result = false;
-                retorno.ErrorMessage = ex.Message;
-            }
-
-            return retorno;
+            return Ok();
         }
 
 
-
-
-
-        // PUT api/os/put/<id>
-        [HttpPut]
-        [Route("put/{id}")]
-        public ReturnAllServices Put(long id, [FromBody] Os os)
+        // PUT api/ServiceOrder/<id>
+        [HttpPut("{id}")]
+        public IActionResult Put(long id, [FromBody] ServiceOrder os)
         {
-            ReturnAllServices retorno = new ReturnAllServices();
-            try
-            {
-                AutenticacaoServico.Autenticar();
+            AutenticacaoServico.Autenticar();
 
-                new OsRepository().Update(id, os);
+            new ServiceOrderRepository().Update(id, os);
 
-                retorno.Result = true;
-                retorno.ErrorMessage = "O.S. Alterada!";
-            }
-            catch (Exception ex)
-            {
-                retorno.Result = false;
-                retorno.ErrorMessage = ex.Message;
-            }
-
-            return retorno;
+            return Ok();
         }
 
 
-
-
-
-        // PUT api/os/updatefaturacod/<id>,<fatura_cod>
-        [HttpPut]
-        [Route("updatefaturacod/{id},{fatura_cod}")]
-        public ReturnAllServices UpdateFaturaCod(long id, long fatura_cod)
+        // PUT api/ServiceOrder/UpdateFaturaCod/<id>,<fatura_cod>
+        [HttpPut("UpdateFaturaCod/{id},{fatura_cod}")]
+        public IActionResult UpdateFaturaCod(long id, long fatura_cod)
         {
-            ReturnAllServices retorno = new ReturnAllServices();
-            try
-            {
-                AutenticacaoServico.Autenticar();
+            AutenticacaoServico.Autenticar();
 
-                new OsRepository().UpdateFaturaCod(id, fatura_cod);
+            new ServiceOrderRepository().UpdateFaturaCod(id, fatura_cod);
 
-                retorno.Result = true;
-                retorno.ErrorMessage = "O.S. Alterada!";
-            }
-            catch (Exception ex)
-            {
-                retorno.Result = false;
-                retorno.ErrorMessage = ex.Message;
-            }
-
-            return retorno;
+            return Ok();
         }
 
 
-
-
-        // PUT api/os/updatestatus/<id>,<status>
-        [HttpPut]
-        [Route("updatestatus/{id},{status}")]
-        public ReturnAllServices UpdateStatus(long id, string status)
+        // PUT api/ServiceOrder/UpdateStatus/<id>,<status>
+        [HttpPut("UpdateStatus/{id},{status}")]
+        public IActionResult UpdateStatus(long id, string status)
         {
-            ReturnAllServices retorno = new ReturnAllServices();
-            try
-            {
-                AutenticacaoServico.Autenticar();
+            AutenticacaoServico.Autenticar();
 
-                new OsRepository().UpdateStatus(id, status);
+            new ServiceOrderRepository().UpdateStatus(id, status);
 
-                retorno.Result = true;
-                retorno.ErrorMessage = "O.S. Alterada!";
-            }
-            catch (Exception ex)
-            {
-                retorno.Result = false;
-                retorno.ErrorMessage = ex.Message;
-            }
-
-            return retorno;
+            return Ok();
         }
 
 
-
-
-
-        // DELETE api/os/delete/<id>
-        [HttpDelete]
-        [Route("delete/{id}")]
-        public ReturnAllServices Delete(long id)
+        // DELETE api/ServiceOrder/<id>
+        [HttpDelete("{id}")]
+        public IActionResult Delete(long id)
         {
-            ReturnAllServices retorno = new ReturnAllServices();
-            try
-            {
-                AutenticacaoServico.Autenticar();
+            AutenticacaoServico.Autenticar();
 
-                new OsRepository().Delete(id);
+            bool deleted = new ServiceOrderRepository().Delete(id);
 
-                retorno.Result = true;
-                retorno.ErrorMessage = "O.S. Excluída!";
-            }
-            catch (Exception ex)
-            {
-                retorno.Result = false;
-                retorno.ErrorMessage = ex.Message;
-            }
-
-            return retorno;
-
+            if (deleted)
+                return Ok();
+            else
+                return NotFound();
         }
-
-        */
-
     }
-
-
 }

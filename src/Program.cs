@@ -1,4 +1,6 @@
 
+using Microsoft.AspNetCore.Hosting;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -7,6 +9,8 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+
+builder.WebHost.UseIISIntegration(); //acrescentado para executar iis local
 
 var app = builder.Build();
 

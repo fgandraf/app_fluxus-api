@@ -69,7 +69,7 @@ namespace FluxusApi.Repositories
         }
 
 
-        public ArrayList GetTagNameid()
+        public ArrayList GetIdNameid()
         {
             try
             {
@@ -79,12 +79,12 @@ namespace FluxusApi.Repositories
                     
                     var sql = new MySqlCommand(@"
                         SELECT 
-                            tag, 
+                            id, 
                             nameid 
                         FROM 
                             professional 
                         ORDER BY 
-                            tag", 
+                            id", 
                         connection);
                     
                     MySqlDataReader dr = sql.ExecuteReader();
@@ -97,7 +97,7 @@ namespace FluxusApi.Repositories
                         {
                             dynamic professional = new
                             {
-                                Tag = Convert.ToString(dr["tag"]),
+                                Id = Convert.ToString(dr["id"]),
                                 NameId = Convert.ToString(dr["nameid"])
                             };
 
@@ -125,7 +125,7 @@ namespace FluxusApi.Repositories
                     
                     var sql = new MySqlCommand(@"
                         SELECT 
-                            tag, 
+                            id, 
                             technician_responsible, 
                             legal_responsible, 
                             user_name, 
@@ -149,7 +149,7 @@ namespace FluxusApi.Repositories
                         {
                             dynamic user = new
                             {
-                                Tag = Convert.ToString(dr["tag"]),
+                                Id = Convert.ToString(dr["id"]),
                                 TechnicianResponsible = Convert.ToBoolean(dr["technician_responsible"]),
                                 LegalResponsible = Convert.ToBoolean(dr["legal_responsible"]),
                                 UserActive = Convert.ToBoolean(dr["user_active"]),

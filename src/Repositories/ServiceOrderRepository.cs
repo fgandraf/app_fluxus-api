@@ -54,7 +54,7 @@ namespace FluxusApi.Repositories
                             {
                                 Id = Convert.ToInt64(dr["id"]),
                                 ReferenceCode = Convert.ToString(dr["reference_code"]),
-                                Titulo = Convert.ToString(dr["title"]),
+                                Title = Convert.ToString(dr["title"]),
                                 Status = Convert.ToString(dr["status"]),
                                 ProfessionalId = Convert.ToString(dr["professional_id"])
                             };
@@ -197,7 +197,7 @@ namespace FluxusApi.Repositories
             return null;
         }
 
-        public ArrayList GetFiltered(string filtro)
+        public ArrayList GetFiltered(string filter)
         {
             try
             {
@@ -205,7 +205,16 @@ namespace FluxusApi.Repositories
                 {
                     connection.Open();
 
-                    var sql = new MySqlCommand(filtro, connection);
+                    var sql = new MySqlCommand(@$"
+                        SELECT 
+                            * 
+                        from 
+                            service_order 
+                        WHERE 
+                            {filter} 
+                        ORDER BY 
+                            order_date", 
+                        connection);
 
                     MySqlDataReader dr = sql.ExecuteReader();
 

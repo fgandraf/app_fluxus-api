@@ -4,8 +4,8 @@ https://go.microsoft.com/fwlink/?LinkID=208121.
 -->
 <Project>
   <PropertyGroup>
-    <_PublishTargetUrl>C:\src\Fluxus\src\Fluxus.Api\bin\Release\publish\</_PublishTargetUrl>
-    <History>True|2022-11-17T13:02:14.9928297Z;</History>
+    <_PublishTargetUrl>C:\src\FluxusAPI\src\bin\Release\publish\</_PublishTargetUrl>
+    <History>True|2023-01-10T20:37:43.4911638Z;True|2023-01-10T15:42:22.4083349-03:00;True|2023-01-10T15:22:26.0738222-03:00;True|2023-01-10T12:08:23.4135880-03:00;True|2023-01-09T20:29:19.9885881-03:00;True|2022-11-17T10:02:14.9928297-03:00;</History>
     <LastFailureDetails />
   </PropertyGroup>
 </Project>

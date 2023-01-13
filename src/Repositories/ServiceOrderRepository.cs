@@ -75,7 +75,7 @@ namespace FluxusApi.Repositories
         }
 
 
-        public ArrayList GetInvoiced(long invoice_id)
+        public ArrayList GetInvoiced(int invoice_id)
         {
             try
             {
@@ -85,13 +85,32 @@ namespace FluxusApi.Repositories
 
                     var sql = new MySqlCommand(@"
                     SELECT 
-                        id, order_date, reference_code, professional_id, service_id, 
-                        city, customer_name, survey_date, done_date, invoice_id, 
-                        status, service_amount, mileage_allowance 
+                        os.id, 
+                        os.order_date, 
+                        os.reference_code, 
+                        os.professional_id,
+                        pr.tag professional,
+                        sr.tag service,
+                        os.city, 
+                        os.customer_name, 
+                        os.survey_date, 
+                        os.done_date, 
+                        os.invoice_id, 
+                        os.status, 
+                        os.service_amount, 
+                        os.mileage_allowance 
                     FROM 
-                        service_order 
+                        service_order os
+                    INNER JOIN
+                        service sr
+                    ON
+                        os.service_id = sr.id
+                    INNER JOIN
+                        professional pr
+                    ON
+                        os.professional_id = pr.id
                     WHERE 
-                        invoice_id = @invoice_id 
+                        invoice_id = @invoice_id
                     ORDER BY 
                         done_date",
                         connection);
@@ -111,13 +130,14 @@ namespace FluxusApi.Repositories
                                 Id = Convert.ToInt64(dr["id"]),
                                 OrderDate = Convert.ToDateTime(dr["order_date"]),
                                 ReferenceCode = Convert.ToString(dr["reference_code"]),
+                                Professional = Convert.ToString(dr["professional"]),
                                 ProfessionalId = Convert.ToString(dr["professional_id"]),
-                                ServiceId = Convert.ToString(dr["service_id"]),
+                                Service = Convert.ToString(dr["service"]),
                                 City = Convert.ToString(dr["city"]),
                                 CustomerName = Convert.ToString(dr["customer_name"]),
                                 SurveyDate = Convert.ToDateTime(dr["survey_date"]),
                                 DoneDate = Convert.ToDateTime(dr["done_date"]),
-                                Fatura_cod = Convert.ToInt64(dr["invoice_id"]),
+                                InvoiceId = Convert.ToInt64(dr["invoice_id"]),
                                 Status = Convert.ToString(dr["status"]),
                                 ServiceAmount = Convert.ToDouble(dr["service_amount"]),
                                 MileageAllowance = Convert.ToDouble(dr["mileage_allowance"])
@@ -207,13 +227,32 @@ namespace FluxusApi.Repositories
 
                     var sql = new MySqlCommand(@$"
                         SELECT 
-                            * 
-                        from 
-                            service_order 
+                            os.id,
+                            os.status,
+                            pr.tag professional,
+                            os.order_date,
+                            os.reference_code,
+                            sr.tag service,
+                            os.city,
+                            os.customer_name,
+                            os.deadline,
+                            os.survey_date,
+                            os.done_date,
+                            os.invoice_id
+                        FROM
+                            service_order os
+                        INNER JOIN
+                            service sr
+                        ON
+                            os.service_id = sr.id
+                        INNER JOIN
+                            professional pr
+                        ON
+                            os.professional_id = pr.id
                         WHERE 
-                            {filter} 
+                            {filter}
                         ORDER BY 
-                            order_date", 
+                            order_date",
                         connection);
 
                     MySqlDataReader dr = sql.ExecuteReader();
@@ -224,31 +263,22 @@ namespace FluxusApi.Repositories
 
                         while (dr.Read())
                         {
-                            ServiceOrder order = new ServiceOrder();
-
-                            order.Id = Convert.ToInt64(dr["id"]);
-                            order.ReferenceCode = Convert.ToString(dr["reference_code"]);
-                            order.Branch = Convert.ToString(dr["branch"]);
-                            order.Title = Convert.ToString(dr["title"]);
-                            order.OrderDate = Util.DateTimeToShortDateString(Convert.ToString(dr["order_date"]));
-                            order.Deadline = Convert.ToDateTime(dr["deadline"]);
-                            order.ProfessionalId = Convert.ToString(dr["professional_id"]);
-                            order.ServiceId = Convert.ToString(dr["service_id"]);
-                            order.ServiceAmount = Convert.ToString(dr["service_amount"]);
-                            order.MileageAllowance = Convert.ToString(dr["mileage_allowance"]);
-                            order.Siopi = Convert.ToBoolean(dr["siopi"]);
-                            order.CustomerName = Convert.ToString(dr["customer_name"]);
-                            order.City = Convert.ToString(dr["city"]);
-                            order.ContactName = Convert.ToString(dr["contact_name"]);
-                            order.ContactPhone = Convert.ToString(dr["contact_phone"]);
-                            order.Coordinates = Convert.ToString(dr["coordinates"]);
-                            order.Status = Convert.ToString(dr["status"]);
-                            order.PendingDate = Util.DateTimeToShortDateString(Convert.ToString(dr["pending_date"]));
-                            order.SurveyDate = Util.DateTimeToShortDateString(Convert.ToString(dr["survey_date"]));
-                            order.DoneDate = Util.DateTimeToShortDateString(Convert.ToString(dr["done_date"]));
-                            order.Comments = Convert.ToString(dr["comments"]);
-                            order.InvoiceId = Convert.ToInt64(dr["invoice_id"]);
-                            orders.Add(order);
+                            dynamic order = new
+                            {
+                                Id = Convert.ToInt64(dr["id"]),
+                                Status = Convert.ToString(dr["status"]),
+                                Professional = Convert.ToString(dr["professional"]),
+                                OrderDate = Util.DateTimeToShortDateString(Convert.ToString(dr["order_date"])),
+                                ReferenceCode = Convert.ToString(dr["reference_code"]),
+                                Service = Convert.ToString(dr["service"]),
+                                City = Convert.ToString(dr["city"]),
+                                CustomerName = Convert.ToString(dr["customer_name"]),
+                                Deadline = Convert.ToDateTime(dr["deadline"]),
+                                SurveyDate = Util.DateTimeToShortDateString(Convert.ToString(dr["survey_date"])),
+                                DoneDate = Util.DateTimeToShortDateString(Convert.ToString(dr["done_date"])),
+                                InvoiceId = Convert.ToInt64(dr["invoice_id"])
+                            };
+                        orders.Add(order);
                         }
 
                         return orders;

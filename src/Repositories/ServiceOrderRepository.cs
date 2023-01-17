@@ -235,7 +235,6 @@ namespace FluxusApi.Repositories
                             sr.tag service,
                             os.city,
                             os.customer_name,
-                            os.deadline,
                             os.survey_date,
                             os.done_date,
                             os.invoice_id
@@ -273,7 +272,6 @@ namespace FluxusApi.Repositories
                                 Service = Convert.ToString(dr["service"]),
                                 City = Convert.ToString(dr["city"]),
                                 CustomerName = Convert.ToString(dr["customer_name"]),
-                                Deadline = Convert.ToDateTime(dr["deadline"]),
                                 SurveyDate = Util.DateTimeToShortDateString(Convert.ToString(dr["survey_date"])),
                                 DoneDate = Util.DateTimeToShortDateString(Convert.ToString(dr["done_date"])),
                                 InvoiceId = Convert.ToInt64(dr["invoice_id"])

@@ -69,7 +69,7 @@ namespace FluxusApi.Repositories
         }
 
 
-        public ArrayList GetIdNameid()
+        public ArrayList GetTagNameid()
         {
             try
             {
@@ -79,12 +79,13 @@ namespace FluxusApi.Repositories
                     
                     var sql = new MySqlCommand(@"
                         SELECT 
-                            id, 
+                            id,
+                            tag, 
                             nameid 
                         FROM 
                             professional 
                         ORDER BY 
-                            id", 
+                            tag", 
                         connection);
                     
                     MySqlDataReader dr = sql.ExecuteReader();
@@ -98,6 +99,7 @@ namespace FluxusApi.Repositories
                             dynamic professional = new
                             {
                                 Id = Convert.ToString(dr["id"]),
+                                Tag = Convert.ToString(dr["tag"]),
                                 NameId = Convert.ToString(dr["nameid"])
                             };
 

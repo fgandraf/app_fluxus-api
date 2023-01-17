@@ -32,13 +32,13 @@ namespace FluxusApi.Controllers
         }
 
 
-        // GET api/Professional/IdNameId
-        [HttpGet("IdNameId")]
-        public IActionResult GetIdNameid()
+        // GET api/Professional/TagNameId
+        [HttpGet("TagNameId")]
+        public IActionResult GetTagNameid()
         {
             AutenticacaoServico.Authenticate();
 
-            var result = new ProfessionalRepository().GetIdNameid();
+            var result = new ProfessionalRepository().GetTagNameid();
 
             if (result == null)
                 return NotFound();

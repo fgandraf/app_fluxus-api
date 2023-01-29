@@ -75,7 +75,7 @@ namespace FluxusApi.Repositories
         }
 
 
-        public ArrayList GetInvoiced(int invoice_id)
+        public ArrayList GetInvoiced(int invoiceId)
         {
             try
             {
@@ -115,7 +115,7 @@ namespace FluxusApi.Repositories
                         done_date",
                         connection);
 
-                    command.Parameters.AddWithValue("@invoice_id", invoice_id);
+                    command.Parameters.AddWithValue("@invoice_id", invoiceId);
 
                     var reader = command.ExecuteReader();
 
@@ -267,13 +267,13 @@ namespace FluxusApi.Repositories
                                 Id = Convert.ToInt64(reader["id"]),
                                 Status = Convert.ToString(reader["status"]),
                                 Professional = Convert.ToString(reader["professional"]),
-                                OrderDate = Util.DateTimeToShortDateString(Convert.ToString(reader["order_date"])),
+                                OrderDate = Convert.ToString(reader["order_date"]),
                                 ReferenceCode = Convert.ToString(reader["reference_code"]),
                                 Service = Convert.ToString(reader["service"]),
                                 City = Convert.ToString(reader["city"]),
                                 CustomerName = Convert.ToString(reader["customer_name"]),
-                                SurveyDate = Util.DateTimeToShortDateString(Convert.ToString(reader["survey_date"])),
-                                DoneDate = Util.DateTimeToShortDateString(Convert.ToString(reader["done_date"])),
+                                SurveyDate = Convert.ToString(reader["survey_date"]),
+                                DoneDate = Convert.ToString(reader["done_date"]),
                                 InvoiceId = Convert.ToInt64(reader["invoice_id"])
                             };
                         orders.Add(order);
@@ -292,7 +292,7 @@ namespace FluxusApi.Repositories
         }
 
 
-        public ArrayList GetProfessionals(long invoice_id)
+        public ArrayList GetProfessionals(int invoiceId)
         {
             try
             {
@@ -316,7 +316,7 @@ namespace FluxusApi.Repositories
                             t2.nameid",
                             connection);
 
-                    command.Parameters.AddWithValue("@invoice_id", invoice_id);
+                    command.Parameters.AddWithValue("@invoice_id", invoiceId);
 
                     var reader = command.ExecuteReader();
 
@@ -393,7 +393,7 @@ namespace FluxusApi.Repositories
         }
 
 
-        public ServiceOrder GetBy(long id)
+        public ServiceOrder GetBy(int id)
         {
             try
             {
@@ -469,7 +469,7 @@ namespace FluxusApi.Repositories
         }
 
 
-        public long Insert(ServiceOrder dado)
+        public long Insert(ServiceOrder serviceOrder)
         {
             try
             {
@@ -488,26 +488,26 @@ namespace FluxusApi.Repositories
                         @contact_phone, @coordinates, @status, @pending_date, @survey_date, @done_date, @comments)",
                         connection);
 
-                    command.Parameters.AddWithValue("@title", dado.Title);
-                    command.Parameters.AddWithValue("@reference_code", dado.ReferenceCode);
-                    command.Parameters.AddWithValue("@branch", dado.Branch);
-                    command.Parameters.AddWithValue("@order_date", Util.DateOrNull(dado.OrderDate));
-                    command.Parameters.AddWithValue("@deadline", dado.Deadline);
-                    command.Parameters.AddWithValue("@professional_id", dado.ProfessionalId);
-                    command.Parameters.AddWithValue("@service_id", dado.ServiceId);
-                    command.Parameters.AddWithValue("@service_amount", dado.ServiceAmount);
-                    command.Parameters.AddWithValue("@mileage_allowance", dado.MileageAllowance);
-                    command.Parameters.AddWithValue("@siopi", dado.Siopi);
-                    command.Parameters.AddWithValue("@customer_name", dado.CustomerName);
-                    command.Parameters.AddWithValue("@city", dado.City);
-                    command.Parameters.AddWithValue("@contact_name", dado.ContactName);
-                    command.Parameters.AddWithValue("@contact_phone", dado.ContactPhone);
-                    command.Parameters.AddWithValue("@coordinates", dado.Coordinates);
-                    command.Parameters.AddWithValue("@status", dado.Status);
-                    command.Parameters.AddWithValue("@pending_date", Util.DateOrNull(dado.PendingDate));
-                    command.Parameters.AddWithValue("@survey_date", Util.DateOrNull(dado.SurveyDate));
-                    command.Parameters.AddWithValue("@done_date", Util.DateOrNull(dado.DoneDate));
-                    command.Parameters.AddWithValue("@comments", dado.Comments);
+                    command.Parameters.AddWithValue("@title", serviceOrder.Title);
+                    command.Parameters.AddWithValue("@reference_code", serviceOrder.ReferenceCode);
+                    command.Parameters.AddWithValue("@branch", serviceOrder.Branch);
+                    command.Parameters.AddWithValue("@order_date", serviceOrder.OrderDate);
+                    command.Parameters.AddWithValue("@deadline", serviceOrder.Deadline);
+                    command.Parameters.AddWithValue("@professional_id", serviceOrder.ProfessionalId);
+                    command.Parameters.AddWithValue("@service_id", serviceOrder.ServiceId);
+                    command.Parameters.AddWithValue("@service_amount", serviceOrder.ServiceAmount);
+                    command.Parameters.AddWithValue("@mileage_allowance", serviceOrder.MileageAllowance);
+                    command.Parameters.AddWithValue("@siopi", serviceOrder.Siopi);
+                    command.Parameters.AddWithValue("@customer_name", serviceOrder.CustomerName);
+                    command.Parameters.AddWithValue("@city", serviceOrder.City);
+                    command.Parameters.AddWithValue("@contact_name", serviceOrder.ContactName);
+                    command.Parameters.AddWithValue("@contact_phone", serviceOrder.ContactPhone);
+                    command.Parameters.AddWithValue("@coordinates", serviceOrder.Coordinates);
+                    command.Parameters.AddWithValue("@status", serviceOrder.Status);
+                    command.Parameters.AddWithValue("@pending_date", serviceOrder.PendingDate);
+                    command.Parameters.AddWithValue("@survey_date", serviceOrder.SurveyDate);
+                    command.Parameters.AddWithValue("@done_date", serviceOrder.DoneDate);
+                    command.Parameters.AddWithValue("@comments", serviceOrder.Comments);
 
                     command.ExecuteNonQuery();
 
@@ -521,7 +521,7 @@ namespace FluxusApi.Repositories
         }
 
 
-        public void Update(long id, ServiceOrder dado)
+        public void Update(ServiceOrder serviceOrder)
         {
             try
             {
@@ -555,25 +555,25 @@ namespace FluxusApi.Repositories
                         id = @id",
                         connection);
 
-                    command.Parameters.AddWithValue("@title", dado.Title);
-                    command.Parameters.AddWithValue("@order_date", Util.DateOrNull(dado.OrderDate));
-                    command.Parameters.AddWithValue("@deadline", dado.Deadline);
-                    command.Parameters.AddWithValue("@professional_id", dado.ProfessionalId);
-                    command.Parameters.AddWithValue("@service_id", dado.ServiceId);
-                    command.Parameters.AddWithValue("@service_amount", dado.ServiceAmount);
-                    command.Parameters.AddWithValue("@mileage_allowance", dado.MileageAllowance);
-                    command.Parameters.AddWithValue("@siopi", dado.Siopi);
-                    command.Parameters.AddWithValue("@customer_name", dado.CustomerName);
-                    command.Parameters.AddWithValue("@city", dado.City);
-                    command.Parameters.AddWithValue("@contact_name", dado.ContactName);
-                    command.Parameters.AddWithValue("@contact_phone", dado.ContactPhone);
-                    command.Parameters.AddWithValue("@coordinates", dado.Coordinates);
-                    command.Parameters.AddWithValue("@status", dado.Status);
-                    command.Parameters.AddWithValue("@pending_date", Util.DateOrNull(dado.PendingDate));
-                    command.Parameters.AddWithValue("@survey_date", Util.DateOrNull(dado.SurveyDate));
-                    command.Parameters.AddWithValue("@done_date", Util.DateOrNull(dado.DoneDate));
-                    command.Parameters.AddWithValue("@comments", dado.Comments);
-                    command.Parameters.AddWithValue("@id", id);
+                    command.Parameters.AddWithValue("@title", serviceOrder.Title);
+                    command.Parameters.AddWithValue("@order_date", serviceOrder.OrderDate);
+                    command.Parameters.AddWithValue("@deadline", serviceOrder.Deadline);
+                    command.Parameters.AddWithValue("@professional_id", serviceOrder.ProfessionalId);
+                    command.Parameters.AddWithValue("@service_id", serviceOrder.ServiceId);
+                    command.Parameters.AddWithValue("@service_amount", serviceOrder.ServiceAmount);
+                    command.Parameters.AddWithValue("@mileage_allowance", serviceOrder.MileageAllowance);
+                    command.Parameters.AddWithValue("@siopi", serviceOrder.Siopi);
+                    command.Parameters.AddWithValue("@customer_name", serviceOrder.CustomerName);
+                    command.Parameters.AddWithValue("@city", serviceOrder.City);
+                    command.Parameters.AddWithValue("@contact_name", serviceOrder.ContactName);
+                    command.Parameters.AddWithValue("@contact_phone", serviceOrder.ContactPhone);
+                    command.Parameters.AddWithValue("@coordinates", serviceOrder.Coordinates);
+                    command.Parameters.AddWithValue("@status", serviceOrder.Status);
+                    command.Parameters.AddWithValue("@pending_date", serviceOrder.PendingDate);
+                    command.Parameters.AddWithValue("@survey_date", serviceOrder.SurveyDate);
+                    command.Parameters.AddWithValue("@done_date", serviceOrder.DoneDate);
+                    command.Parameters.AddWithValue("@comments", serviceOrder.Comments);
+                    command.Parameters.AddWithValue("@id", serviceOrder.Id);
 
                     command.ExecuteNonQuery();
                 }
@@ -585,7 +585,7 @@ namespace FluxusApi.Repositories
         }
 
 
-        public void UpdateInvoiceId(long id, long invoice_id)
+        public void UpdateInvoiceId(int id, int invoiceId)
         {
             try
             {
@@ -603,7 +603,7 @@ namespace FluxusApi.Repositories
                         connection);
 
                     command.Parameters.AddWithValue("@id", id);
-                    command.Parameters.AddWithValue("@invoice_id", invoice_id);
+                    command.Parameters.AddWithValue("@invoice_id", invoiceId);
 
                     command.ExecuteNonQuery();
                 }
@@ -615,7 +615,7 @@ namespace FluxusApi.Repositories
         }
 
 
-        public void UpdateStatus(long id, string status)
+        public void UpdateStatus(int id, string status)
         {
             try
             {
@@ -667,7 +667,7 @@ namespace FluxusApi.Repositories
         }
 
 
-        public bool Delete(long id)
+        public bool Delete(int id)
         {
             try
             {

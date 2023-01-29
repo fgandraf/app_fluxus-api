@@ -34,7 +34,7 @@ namespace FluxusApi.Controllers
 
         // GET api/Invoice/Description/<id>
         [HttpGet("Description/{id}")]
-        public IActionResult GetDescription(string id)
+        public IActionResult GetDescription(int id)
         {
             AutenticacaoServico.Authenticate();
 
@@ -59,13 +59,13 @@ namespace FluxusApi.Controllers
         }
 
 
-        // PUT api/Invoice/Totals/<id>
-        [HttpPut("Totals/{id}")]
-        public IActionResult PutTotals(long id, [FromBody] Invoice invoice)
+        // PUT api/Invoice/Totals/
+        [HttpPut("Totals")]
+        public IActionResult PutTotals([FromBody] Invoice invoice)
         {
             AutenticacaoServico.Authenticate();
 
-            new InvoiceRepository().UpdateTotals(id, invoice);
+            new InvoiceRepository().UpdateTotals(invoice);
 
             return Ok();
         }
@@ -73,7 +73,7 @@ namespace FluxusApi.Controllers
 
         // DELETE api/Invoice/<id>
         [HttpDelete("{id}")]
-        public IActionResult Delete(string id)
+        public IActionResult Delete(int id)
         {
             AutenticacaoServico.Authenticate();
 

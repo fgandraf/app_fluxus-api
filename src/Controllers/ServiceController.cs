@@ -37,7 +37,7 @@ namespace FluxusApi.Controllers
 
         // GET api/Service/<id>
         [HttpGet("{id}")]
-        public IActionResult GetBy(long id)
+        public IActionResult GetBy(int id)
         {
             AutenticacaoServico.Authenticate();
 
@@ -52,23 +52,23 @@ namespace FluxusApi.Controllers
 
         // POST api/Service
         [HttpPost]
-        public IActionResult Post([FromBody] Service atividade)
+        public IActionResult Post([FromBody] Service service)
         {
             AutenticacaoServico.Authenticate();
 
-            new ServiceRepository().Insert(atividade);
+            new ServiceRepository().Insert(service);
 
             return Ok();
         }
 
 
         // PUT api/Service/<id>
-        [HttpPut("{id}")]
-        public IActionResult Put(long id, [FromBody] Service atividade)
+        [HttpPut]
+        public IActionResult Put([FromBody] Service service)
         {
             AutenticacaoServico.Authenticate();
 
-            new ServiceRepository().Update(id, atividade);
+            new ServiceRepository().Update(service);
 
             return Ok();
         }
@@ -76,7 +76,7 @@ namespace FluxusApi.Controllers
 
         // DELETE api/Service/<id>
         [HttpDelete("{id}")]
-        public IActionResult Delete(long id)
+        public IActionResult Delete(int id)
         {
             AutenticacaoServico.Authenticate();
 

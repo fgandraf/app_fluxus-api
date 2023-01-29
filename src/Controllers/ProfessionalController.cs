@@ -64,7 +64,7 @@ namespace FluxusApi.Controllers
 
         // GET api/Professional/<id>
         [HttpGet("{id}")]
-        public IActionResult GetBy(long id)
+        public IActionResult GetBy(int id)
         {
             AutenticacaoServico.Authenticate();
 
@@ -90,12 +90,12 @@ namespace FluxusApi.Controllers
 
 
         // PUT api/Professional/<id>
-        [HttpPut("{id}")]
-        public IActionResult Put(long id, [FromBody] Professional profissional)
+        [HttpPut]
+        public IActionResult Put([FromBody] Professional professional)
         {
             AutenticacaoServico.Authenticate();
 
-            new ProfessionalRepository().Update(id, profissional);
+            new ProfessionalRepository().Update(professional);
 
             return Ok();
         }
@@ -103,7 +103,7 @@ namespace FluxusApi.Controllers
 
         // DELETE api/Professional/<id>
         [HttpDelete("{id}")]
-        public IActionResult Delete(long id)
+        public IActionResult Delete(int id)
         {
             AutenticacaoServico.Authenticate();
 

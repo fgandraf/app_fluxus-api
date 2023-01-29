@@ -252,7 +252,7 @@ namespace FluxusApi.Repositories
                     command.Parameters.AddWithValue("@city", profile.City);
                     command.Parameters.AddWithValue("@zip", profile.Zip);
                     command.Parameters.AddWithValue("@state", profile.State);
-                    command.Parameters.AddWithValue("@establishment_date", Util.DateOrNull(profile.EstablishmentDate));
+                    command.Parameters.AddWithValue("@establishment_date", profile.EstablishmentDate);
                     command.Parameters.AddWithValue("@phone1", profile.Phone1);
                     command.Parameters.AddWithValue("@phone2", profile.Phone1);
                     command.Parameters.AddWithValue("@email", profile.Email);
@@ -264,9 +264,9 @@ namespace FluxusApi.Repositories
                     command.Parameters.AddWithValue("@contractor_name", profile.ContractorName);
                     command.Parameters.AddWithValue("@contract_notice", profile.ContractNotice);
                     command.Parameters.AddWithValue("@contract_number", profile.ContractNumber);
-                    command.Parameters.AddWithValue("@contract_established", Util.DateOrNull(profile.ContractEstablished));
-                    command.Parameters.AddWithValue("@contract_start", Util.DateOrNull(profile.ContractStart));
-                    command.Parameters.AddWithValue("@contract_end", Util.DateOrNull(profile.ContractEnd));
+                    command.Parameters.AddWithValue("@contract_established", profile.ContractEstablished);
+                    command.Parameters.AddWithValue("@contract_start", profile.ContractStart);
+                    command.Parameters.AddWithValue("@contract_end", profile.ContractEnd);
                     command.Parameters.AddWithValue("@logo", (byte[])Convert.FromBase64String(profile.Logo));
 
                     command.ExecuteNonQuery();
@@ -281,7 +281,7 @@ namespace FluxusApi.Repositories
         }
 
 
-        public void Update(Profile dado)
+        public void Update(Profile profile)
         {
             try
             {
@@ -325,33 +325,33 @@ namespace FluxusApi.Repositories
                         connection);
 
                     command.Parameters.AddWithValue("@id", "1");
-                    command.Parameters.AddWithValue("@cnpj", dado.Cnpj);
-                    command.Parameters.AddWithValue("@trading_name", dado.TradingName);
-                    command.Parameters.AddWithValue("@company_name", dado.CompanyName);
-                    command.Parameters.AddWithValue("@state_id", dado.StateId);
-                    command.Parameters.AddWithValue("@city_id", dado.CityId);
-                    command.Parameters.AddWithValue("@address", dado.Address);
-                    command.Parameters.AddWithValue("@complement", dado.Complement);
-                    command.Parameters.AddWithValue("@district", dado.District);
-                    command.Parameters.AddWithValue("@city", dado.City);
-                    command.Parameters.AddWithValue("@zip", dado.Zip);
-                    command.Parameters.AddWithValue("@state", dado.State);
-                    command.Parameters.AddWithValue("@establishment_date", Util.DateOrNull(dado.EstablishmentDate));
-                    command.Parameters.AddWithValue("@phone1", dado.Phone1);
-                    command.Parameters.AddWithValue("@phone2", dado.Phone2);
-                    command.Parameters.AddWithValue("@email", dado.Email);
-                    command.Parameters.AddWithValue("@bank_account_name", dado.BankAccountName);
-                    command.Parameters.AddWithValue("@bank_account_type", dado.BankAccountType);
-                    command.Parameters.AddWithValue("@bank_account_branch", dado.BankAccountBranch);
-                    command.Parameters.AddWithValue("@bank_account_digit", dado.BankAccountDigit);
-                    command.Parameters.AddWithValue("@bank_account_number", dado.BankAccountNumber);
-                    command.Parameters.AddWithValue("@contractor_name", dado.ContractorName);
-                    command.Parameters.AddWithValue("@contract_notice", dado.ContractNotice);
-                    command.Parameters.AddWithValue("@contract_number", dado.ContractNumber);
-                    command.Parameters.AddWithValue("@contract_established", Util.DateOrNull(dado.ContractEstablished));
-                    command.Parameters.AddWithValue("@contract_start", Util.DateOrNull(dado.ContractStart));
-                    command.Parameters.AddWithValue("@contract_end", Util.DateOrNull(dado.ContractEnd));
-                    command.Parameters.AddWithValue("@logo", (byte[])Convert.FromBase64String(dado.Logo));
+                    command.Parameters.AddWithValue("@cnpj", profile.Cnpj);
+                    command.Parameters.AddWithValue("@trading_name", profile.TradingName);
+                    command.Parameters.AddWithValue("@company_name", profile.CompanyName);
+                    command.Parameters.AddWithValue("@state_id", profile.StateId);
+                    command.Parameters.AddWithValue("@city_id", profile.CityId);
+                    command.Parameters.AddWithValue("@address", profile.Address);
+                    command.Parameters.AddWithValue("@complement", profile.Complement);
+                    command.Parameters.AddWithValue("@district", profile.District);
+                    command.Parameters.AddWithValue("@city", profile.City);
+                    command.Parameters.AddWithValue("@zip", profile.Zip);
+                    command.Parameters.AddWithValue("@state", profile.State);
+                    command.Parameters.AddWithValue("@establishment_date", profile.EstablishmentDate);
+                    command.Parameters.AddWithValue("@phone1", profile.Phone1);
+                    command.Parameters.AddWithValue("@phone2", profile.Phone2);
+                    command.Parameters.AddWithValue("@email", profile.Email);
+                    command.Parameters.AddWithValue("@bank_account_name", profile.BankAccountName);
+                    command.Parameters.AddWithValue("@bank_account_type", profile.BankAccountType);
+                    command.Parameters.AddWithValue("@bank_account_branch", profile.BankAccountBranch);
+                    command.Parameters.AddWithValue("@bank_account_digit", profile.BankAccountDigit);
+                    command.Parameters.AddWithValue("@bank_account_number", profile.BankAccountNumber);
+                    command.Parameters.AddWithValue("@contractor_name", profile.ContractorName);
+                    command.Parameters.AddWithValue("@contract_notice", profile.ContractNotice);
+                    command.Parameters.AddWithValue("@contract_number", profile.ContractNumber);
+                    command.Parameters.AddWithValue("@contract_established", profile.ContractEstablished);
+                    command.Parameters.AddWithValue("@contract_start", profile.ContractStart);
+                    command.Parameters.AddWithValue("@contract_end", profile.ContractEnd);
+                    command.Parameters.AddWithValue("@logo", (byte[])Convert.FromBase64String(profile.Logo));
 
                     command.ExecuteNonQuery();
                 }

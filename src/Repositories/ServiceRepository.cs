@@ -68,7 +68,7 @@ namespace FluxusApi.Repositories
         }
 
 
-        public Service GetBy(long id)
+        public Service GetBy(int id)
         {
             try
             {
@@ -115,7 +115,7 @@ namespace FluxusApi.Repositories
         }
 
 
-        public long Insert(Service dado)
+        public long Insert(Service service)
         {
             try
             {
@@ -130,10 +130,10 @@ namespace FluxusApi.Repositories
                             (@tag, @description, @service_amount, @mileage_allowance)",
                             connection);
 
-                    reader.Parameters.AddWithValue("@tag", dado.Tag);
-                    reader.Parameters.AddWithValue("@description", dado.Description);
-                    reader.Parameters.AddWithValue("@service_amount", dado.ServiceAmount);
-                    reader.Parameters.AddWithValue("@mileage_allowance", dado.MileageAllowance);
+                    reader.Parameters.AddWithValue("@tag", service.Tag);
+                    reader.Parameters.AddWithValue("@description", service.Description);
+                    reader.Parameters.AddWithValue("@service_amount", service.ServiceAmount);
+                    reader.Parameters.AddWithValue("@mileage_allowance", service.MileageAllowance);
 
                     reader.ExecuteNonQuery();
 
@@ -147,7 +147,7 @@ namespace FluxusApi.Repositories
         }
 
 
-        public void Update(long id, Service dado)
+        public void Update(Service service)
         {
             try
             {
@@ -166,10 +166,10 @@ namespace FluxusApi.Repositories
                             id = @id",
                             connection);
 
-                    reader.Parameters.AddWithValue("@id", id);
-                    reader.Parameters.AddWithValue("@description", dado.Description);
-                    reader.Parameters.AddWithValue("@service_amount", dado.ServiceAmount);
-                    reader.Parameters.AddWithValue("@mileage_allowance", dado.MileageAllowance);
+                    reader.Parameters.AddWithValue("@id", service.Id);
+                    reader.Parameters.AddWithValue("@description", service.Description);
+                    reader.Parameters.AddWithValue("@service_amount", service.ServiceAmount);
+                    reader.Parameters.AddWithValue("@mileage_allowance", service.MileageAllowance);
 
                     reader.ExecuteNonQuery();
                 }
@@ -181,7 +181,7 @@ namespace FluxusApi.Repositories
         }
 
 
-        public bool Delete(long id)
+        public bool Delete(int id)
         {
             try
             {

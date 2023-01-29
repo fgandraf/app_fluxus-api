@@ -66,7 +66,7 @@ namespace FluxusApi.Repositories
         }
 
 
-        public string GetDescription(string id)
+        public string GetDescription(int id)
         {
             try
             {
@@ -102,7 +102,7 @@ namespace FluxusApi.Repositories
         }
 
 
-        public void Insert(Invoice dado)
+        public void Insert(Invoice invoice)
         {
             try
             {
@@ -119,11 +119,11 @@ namespace FluxusApi.Repositories
                             @subtotal_mileage_allowance, @total)",
                         connection);
 
-                    command.Parameters.AddWithValue("@description", dado.Description);
-                    command.Parameters.AddWithValue("@issue_date", dado.IssueDate);
-                    command.Parameters.AddWithValue("@subtotal_service", dado.SubtotalService);
-                    command.Parameters.AddWithValue("@subtotal_mileage_allowance", dado.SubtotalMileageAllowance);
-                    command.Parameters.AddWithValue("@total", dado.Total);
+                    command.Parameters.AddWithValue("@description", invoice.Description);
+                    command.Parameters.AddWithValue("@issue_date", invoice.IssueDate);
+                    command.Parameters.AddWithValue("@subtotal_service", invoice.SubtotalService);
+                    command.Parameters.AddWithValue("@subtotal_mileage_allowance", invoice.SubtotalMileageAllowance);
+                    command.Parameters.AddWithValue("@total", invoice.Total);
                     command.ExecuteNonQuery();
                 }
             }
@@ -134,7 +134,7 @@ namespace FluxusApi.Repositories
         }
 
 
-        public void UpdateTotals(long id, Invoice dado)
+        public void UpdateTotals(Invoice invoice)
         {
             try
             {
@@ -153,10 +153,10 @@ namespace FluxusApi.Repositories
                             id = @id",
                         connection);
 
-                    command.Parameters.AddWithValue("@subtotal_service", dado.SubtotalService);
-                    command.Parameters.AddWithValue("@subtotal_mileage_allowance", dado.SubtotalMileageAllowance);
-                    command.Parameters.AddWithValue("@total", dado.Total);
-                    command.Parameters.AddWithValue("@id", id);
+                    command.Parameters.AddWithValue("@subtotal_service", invoice.SubtotalService);
+                    command.Parameters.AddWithValue("@subtotal_mileage_allowance", invoice.SubtotalMileageAllowance);
+                    command.Parameters.AddWithValue("@total", invoice.Total);
+                    command.Parameters.AddWithValue("@id", invoice.Id);
                     command.ExecuteNonQuery();
                 }
             }
@@ -167,7 +167,7 @@ namespace FluxusApi.Repositories
         }
 
 
-        public bool Delete(string id)
+        public bool Delete(int id)
         {
             try
             {

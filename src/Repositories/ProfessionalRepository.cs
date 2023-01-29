@@ -172,7 +172,7 @@ namespace FluxusApi.Repositories
         }
 
 
-        public Professional GetBy(long id)
+        public Professional GetBy(int id)
         {
             try
             {
@@ -251,7 +251,7 @@ namespace FluxusApi.Repositories
                     command.Parameters.AddWithValue("@name", professional.Name);
                     command.Parameters.AddWithValue("@nameid", professional.NameId);
                     command.Parameters.AddWithValue("@cpf", professional.Cpf);
-                    command.Parameters.AddWithValue("@birthday", Util.DateOrNull(professional.Birthday));
+                    command.Parameters.AddWithValue("@birthday", professional.Birthday);
                     command.Parameters.AddWithValue("@profession", professional.Profession);
                     command.Parameters.AddWithValue("@permit_number", professional.PermitNumber);
                     command.Parameters.AddWithValue("@association", professional.Association);
@@ -275,7 +275,7 @@ namespace FluxusApi.Repositories
         }
 
 
-        public void Update(long id, Professional pro)
+        public void Update(Professional professional)
         {
             try
             {
@@ -306,22 +306,22 @@ namespace FluxusApi.Repositories
                             id = @id", 
                         connection);
                     
-                    command.Parameters.AddWithValue("@id", id);
-                    command.Parameters.AddWithValue("@name", pro.Name);
-                    command.Parameters.AddWithValue("@nameid", pro.NameId);
-                    command.Parameters.AddWithValue("@cpf", pro.Cpf);
-                    command.Parameters.AddWithValue("@birthday", Util.DateOrNull(pro.Birthday));
-                    command.Parameters.AddWithValue("@profession", pro.Profession);
-                    command.Parameters.AddWithValue("@permit_number", pro.PermitNumber);
-                    command.Parameters.AddWithValue("@association", pro.Association);
-                    command.Parameters.AddWithValue("@phone1", pro.Phone1);
-                    command.Parameters.AddWithValue("@phone2", pro.Phone2);
-                    command.Parameters.AddWithValue("@email", pro.Email);
-                    command.Parameters.AddWithValue("@technician_responsible", pro.TechnicianResponsible);
-                    command.Parameters.AddWithValue("@legal_responsible", pro.LegalResponsible);
-                    command.Parameters.AddWithValue("@user_active", pro.UserActive);
-                    command.Parameters.AddWithValue("@user_name", pro.UserName);
-                    command.Parameters.AddWithValue("@user_password", pro.UserPassword);
+                    command.Parameters.AddWithValue("@id", professional.Id);
+                    command.Parameters.AddWithValue("@name", professional.Name);
+                    command.Parameters.AddWithValue("@nameid", professional.NameId);
+                    command.Parameters.AddWithValue("@cpf", professional.Cpf);
+                    command.Parameters.AddWithValue("@birthday", professional.Birthday);
+                    command.Parameters.AddWithValue("@profession", professional.Profession);
+                    command.Parameters.AddWithValue("@permit_number", professional.PermitNumber);
+                    command.Parameters.AddWithValue("@association", professional.Association);
+                    command.Parameters.AddWithValue("@phone1", professional.Phone1);
+                    command.Parameters.AddWithValue("@phone2", professional.Phone2);
+                    command.Parameters.AddWithValue("@email", professional.Email);
+                    command.Parameters.AddWithValue("@technician_responsible", professional.TechnicianResponsible);
+                    command.Parameters.AddWithValue("@legal_responsible", professional.LegalResponsible);
+                    command.Parameters.AddWithValue("@user_active", professional.UserActive);
+                    command.Parameters.AddWithValue("@user_name", professional.UserName);
+                    command.Parameters.AddWithValue("@user_password", professional.UserPassword);
                     command.ExecuteNonQuery();
                 }
             }
@@ -332,7 +332,7 @@ namespace FluxusApi.Repositories
         }
 
 
-        public bool Delete(long id)
+        public bool Delete(int id)
         {
             try
             {

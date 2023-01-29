@@ -73,7 +73,7 @@ namespace FluxusApi.Repositories
 
 
 
-        public BankBranch GetBy(long id)
+        public BankBranch GetBy(int id)
         {
             try
             {
@@ -179,7 +179,7 @@ namespace FluxusApi.Repositories
             }
         }
 
-        public void Insert(BankBranch dado)
+        public void Insert(BankBranch bankBranch)
         {
             try
             {
@@ -196,18 +196,18 @@ namespace FluxusApi.Repositories
                             @zip, @state, @contact_name, @phone1, @phone2, @email)",
                         connection);
 
-                    command.Parameters.AddWithValue("@branch_number", dado.BranchNumber);
-                    command.Parameters.AddWithValue("@name", dado.Name);
-                    command.Parameters.AddWithValue("@address", dado.Address);
-                    command.Parameters.AddWithValue("@complement", dado.Complement);
-                    command.Parameters.AddWithValue("@district", dado.District);
-                    command.Parameters.AddWithValue("@city", dado.City);
-                    command.Parameters.AddWithValue("@zip", dado.Zip);
-                    command.Parameters.AddWithValue("@state", dado.State);
-                    command.Parameters.AddWithValue("@contact_name", dado.ContactName);
-                    command.Parameters.AddWithValue("@phone1", dado.Phone1);
-                    command.Parameters.AddWithValue("@phone2", dado.Phone2);
-                    command.Parameters.AddWithValue("@email", dado.Email);
+                    command.Parameters.AddWithValue("@branch_number", bankBranch.BranchNumber);
+                    command.Parameters.AddWithValue("@name", bankBranch.Name);
+                    command.Parameters.AddWithValue("@address", bankBranch.Address);
+                    command.Parameters.AddWithValue("@complement", bankBranch.Complement);
+                    command.Parameters.AddWithValue("@district", bankBranch.District);
+                    command.Parameters.AddWithValue("@city", bankBranch.City);
+                    command.Parameters.AddWithValue("@zip", bankBranch.Zip);
+                    command.Parameters.AddWithValue("@state", bankBranch.State);
+                    command.Parameters.AddWithValue("@contact_name", bankBranch.ContactName);
+                    command.Parameters.AddWithValue("@phone1", bankBranch.Phone1);
+                    command.Parameters.AddWithValue("@phone2", bankBranch.Phone2);
+                    command.Parameters.AddWithValue("@email", bankBranch.Email);
                     command.ExecuteNonQuery();
                 }
             }
@@ -217,7 +217,7 @@ namespace FluxusApi.Repositories
             }
         }
 
-        public void Update(long id, BankBranch dado)
+        public void Update(BankBranch bankBranch)
         {
             try
             {
@@ -245,19 +245,19 @@ namespace FluxusApi.Repositories
                             id = @id",
                         connection);
 
-                    command.Parameters.AddWithValue("@branch_number", dado.BranchNumber);
-                    command.Parameters.AddWithValue("@name", dado.Name);
-                    command.Parameters.AddWithValue("@address", dado.Address);
-                    command.Parameters.AddWithValue("@complement", dado.Complement);
-                    command.Parameters.AddWithValue("@district", dado.District);
-                    command.Parameters.AddWithValue("@city", dado.City);
-                    command.Parameters.AddWithValue("@zip", dado.Zip);
-                    command.Parameters.AddWithValue("@state", dado.State);
-                    command.Parameters.AddWithValue("@contact_name", dado.ContactName);
-                    command.Parameters.AddWithValue("@phone1", dado.Phone1);
-                    command.Parameters.AddWithValue("@phone2", dado.Phone2);
-                    command.Parameters.AddWithValue("@email", dado.Email);
-                    command.Parameters.AddWithValue("@id", id);
+                    command.Parameters.AddWithValue("@branch_number", bankBranch.BranchNumber);
+                    command.Parameters.AddWithValue("@name", bankBranch.Name);
+                    command.Parameters.AddWithValue("@address", bankBranch.Address);
+                    command.Parameters.AddWithValue("@complement", bankBranch.Complement);
+                    command.Parameters.AddWithValue("@district", bankBranch.District);
+                    command.Parameters.AddWithValue("@city", bankBranch.City);
+                    command.Parameters.AddWithValue("@zip", bankBranch.Zip);
+                    command.Parameters.AddWithValue("@state", bankBranch.State);
+                    command.Parameters.AddWithValue("@contact_name", bankBranch.ContactName);
+                    command.Parameters.AddWithValue("@phone1", bankBranch.Phone1);
+                    command.Parameters.AddWithValue("@phone2", bankBranch.Phone2);
+                    command.Parameters.AddWithValue("@email", bankBranch.Email);
+                    command.Parameters.AddWithValue("@id", bankBranch.Id);
                     command.ExecuteNonQuery();
                 }
             }
@@ -267,7 +267,7 @@ namespace FluxusApi.Repositories
             }
         }
 
-        public bool Delete(long id)
+        public bool Delete(int id)
         {
             try
             {

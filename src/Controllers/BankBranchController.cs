@@ -34,7 +34,7 @@ namespace FluxusApi.Controllers
 
         // GET: api/BankBranch/<id>
         [HttpGet("{id}")]
-        public IActionResult GetBy(long id)
+        public IActionResult GetBy(int id)
         {
             Authenticator.Authenticate();
 
@@ -74,13 +74,13 @@ namespace FluxusApi.Controllers
         }
 
 
-        // PUT api/BankBranch/<id>
-        [HttpPut("{id}")]
-        public IActionResult Put(long id, [FromBody] BankBranch bankBranch)
+        // PUT api/BankBranch/
+        [HttpPut]
+        public IActionResult Put([FromBody] BankBranch bankBranch)
         {
             Authenticator.Authenticate();
 
-            new BankBranchRepository().Update(id, bankBranch);
+            new BankBranchRepository().Update(bankBranch);
 
             return Ok();
         }
@@ -88,7 +88,7 @@ namespace FluxusApi.Controllers
 
         // DELETE api/BankBranch/<id>
         [HttpDelete("{id}")]
-        public IActionResult Delete(long id)
+        public IActionResult Delete(int id)
         {
             Authenticator.Authenticate();
 

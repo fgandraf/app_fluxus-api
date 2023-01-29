@@ -81,11 +81,11 @@ namespace FluxusApi.Controllers
 
         // GET api/ServiceOrder/Invoiced/<invoice_id>
         [HttpGet("Invoiced/{invoice_id}")]
-        public IActionResult GetInvoiced(int invoice_id)
+        public IActionResult GetInvoiced(int invoiceId)
         {
             AutenticacaoServico.Authenticate();
 
-            var result = new ServiceOrderRepository().GetInvoiced(invoice_id);
+            var result = new ServiceOrderRepository().GetInvoiced(invoiceId);
 
             if (result == null)
                 return NotFound();
@@ -96,11 +96,11 @@ namespace FluxusApi.Controllers
 
         // GET api/ServiceOrder/Professionals/<fatura_cod>
         [HttpGet("Professionals/{fatura_cod}")]
-        public IActionResult GetProfessionals(int fatura_cod)
+        public IActionResult GetProfessionals(int invoiceId)
         {
             AutenticacaoServico.Authenticate();
 
-            var result = new ServiceOrderRepository().GetProfessionals(fatura_cod);
+            var result = new ServiceOrderRepository().GetProfessionals(invoiceId);
 
             if (result == null)
                 return NotFound();
@@ -111,7 +111,7 @@ namespace FluxusApi.Controllers
 
         // GET api/ServiceOrder/<id>
         [HttpGet("{id}")]
-        public IActionResult GetBy(long id)
+        public IActionResult GetBy(int id)
         {
             AutenticacaoServico.Authenticate();
 
@@ -126,23 +126,23 @@ namespace FluxusApi.Controllers
 
         // POST api/ServiceOrder
         [HttpPost]
-        public IActionResult Post([FromBody] ServiceOrder os)
+        public IActionResult Post([FromBody] ServiceOrder serviceOrder)
         {
             AutenticacaoServico.Authenticate();
 
-            new ServiceOrderRepository().Insert(os);
+            new ServiceOrderRepository().Insert(serviceOrder);
 
             return Ok();
         }
 
 
-        // PUT api/ServiceOrder/<id>
-        [HttpPut("{id}")]
-        public IActionResult Put(long id, [FromBody] ServiceOrder os)
+        // PUT api/ServiceOrder/
+        [HttpPut]
+        public IActionResult Put([FromBody] ServiceOrder serviceOrder)
         {
             AutenticacaoServico.Authenticate();
 
-            new ServiceOrderRepository().Update(id, os);
+            new ServiceOrderRepository().Update(serviceOrder);
 
             return Ok();
         }
@@ -150,11 +150,11 @@ namespace FluxusApi.Controllers
 
         // PUT api/ServiceOrder/UpdateInvoiceId/<id>,<invoice_id>
         [HttpPut("UpdateInvoiceId/{id},{invoice_id}")]
-        public IActionResult UpdateInvoiceId(long id, long invoice_id)
+        public IActionResult UpdateInvoiceId(int id, int invoiceId)
         {
             AutenticacaoServico.Authenticate();
 
-            new ServiceOrderRepository().UpdateInvoiceId(id, invoice_id);
+            new ServiceOrderRepository().UpdateInvoiceId(id, invoiceId);
 
             return Ok();
         }
@@ -162,7 +162,7 @@ namespace FluxusApi.Controllers
 
         // PUT api/ServiceOrder/UpdateStatus/<id>,<status>
         [HttpPut("UpdateStatus/{id},{status}")]
-        public IActionResult UpdateStatus(long id, string status)
+        public IActionResult UpdateStatus(int id, string status)
         {
             AutenticacaoServico.Authenticate();
 
@@ -174,7 +174,7 @@ namespace FluxusApi.Controllers
 
         // DELETE api/ServiceOrder/<id>
         [HttpDelete("{id}")]
-        public IActionResult Delete(long id)
+        public IActionResult Delete(int id)
         {
             AutenticacaoServico.Authenticate();
 

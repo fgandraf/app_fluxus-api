@@ -18,8 +18,7 @@ namespace FluxusApi
         {
             try
             {
-                //string TokenRecebido = _context.HttpContext.Request.Headers["Token"].ToString();
-                string TokenRecebido = "xz8wM6zr2RfF18GBM0B5yrkoo";
+                string TokenRecebido = _context.HttpContext.Request.Headers["Token"].ToString();
 
                 if (String.Equals(TOKEN, TokenRecebido) == false)
                     throw new Exception("Invalid token");

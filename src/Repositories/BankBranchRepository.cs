@@ -2,7 +2,7 @@
 using MySql.Data.MySqlClient;
 using FluxusApi.Entities;
 using System.Collections;
-using System.Xml.Linq;
+using Dapper;
 
 namespace FluxusApi.Repositories
 {
@@ -22,93 +22,103 @@ namespace FluxusApi.Repositories
                 {
                     connection.Open();
 
-                    var sql = new MySqlCommand(@"
-                        SELECT 
-                            id, 
-                            branch_number, 
-                            name, 
-                            city, 
-                            phone1, 
-                            email 
-                        FROM 
-                            bank_branch 
-                        ORDER BY 
-                            branch_number", 
-                        connection);
-                    
-                    MySqlDataReader dr = sql.ExecuteReader();
-
-                    if (dr.HasRows)
+                    using (var command = new MySqlCommand())
                     {
+                        command.Connection = connection;
+                        command.CommandText = @"
+                            SELECT 
+                                id, 
+                                branch_number, 
+                                name, 
+                                city, 
+                                phone1, 
+                                email 
+                            FROM 
+                                bank_branch 
+                            ORDER BY 
+                                branch_number";
+
+                        var reader = command.ExecuteReader();
+
                         var bankBranches = new ArrayList();
 
-                        while (dr.Read())
+                        if (reader.HasRows)
                         {
-                            dynamic branch = new
+                            while (reader.Read())
                             {
-                                Id = Convert.ToInt64(dr["id"]),
-                                BranchNumber = Convert.ToString(dr["branch_number"]),
-                                Name = Convert.ToString(dr["name"]),
-                                City = Convert.ToString(dr["city"]),
-                                Phone1 = Convert.ToString(dr["phone1"]),
-                                Email = Convert.ToString(dr["email"])
-                            };
-                            bankBranches.Add(branch);
+                                dynamic branch = new
+                                {
+                                    Id = Convert.ToInt64(reader["id"]),
+                                    BranchNumber = Convert.ToString(reader["branch_number"]),
+                                    Name = Convert.ToString(reader["name"]),
+                                    City = Convert.ToString(reader["city"]),
+                                    Phone1 = Convert.ToString(reader["phone1"]),
+                                    Email = Convert.ToString(reader["email"])
+                                };
+                                bankBranches.Add(branch);
+                            }
+                            return bankBranches;
                         }
-                        return bankBranches;
+                        else
+                            return null;
                     }
                 }
+
             }
             catch (Exception ex)
             {
                 throw ex.InnerException;
             }
-
-            return null;
         }
+
+
 
         public BankBranch GetBy(long id)
         {
             try
             {
-
-
                 using (var connection = new MySqlConnection(_connectionString))
                 {
                     connection.Open();
 
-                    var sql = new MySqlCommand(@"
-                        SELECT 
-                            * 
-                        FROM 
-                            bank_branch 
-                        WHERE 
-                            id = @id", 
-                        connection);
-
-                    sql.Parameters.AddWithValue("@id", id);
-                    MySqlDataReader dr = sql.ExecuteReader();
-
-                    if (dr.HasRows)
+                    using (var command = new MySqlCommand())
                     {
-                        var bankBranch = new BankBranch();
+                        command.Connection = connection;
+                        command.CommandText = @"
+                            SELECT 
+                                * 
+                            FROM 
+                                bank_branch 
+                            WHERE 
+                                id = @id";
+                        command.Parameters.AddWithValue("@id", id);
 
-                        if (dr.Read())
+                        var reader = command.ExecuteReader();
+
+                        if (reader.HasRows)
                         {
-                            bankBranch.Id = Convert.ToInt64(dr["id"]);
-                            bankBranch.BranchNumber = Convert.ToString(dr["branch_number"]);
-                            bankBranch.Name = Convert.ToString(dr["name"]);
-                            bankBranch.Address = Convert.ToString(dr["address"]);
-                            bankBranch.Complement = Convert.ToString(dr["complement"]);
-                            bankBranch.District = Convert.ToString(dr["district"]);
-                            bankBranch.City = Convert.ToString(dr["city"]);
-                            bankBranch.Zip = Convert.ToString(dr["zip"]);
-                            bankBranch.State = Convert.ToString(dr["state"]);
-                            bankBranch.Phone1 = Convert.ToString(dr["phone1"]);
-                            bankBranch.Phone2 = Convert.ToString(dr["phone2"]);
-                            bankBranch.Email = Convert.ToString(dr["email"]);
+                            var bankBranch = new BankBranch();
+
+                            if (reader.Read())
+                            {
+                                bankBranch.Id = Convert.ToInt64(reader["id"]);
+                                bankBranch.BranchNumber = Convert.ToString(reader["branch_number"]);
+                                bankBranch.Name = Convert.ToString(reader["name"]);
+                                bankBranch.Address = Convert.ToString(reader["address"]);
+                                bankBranch.Complement = Convert.ToString(reader["complement"]);
+                                bankBranch.District = Convert.ToString(reader["district"]);
+                                bankBranch.City = Convert.ToString(reader["city"]);
+                                bankBranch.Zip = Convert.ToString(reader["zip"]);
+                                bankBranch.State = Convert.ToString(reader["state"]);
+                                bankBranch.Phone1 = Convert.ToString(reader["phone1"]);
+                                bankBranch.Phone2 = Convert.ToString(reader["phone2"]);
+                                bankBranch.Email = Convert.ToString(reader["email"]);
+                            }
+
+                            return bankBranch;
                         }
-                        return bankBranch;
+                        else
+                            return null;
                     }
                 }
             }
@@ -116,8 +126,6 @@ namespace FluxusApi.Repositories
             {
                 throw ex.InnerException;
             }
-
-            return null;
         }
 
         public ArrayList GetContacts(string branch_number)
@@ -128,7 +136,7 @@ namespace FluxusApi.Repositories
                 {
                     connection.Open();
 
-                    var sql = new MySqlCommand(@"
+                    var command = new MySqlCommand(@"
                         SELECT 
                             branch_number, 
                             name, 
@@ -137,37 +145,38 @@ namespace FluxusApi.Repositories
                         FROM 
                             bank_branch 
                         WHERE 
-                            branch_number = @branch_number", 
+                            branch_number = @branch_number",
                         connection);
-                    
-                    sql.Parameters.AddWithValue("@branch_number", branch_number);
-                    MySqlDataReader dr = sql.ExecuteReader();
 
-                    if (dr.HasRows)
+                    command.Parameters.AddWithValue("@branch_number", branch_number);
+                    var reader = command.ExecuteReader();
+
+                    if (reader.HasRows)
                     {
                         var bankBranches = new ArrayList();
 
-                        if (dr.Read())
+                        if (reader.Read())
                         {
                             dynamic bankBranch = new
                             {
-                                BranchNumber = Convert.ToString(dr["branch_number"]),
-                                Name = Convert.ToString(dr["name"]),
-                                Phone1 = Convert.ToString(dr["phone1"]),
-                                Email = Convert.ToString(dr["email"])
+                                BranchNumber = Convert.ToString(reader["branch_number"]),
+                                Name = Convert.ToString(reader["name"]),
+                                Phone1 = Convert.ToString(reader["phone1"]),
+                                Email = Convert.ToString(reader["email"])
                             };
+
                             bankBranches.Add(bankBranch);
                         }
                         return bankBranches;
                     }
+                    else
+                        return null;
                 }
             }
             catch (Exception ex)
             {
                 throw ex.InnerException;
             }
-
-            return null;
         }
 
         public void Insert(BankBranch dado)
@@ -178,7 +187,7 @@ namespace FluxusApi.Repositories
                 {
                     connection.Open();
 
-                    var sql = new MySqlCommand(@"
+                    var command = new MySqlCommand(@"
                         INSERT INTO bank_branch
                             (branch_number, name, address, complement,district,city, 
                             zip, state, contact_name, phone1, phone2, email) 
@@ -187,19 +196,19 @@ namespace FluxusApi.Repositories
                             @zip, @state, @contact_name, @phone1, @phone2, @email)",
                         connection);
 
-                    sql.Parameters.AddWithValue("@branch_number", dado.BranchNumber);
-                    sql.Parameters.AddWithValue("@name", dado.Name);
-                    sql.Parameters.AddWithValue("@address", dado.Address);
-                    sql.Parameters.AddWithValue("@complement", dado.Complement);
-                    sql.Parameters.AddWithValue("@district", dado.District);
-                    sql.Parameters.AddWithValue("@city", dado.City);
-                    sql.Parameters.AddWithValue("@zip", dado.Zip);
-                    sql.Parameters.AddWithValue("@state", dado.State);
-                    sql.Parameters.AddWithValue("@contact_name", dado.ContactName);
-                    sql.Parameters.AddWithValue("@phone1", dado.Phone1);
-                    sql.Parameters.AddWithValue("@phone2", dado.Phone2);
-                    sql.Parameters.AddWithValue("@email", dado.Email);
-                    sql.ExecuteNonQuery();
+                    command.Parameters.AddWithValue("@branch_number", dado.BranchNumber);
+                    command.Parameters.AddWithValue("@name", dado.Name);
+                    command.Parameters.AddWithValue("@address", dado.Address);
+                    command.Parameters.AddWithValue("@complement", dado.Complement);
+                    command.Parameters.AddWithValue("@district", dado.District);
+                    command.Parameters.AddWithValue("@city", dado.City);
+                    command.Parameters.AddWithValue("@zip", dado.Zip);
+                    command.Parameters.AddWithValue("@state", dado.State);
+                    command.Parameters.AddWithValue("@contact_name", dado.ContactName);
+                    command.Parameters.AddWithValue("@phone1", dado.Phone1);
+                    command.Parameters.AddWithValue("@phone2", dado.Phone2);
+                    command.Parameters.AddWithValue("@email", dado.Email);
+                    command.ExecuteNonQuery();
                 }
             }
             catch (Exception ex)
@@ -216,7 +225,7 @@ namespace FluxusApi.Repositories
                 {
                     connection.Open();
 
-                    var sql = new MySqlCommand(@"
+                    var command = new MySqlCommand(@"
                         UPDATE 
                             bank_branch
                         SET
@@ -236,20 +245,20 @@ namespace FluxusApi.Repositories
                             id = @id",
                         connection);
 
-                    sql.Parameters.AddWithValue("@branch_number", dado.BranchNumber);
-                    sql.Parameters.AddWithValue("@name", dado.Name);
-                    sql.Parameters.AddWithValue("@address", dado.Address);
-                    sql.Parameters.AddWithValue("@complement", dado.Complement);
-                    sql.Parameters.AddWithValue("@district", dado.District);
-                    sql.Parameters.AddWithValue("@city", dado.City);
-                    sql.Parameters.AddWithValue("@zip", dado.Zip);
-                    sql.Parameters.AddWithValue("@state", dado.State);
-                    sql.Parameters.AddWithValue("@contact_name", dado.ContactName);
-                    sql.Parameters.AddWithValue("@phone1", dado.Phone1);
-                    sql.Parameters.AddWithValue("@phone2", dado.Phone2);
-                    sql.Parameters.AddWithValue("@email", dado.Email);
-                    sql.Parameters.AddWithValue("@id", id);
-                    sql.ExecuteNonQuery();
+                    command.Parameters.AddWithValue("@branch_number", dado.BranchNumber);
+                    command.Parameters.AddWithValue("@name", dado.Name);
+                    command.Parameters.AddWithValue("@address", dado.Address);
+                    command.Parameters.AddWithValue("@complement", dado.Complement);
+                    command.Parameters.AddWithValue("@district", dado.District);
+                    command.Parameters.AddWithValue("@city", dado.City);
+                    command.Parameters.AddWithValue("@zip", dado.Zip);
+                    command.Parameters.AddWithValue("@state", dado.State);
+                    command.Parameters.AddWithValue("@contact_name", dado.ContactName);
+                    command.Parameters.AddWithValue("@phone1", dado.Phone1);
+                    command.Parameters.AddWithValue("@phone2", dado.Phone2);
+                    command.Parameters.AddWithValue("@email", dado.Email);
+                    command.Parameters.AddWithValue("@id", id);
+                    command.ExecuteNonQuery();
                 }
             }
             catch (Exception ex)
@@ -266,37 +275,42 @@ namespace FluxusApi.Repositories
                 {
                     connection.Open();
 
-                    var sqlSelect = new MySqlCommand(@"
-                        SELECT 
-                            id 
-                        FROM 
-                            bank_branch 
-                        WHERE 
-                            id = @id",
-                            connection);
-
-                    sqlSelect.Parameters.AddWithValue("@id", id);
-                    MySqlDataReader dr = sqlSelect.ExecuteReader();
-
-                    if (!dr.HasRows)
-                        return false;
+                    using (var command = new MySqlCommand())
+                    {
+                        command.Connection = connection;
+                        command.CommandText = @"
+                            SELECT 
+                                id 
+                            FROM 
+                                bank_branch 
+                            WHERE 
+                                id = @id";
+                        command.Parameters.AddWithValue("@id", id);
+                        
+                        var reader = command.ExecuteReader();
+                        if (!reader.HasRows)
+                            return false;
+                    }
                 }
+
 
                 using (var connection = new MySqlConnection(_connectionString))
                 {
                     connection.Open();
 
-                    var sql = new MySqlCommand(@"
-                    DELETE FROM 
-                        bank_branch 
-                    WHERE 
-                        id = @id",
-                    connection);
-
-                    sql.Parameters.AddWithValue("@id", id);
-                    sql.ExecuteNonQuery();
-
-                    return true;
+                    using (var command = new MySqlCommand())
+                    {
+                        command.Connection = connection;
+                        command.CommandText = @"
+                            DELETE FROM 
+                                bank_branch 
+                            WHERE 
+                                id = @id";
+                        command.Parameters.AddWithValue("@id", id);
+                        command.ExecuteNonQuery();
+                        
+                        return true;
+                    }
                 }
             }
             catch (Exception ex)

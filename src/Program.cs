@@ -1,4 +1,5 @@
 
+using FluxusApi.Entities;
 using Microsoft.AspNetCore.Hosting;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -9,6 +10,11 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+
+builder.Services.AddSwaggerGen(c =>
+{
+    c.OperationFilter<AddCustomHeaderParameter>();
+}); // adicionar custom header - token
 
 builder.WebHost.UseIISIntegration(); //acrescentado para executar iis local
 

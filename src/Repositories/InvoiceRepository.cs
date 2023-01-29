@@ -23,7 +23,7 @@ namespace FluxusApi.Repositories
                 {
                     connection.Open();
 
-                    var sql = new MySqlCommand(@"
+                    var command = new MySqlCommand(@"
                         SELECT 
                             * 
                         FROM 
@@ -33,37 +33,36 @@ namespace FluxusApi.Repositories
                         DESC",
                         connection);
 
-                    MySqlDataReader dr = sql.ExecuteReader();
+                    var reader = command.ExecuteReader();
 
-
-                    if (dr.HasRows)
+                    if (reader.HasRows)
                     {
                         var invoices = new ArrayList();
 
-                        while (dr.Read())
+                        while (reader.Read())
                         {
                             Invoice invoice = new Invoice();
 
-                            invoice.Id = Convert.ToInt32(dr["id"]);
-                            invoice.Description = Convert.ToString(dr["description"]);
-                            invoice.IssueDate = Convert.ToDateTime(dr["issue_date"]);
-                            invoice.SubtotalService = Convert.ToDouble(dr["subtotal_service"]);
-                            invoice.SubtotalMileageAllowance = Convert.ToDouble(dr["subtotal_mileage_allowance"]);
-                            invoice.Total = Convert.ToDouble(dr["total"]);
+                            invoice.Id = Convert.ToInt32(reader["id"]);
+                            invoice.Description = Convert.ToString(reader["description"]);
+                            invoice.IssueDate = Convert.ToDateTime(reader["issue_date"]);
+                            invoice.SubtotalService = Convert.ToDouble(reader["subtotal_service"]);
+                            invoice.SubtotalMileageAllowance = Convert.ToDouble(reader["subtotal_mileage_allowance"]);
+                            invoice.Total = Convert.ToDouble(reader["total"]);
 
                             invoices.Add(invoice);
                         }
 
                         return invoices;
                     }
+                    else
+                        return null;
                 }
             }
             catch (Exception ex)
             {
                 throw ex.InnerException;
             }
-
-            return null;
         }
 
 
@@ -75,7 +74,7 @@ namespace FluxusApi.Repositories
                 {
                     connection.Open();
 
-                    var sql = new MySqlCommand(@"
+                    var command = new MySqlCommand(@"
                         SELECT 
                             description 
                         FROM 
@@ -83,23 +82,23 @@ namespace FluxusApi.Repositories
                         WHERE 
                             id = @id",
                         connection);
+                    command.Parameters.AddWithValue("@id", id);
+                    
+                    var reader = command.ExecuteReader();
 
-                    sql.Parameters.AddWithValue("@id", id);
-                    MySqlDataReader dr = sql.ExecuteReader();
-
-                    if (dr.HasRows)
+                    if (reader.HasRows)
                     {
-                        dr.Read();
-                        return Convert.ToString(dr["description"]);
+                        reader.Read();
+                        return Convert.ToString(reader["description"]);
                     }
+                    else
+                        return null;
                 }
             }
             catch (Exception ex)
             {
                 throw ex.InnerException;
             }
-
-            return null;
         }
 
 
@@ -111,7 +110,7 @@ namespace FluxusApi.Repositories
                 {
                     connection.Open();
 
-                    var sql = new MySqlCommand(@"
+                    var command = new MySqlCommand(@"
                         INSERT INTO invoice
                             (description,  issue_date, subtotal_service, 
                             subtotal_mileage_allowance, total) 
@@ -120,12 +119,12 @@ namespace FluxusApi.Repositories
                             @subtotal_mileage_allowance, @total)",
                         connection);
 
-                    sql.Parameters.AddWithValue("@description", dado.Description);
-                    sql.Parameters.AddWithValue("@issue_date", dado.IssueDate);
-                    sql.Parameters.AddWithValue("@subtotal_service", dado.SubtotalService);
-                    sql.Parameters.AddWithValue("@subtotal_mileage_allowance", dado.SubtotalMileageAllowance);
-                    sql.Parameters.AddWithValue("@total", dado.Total);
-                    sql.ExecuteNonQuery();
+                    command.Parameters.AddWithValue("@description", dado.Description);
+                    command.Parameters.AddWithValue("@issue_date", dado.IssueDate);
+                    command.Parameters.AddWithValue("@subtotal_service", dado.SubtotalService);
+                    command.Parameters.AddWithValue("@subtotal_mileage_allowance", dado.SubtotalMileageAllowance);
+                    command.Parameters.AddWithValue("@total", dado.Total);
+                    command.ExecuteNonQuery();
                 }
             }
             catch (Exception ex)
@@ -143,7 +142,7 @@ namespace FluxusApi.Repositories
                 {
                     connection.Open();
 
-                    var sql = new MySqlCommand(@"
+                    var command = new MySqlCommand(@"
                         UPDATE 
                             invoice
                         SET
@@ -154,11 +153,11 @@ namespace FluxusApi.Repositories
                             id = @id",
                         connection);
 
-                    sql.Parameters.AddWithValue("@subtotal_service", dado.SubtotalService);
-                    sql.Parameters.AddWithValue("@subtotal_mileage_allowance", dado.SubtotalMileageAllowance);
-                    sql.Parameters.AddWithValue("@total", dado.Total);
-                    sql.Parameters.AddWithValue("@id", id);
-                    sql.ExecuteNonQuery();
+                    command.Parameters.AddWithValue("@subtotal_service", dado.SubtotalService);
+                    command.Parameters.AddWithValue("@subtotal_mileage_allowance", dado.SubtotalMileageAllowance);
+                    command.Parameters.AddWithValue("@total", dado.Total);
+                    command.Parameters.AddWithValue("@id", id);
+                    command.ExecuteNonQuery();
                 }
             }
             catch (Exception ex)
@@ -176,37 +175,41 @@ namespace FluxusApi.Repositories
                 {
                     connection.Open();
 
-                    var sqlSelect = new MySqlCommand(@"
-                        SELECT 
-                            id 
-                        FROM 
-                            invoice 
-                        WHERE 
-                            id = @id",
-                        connection);
-
-                    sqlSelect.Parameters.AddWithValue("@id", id);
-                    MySqlDataReader dr = sqlSelect.ExecuteReader();
-
-                    if (!dr.HasRows)
-                        return false;
+                    using (var command = new MySqlCommand())
+                    {
+                        command.Connection = connection;
+                        command.CommandText = @"
+                            SELECT 
+                                id 
+                            FROM 
+                                invoice 
+                            WHERE 
+                                id = @id";
+                        command.Parameters.AddWithValue("@id", id);
+                        
+                        var reader = command.ExecuteReader();
+                        if (!reader.HasRows)
+                            return false;
+                    }
                 }
 
                 using (var connection = new MySqlConnection(_connectionString))
                 {
                     connection.Open();
 
-                    var sql = new MySqlCommand(@"
-                        DELETE FROM 
-                            invoice 
-                        WHERE 
-                            id = @id",
-                        connection);
+                    using (var command = new MySqlCommand())
+                    {
+                        command.Connection = connection;
+                        command.CommandText = @"
+                            DELETE FROM 
+                                invoice 
+                            WHERE 
+                                id = @id";
+                        command.Parameters.AddWithValue("@id", id);
+                        command.ExecuteNonQuery();
 
-                    sql.Parameters.AddWithValue("@id", id);
-                    sql.ExecuteNonQuery();
-
-                    return true;
+                        return true;
+                    }
                 }
             }
             catch (Exception ex)

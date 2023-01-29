@@ -23,34 +23,34 @@ namespace FluxusApi.Repositories
                 {
                     connection.Open();
 
-                    var sql = new MySqlCommand(@"
-                    SELECT 
-                        id, 
-                        tag, 
-                        description, 
-                        service_amount, 
-                        mileage_allowance 
-                    FROM 
-                        service 
-                    ORDER BY 
-                        tag",
-                        connection);
+                    var command = new MySqlCommand(@"
+                        SELECT 
+                            id, 
+                            tag, 
+                            description, 
+                            service_amount, 
+                            mileage_allowance 
+                        FROM 
+                            service 
+                        ORDER BY 
+                            tag",
+                            connection);
 
-                    MySqlDataReader dr = sql.ExecuteReader();
+                    var reader = command.ExecuteReader();
 
-                    if (dr.HasRows)
+                    if (reader.HasRows)
                     {
                         var services = new ArrayList();
 
-                        while (dr.Read())
+                        while (reader.Read())
                         {
                             var service = new Service();
 
-                            service.Id = Convert.ToInt64(dr["id"]);
-                            service.Tag = Convert.ToString(dr["tag"]);
-                            service.Description = Convert.ToString(dr["description"]);
-                            service.ServiceAmount = Convert.ToString(dr["service_amount"]);
-                            service.MileageAllowance = Convert.ToString(dr["mileage_allowance"]);
+                            service.Id = Convert.ToInt64(reader["id"]);
+                            service.Tag = Convert.ToString(reader["tag"]);
+                            service.Description = Convert.ToString(reader["description"]);
+                            service.ServiceAmount = Convert.ToString(reader["service_amount"]);
+                            service.MileageAllowance = Convert.ToString(reader["mileage_allowance"]);
 
                             services.Add(service);
                         }
@@ -76,30 +76,30 @@ namespace FluxusApi.Repositories
                 {
                     connection.Open();
 
-                    var sql = new MySqlCommand(@"
-                    SELECT 
-                        * 
-                    FROM 
-                        service 
-                    WHERE 
-                        id = @id",
-                        connection);
+                    var command = new MySqlCommand(@"
+                        SELECT 
+                            * 
+                        FROM 
+                            service 
+                        WHERE 
+                            id = @id",
+                            connection);
 
-                    sql.Parameters.AddWithValue("@id", id);
+                    command.Parameters.AddWithValue("@id", id);
 
-                    MySqlDataReader dr = sql.ExecuteReader();
+                    var reader = command.ExecuteReader();
 
-                    if (dr.HasRows)
+                    if (reader.HasRows)
                     {
                         var service = new Service();
 
-                        if (dr.Read())
+                        if (reader.Read())
                         {
-                            service.Id = Convert.ToInt64(dr["id"]);
-                            service.Tag = Convert.ToString(dr["tag"]);
-                            service.Description = Convert.ToString(dr["description"]);
-                            service.ServiceAmount = Convert.ToString(dr["service_amount"]);
-                            service.MileageAllowance = Convert.ToString(dr["mileage_allowance"]);
+                            service.Id = Convert.ToInt64(reader["id"]);
+                            service.Tag = Convert.ToString(reader["tag"]);
+                            service.Description = Convert.ToString(reader["description"]);
+                            service.ServiceAmount = Convert.ToString(reader["service_amount"]);
+                            service.MileageAllowance = Convert.ToString(reader["mileage_allowance"]);
                         }
 
                         return service;
@@ -123,21 +123,21 @@ namespace FluxusApi.Repositories
                 {
                     connection.Open();
 
-                    var sql = new MySqlCommand(@"
-                    INSERT INTO service
-                        (tag, description, service_amount, mileage_allowance) 
-                    VALUES 
-                        (@tag, @description, @service_amount, @mileage_allowance)",
-                        connection);
+                    var reader = new MySqlCommand(@"
+                        INSERT INTO service
+                            (tag, description, service_amount, mileage_allowance) 
+                        VALUES 
+                            (@tag, @description, @service_amount, @mileage_allowance)",
+                            connection);
 
-                    sql.Parameters.AddWithValue("@tag", dado.Tag);
-                    sql.Parameters.AddWithValue("@description", dado.Description);
-                    sql.Parameters.AddWithValue("@service_amount", dado.ServiceAmount);
-                    sql.Parameters.AddWithValue("@mileage_allowance", dado.MileageAllowance);
+                    reader.Parameters.AddWithValue("@tag", dado.Tag);
+                    reader.Parameters.AddWithValue("@description", dado.Description);
+                    reader.Parameters.AddWithValue("@service_amount", dado.ServiceAmount);
+                    reader.Parameters.AddWithValue("@mileage_allowance", dado.MileageAllowance);
 
-                    sql.ExecuteNonQuery();
+                    reader.ExecuteNonQuery();
 
-                    return sql.LastInsertedId;
+                    return reader.LastInsertedId;
                 }
             }
             catch (Exception ex)
@@ -155,23 +155,23 @@ namespace FluxusApi.Repositories
                 {
                     connection.Open();
 
-                    var sql = new MySqlCommand(@"
-                    UPDATE 
-                        service 
-                    SET 
-                        description = @description, 
-                        service_amount = @service_amount, 
-                        mileage_allowance = @mileage_allowance 
-                    WHERE 
-                        id = @id",
-                        connection);
+                    var reader = new MySqlCommand(@"
+                        UPDATE 
+                            service 
+                        SET 
+                            description = @description, 
+                            service_amount = @service_amount, 
+                            mileage_allowance = @mileage_allowance 
+                        WHERE 
+                            id = @id",
+                            connection);
 
-                    sql.Parameters.AddWithValue("@id", id);
-                    sql.Parameters.AddWithValue("@description", dado.Description);
-                    sql.Parameters.AddWithValue("@service_amount", dado.ServiceAmount);
-                    sql.Parameters.AddWithValue("@mileage_allowance", dado.MileageAllowance);
+                    reader.Parameters.AddWithValue("@id", id);
+                    reader.Parameters.AddWithValue("@description", dado.Description);
+                    reader.Parameters.AddWithValue("@service_amount", dado.ServiceAmount);
+                    reader.Parameters.AddWithValue("@mileage_allowance", dado.MileageAllowance);
 
-                    sql.ExecuteNonQuery();
+                    reader.ExecuteNonQuery();
                 }
             }
             catch (Exception ex)
@@ -189,37 +189,41 @@ namespace FluxusApi.Repositories
                 {
                     connection.Open();
 
-                    var sqlSelect = new MySqlCommand(@"
-                        SELECT 
-                            id 
-                        FROM 
-                            service 
-                        WHERE 
-                            id = @id",
-                        connection);
+                    using (var command = new MySqlCommand())
+                    {
+                        command.Connection = connection;
+                        command.CommandText = @"
+                            SELECT 
+                                id 
+                            FROM 
+                                service 
+                            WHERE 
+                                id = @id";
+                        command.Parameters.AddWithValue("@id", id);
 
-                    sqlSelect.Parameters.AddWithValue("@id", id);
-                    MySqlDataReader dr = sqlSelect.ExecuteReader();
-
-                    if (!dr.HasRows)
-                        return false;
+                        var reader = command.ExecuteReader();
+                        if (!reader.HasRows)
+                            return false;
+                    }
                 }
 
                 using (var connection = new MySqlConnection(_connectionString))
                 {
                     connection.Open();
 
-                    var sql = new MySqlCommand(@"
-                    DELETE FROM 
-                        service 
-                    WHERE 
-                        id = @id",
-                    connection);
+                    using (var command = new MySqlCommand())
+                    {
+                        command.Connection = connection;
+                        command.CommandText = @"
+                            DELETE FROM 
+                                service 
+                            WHERE 
+                                id = @id";
+                        command.Parameters.AddWithValue("@id", id);
+                        command.ExecuteNonQuery();
 
-                    sql.Parameters.AddWithValue("@id", id);
-                    sql.ExecuteNonQuery();
-
-                    return true;
+                        return true;
+                    }
                 }
             }
             catch (Exception ex)

@@ -27,7 +27,7 @@ namespace FluxusApi.Repositories
                 {
                     connection.Open();
 
-                    var sql = new MySqlCommand(@"
+                    var command = new MySqlCommand(@"
                     SELECT 
                         id, 
                         reference_code, 
@@ -42,21 +42,21 @@ namespace FluxusApi.Repositories
                         order_date",
                         connection);
 
-                    MySqlDataReader dr = sql.ExecuteReader();
+                    var reader = command.ExecuteReader();
 
-                    if (dr.HasRows)
+                    if (reader.HasRows)
                     {
                         var orders = new ArrayList();
 
-                        while (dr.Read())
+                        while (reader.Read())
                         {
                             dynamic order = new
                             {
-                                Id = Convert.ToInt64(dr["id"]),
-                                ReferenceCode = Convert.ToString(dr["reference_code"]),
-                                Title = Convert.ToString(dr["title"]),
-                                Status = Convert.ToString(dr["status"]),
-                                ProfessionalId = Convert.ToString(dr["professional_id"])
+                                Id = Convert.ToInt64(reader["id"]),
+                                ReferenceCode = Convert.ToString(reader["reference_code"]),
+                                Title = Convert.ToString(reader["title"]),
+                                Status = Convert.ToString(reader["status"]),
+                                ProfessionalId = Convert.ToString(reader["professional_id"])
                             };
 
                             orders.Add(order);
@@ -83,7 +83,7 @@ namespace FluxusApi.Repositories
                 {
                     connection.Open();
 
-                    var sql = new MySqlCommand(@"
+                    var command = new MySqlCommand(@"
                     SELECT 
                         os.id, 
                         os.order_date, 
@@ -115,32 +115,32 @@ namespace FluxusApi.Repositories
                         done_date",
                         connection);
 
-                    sql.Parameters.AddWithValue("@invoice_id", invoice_id);
+                    command.Parameters.AddWithValue("@invoice_id", invoice_id);
 
-                    MySqlDataReader dr = sql.ExecuteReader();
+                    var reader = command.ExecuteReader();
 
-                    if (dr.HasRows)
+                    if (reader.HasRows)
                     {
                         var orders = new ArrayList();
 
-                        while (dr.Read())
+                        while (reader.Read())
                         {
                             dynamic order = new
                             {
-                                Id = Convert.ToInt64(dr["id"]),
-                                OrderDate = Convert.ToDateTime(dr["order_date"]),
-                                ReferenceCode = Convert.ToString(dr["reference_code"]),
-                                Professional = Convert.ToString(dr["professional"]),
-                                ProfessionalId = Convert.ToString(dr["professional_id"]),
-                                Service = Convert.ToString(dr["service"]),
-                                City = Convert.ToString(dr["city"]),
-                                CustomerName = Convert.ToString(dr["customer_name"]),
-                                SurveyDate = Convert.ToDateTime(dr["survey_date"]),
-                                DoneDate = Convert.ToDateTime(dr["done_date"]),
-                                InvoiceId = Convert.ToInt64(dr["invoice_id"]),
-                                Status = Convert.ToString(dr["status"]),
-                                ServiceAmount = Convert.ToDouble(dr["service_amount"]),
-                                MileageAllowance = Convert.ToDouble(dr["mileage_allowance"])
+                                Id = Convert.ToInt64(reader["id"]),
+                                OrderDate = Convert.ToDateTime(reader["order_date"]),
+                                ReferenceCode = Convert.ToString(reader["reference_code"]),
+                                Professional = Convert.ToString(reader["professional"]),
+                                ProfessionalId = Convert.ToString(reader["professional_id"]),
+                                Service = Convert.ToString(reader["service"]),
+                                City = Convert.ToString(reader["city"]),
+                                CustomerName = Convert.ToString(reader["customer_name"]),
+                                SurveyDate = Convert.ToDateTime(reader["survey_date"]),
+                                DoneDate = Convert.ToDateTime(reader["done_date"]),
+                                InvoiceId = Convert.ToInt64(reader["invoice_id"]),
+                                Status = Convert.ToString(reader["status"]),
+                                ServiceAmount = Convert.ToDouble(reader["service_amount"]),
+                                MileageAllowance = Convert.ToDouble(reader["mileage_allowance"])
                             };
                             orders.Add(order);
                         }
@@ -166,7 +166,7 @@ namespace FluxusApi.Repositories
                 {
                     connection.Open();
 
-                    var sql = new MySqlCommand(@"
+                    var command = new MySqlCommand(@"
                     SELECT 
                         id, order_date, reference_code, professional_id, service_id, city, 
                         customer_name, survey_date, done_date, service_amount, mileage_allowance 
@@ -180,27 +180,27 @@ namespace FluxusApi.Repositories
                         done_date",
                         connection);
 
-                    MySqlDataReader dr = sql.ExecuteReader();
+                    var reader = command.ExecuteReader();
 
-                    if (dr.HasRows)
+                    if (reader.HasRows)
                     {
                         var orders = new ArrayList();
 
-                        while (dr.Read())
+                        while (reader.Read())
                         {
                             dynamic order = new
                             {
-                                Id = Convert.ToInt64(dr["id"]),
-                                OrderDate = Convert.ToDateTime(dr["order_date"]),
-                                ReferenceCode = Convert.ToString(dr["reference_code"]),
-                                ProfessionalId = Convert.ToString(dr["professional_id"]),
-                                ServiceId = Convert.ToString(dr["service_id"]),
-                                City = Convert.ToString(dr["city"]),
-                                CustomerName = Convert.ToString(dr["customer_name"]),
-                                SurveyDate = Convert.ToDateTime(dr["survey_date"]),
-                                DoneDate = Convert.ToDateTime(dr["done_date"]),
-                                ServiceAmount = Convert.ToDouble(dr["service_amount"]),
-                                MileageAllowance = Convert.ToDouble(dr["mileage_allowance"])
+                                Id = Convert.ToInt64(reader["id"]),
+                                OrderDate = Convert.ToDateTime(reader["order_date"]),
+                                ReferenceCode = Convert.ToString(reader["reference_code"]),
+                                ProfessionalId = Convert.ToString(reader["professional_id"]),
+                                ServiceId = Convert.ToString(reader["service_id"]),
+                                City = Convert.ToString(reader["city"]),
+                                CustomerName = Convert.ToString(reader["customer_name"]),
+                                SurveyDate = Convert.ToDateTime(reader["survey_date"]),
+                                DoneDate = Convert.ToDateTime(reader["done_date"]),
+                                ServiceAmount = Convert.ToDouble(reader["service_amount"]),
+                                MileageAllowance = Convert.ToDouble(reader["mileage_allowance"])
                             };
                             orders.Add(order);
                         }
@@ -225,7 +225,7 @@ namespace FluxusApi.Repositories
                 {
                     connection.Open();
 
-                    var sql = new MySqlCommand(@$"
+                    var command = new MySqlCommand(@$"
                         SELECT 
                             os.id,
                             os.status,
@@ -254,27 +254,27 @@ namespace FluxusApi.Repositories
                             order_date",
                         connection);
 
-                    MySqlDataReader dr = sql.ExecuteReader();
+                    var reader = command.ExecuteReader();
 
-                    if (dr.HasRows)
+                    if (reader.HasRows)
                     {
                         var orders = new ArrayList();
 
-                        while (dr.Read())
+                        while (reader.Read())
                         {
                             dynamic order = new
                             {
-                                Id = Convert.ToInt64(dr["id"]),
-                                Status = Convert.ToString(dr["status"]),
-                                Professional = Convert.ToString(dr["professional"]),
-                                OrderDate = Util.DateTimeToShortDateString(Convert.ToString(dr["order_date"])),
-                                ReferenceCode = Convert.ToString(dr["reference_code"]),
-                                Service = Convert.ToString(dr["service"]),
-                                City = Convert.ToString(dr["city"]),
-                                CustomerName = Convert.ToString(dr["customer_name"]),
-                                SurveyDate = Util.DateTimeToShortDateString(Convert.ToString(dr["survey_date"])),
-                                DoneDate = Util.DateTimeToShortDateString(Convert.ToString(dr["done_date"])),
-                                InvoiceId = Convert.ToInt64(dr["invoice_id"])
+                                Id = Convert.ToInt64(reader["id"]),
+                                Status = Convert.ToString(reader["status"]),
+                                Professional = Convert.ToString(reader["professional"]),
+                                OrderDate = Util.DateTimeToShortDateString(Convert.ToString(reader["order_date"])),
+                                ReferenceCode = Convert.ToString(reader["reference_code"]),
+                                Service = Convert.ToString(reader["service"]),
+                                City = Convert.ToString(reader["city"]),
+                                CustomerName = Convert.ToString(reader["customer_name"]),
+                                SurveyDate = Util.DateTimeToShortDateString(Convert.ToString(reader["survey_date"])),
+                                DoneDate = Util.DateTimeToShortDateString(Convert.ToString(reader["done_date"])),
+                                InvoiceId = Convert.ToInt64(reader["invoice_id"])
                             };
                         orders.Add(order);
                         }
@@ -300,37 +300,37 @@ namespace FluxusApi.Repositories
                 {
                     connection.Open();
 
-                    var sql = new MySqlCommand(@"
-                    SELECT DISTINCT 
-                        t1.professional_id, 
-                        t2.nameid 
-                    FROM 
-                        service_order t1 
-                    INNER JOIN 
-                        professional t2 
-                    on 
-                        t1.professional_id = t2.id 
-                    WHERE 
-                        t1.invoice_id = @invoice_id 
-                    ORDER BY 
-                        t2.nameid",
-                        connection);
+                    var command = new MySqlCommand(@"
+                        SELECT DISTINCT 
+                            t1.professional_id, 
+                            t2.nameid 
+                        FROM 
+                            service_order t1 
+                        INNER JOIN 
+                            professional t2 
+                        on 
+                            t1.professional_id = t2.id 
+                        WHERE 
+                            t1.invoice_id = @invoice_id 
+                        ORDER BY 
+                            t2.nameid",
+                            connection);
 
-                    sql.Parameters.AddWithValue("@invoice_id", invoice_id);
+                    command.Parameters.AddWithValue("@invoice_id", invoice_id);
 
-                    MySqlDataReader dr = sql.ExecuteReader();
+                    var reader = command.ExecuteReader();
 
 
-                    if (dr.HasRows)
+                    if (reader.HasRows)
                     {
                         var professionals = new ArrayList();
 
-                        while (dr.Read())
+                        while (reader.Read())
                         {
                             dynamic professional = new
                             {
-                                ProfessionalId = Convert.ToString(dr["professional_id"]),
-                                Nameid = Convert.ToString(dr["nameid"])
+                                ProfessionalId = Convert.ToString(reader["professional_id"]),
+                                Nameid = Convert.ToString(reader["nameid"])
                             };
                             professionals.Add(professional);
                         }
@@ -356,7 +356,7 @@ namespace FluxusApi.Repositories
                 {
                     connection.Open();
 
-                    var sql = new MySqlCommand(@"
+                    var command = new MySqlCommand(@"
                     SELECT DISTINCT 
                         city 
                     FROM 
@@ -365,17 +365,17 @@ namespace FluxusApi.Repositories
                         city",
                         connection);
 
-                    MySqlDataReader dr = sql.ExecuteReader();
+                    var reader = command.ExecuteReader();
 
-                    if (dr.HasRows)
+                    if (reader.HasRows)
                     {
                         var cities = new ArrayList();
 
-                        while (dr.Read())
+                        while (reader.Read())
                         {
                             dynamic city = new
                             {
-                                City = Convert.ToString(dr["city"])
+                                City = Convert.ToString(reader["city"])
                             };
                             cities.Add(city);
                         }
@@ -401,47 +401,47 @@ namespace FluxusApi.Repositories
                 {
                     connection.Open();
 
-                    var sql = new MySqlCommand(@"
-                    SELECT 
-                        * 
-                    FROM 
-                        service_order 
-                    WHERE 
-                        id = @id",
-                        connection);
+                    var command = new MySqlCommand(@"
+                        SELECT 
+                            * 
+                        FROM 
+                            service_order 
+                        WHERE 
+                            id = @id",
+                            connection);
 
-                    sql.Parameters.AddWithValue("@id", id);
+                    command.Parameters.AddWithValue("@id", id);
 
-                    MySqlDataReader dr = sql.ExecuteReader();
+                    var reader = command.ExecuteReader();
 
-                    if (dr.HasRows)
+                    if (reader.HasRows)
                     {
                         var order = new ServiceOrder();
 
-                        if (dr.Read())
+                        if (reader.Read())
                         {
-                            order.Id = Convert.ToInt64(dr["id"]);
-                            order.ReferenceCode = Convert.ToString(dr["reference_code"]);
-                            order.Branch = Convert.ToString(dr["branch"]);
-                            order.Title = Convert.ToString(dr["title"]);
-                            order.OrderDate = Convert.ToString(dr["order_date"]);
-                            order.Deadline = Convert.ToDateTime(dr["deadline"]);
-                            order.ProfessionalId = Convert.ToString(dr["professional_id"]);
-                            order.ServiceId = Convert.ToString(dr["service_id"]);
-                            order.ServiceAmount = Convert.ToString(dr["service_amount"]);
-                            order.MileageAllowance = Convert.ToString(dr["mileage_allowance"]);
-                            order.Siopi = Convert.ToBoolean(dr["siopi"]);
-                            order.CustomerName = Convert.ToString(dr["customer_name"]);
-                            order.City = Convert.ToString(dr["city"]);
-                            order.ContactName = Convert.ToString(dr["contact_name"]);
-                            order.ContactPhone = Convert.ToString(dr["contact_phone"]);
-                            order.Coordinates = Convert.ToString(dr["coordinates"]);
-                            order.Status = Convert.ToString(dr["status"]);
-                            order.PendingDate = Convert.ToString(dr["pending_date"]);
-                            order.SurveyDate = Convert.ToString(dr["survey_date"]);
-                            order.DoneDate = Convert.ToString(dr["done_date"]);
-                            order.Comments = Convert.ToString(dr["comments"]);
-                            order.InvoiceId = Convert.ToInt64(dr["invoice_id"]);
+                            order.Id = Convert.ToInt64(reader["id"]);
+                            order.ReferenceCode = Convert.ToString(reader["reference_code"]);
+                            order.Branch = Convert.ToString(reader["branch"]);
+                            order.Title = Convert.ToString(reader["title"]);
+                            order.OrderDate = Convert.ToString(reader["order_date"]);
+                            order.Deadline = Convert.ToDateTime(reader["deadline"]);
+                            order.ProfessionalId = Convert.ToString(reader["professional_id"]);
+                            order.ServiceId = Convert.ToString(reader["service_id"]);
+                            order.ServiceAmount = Convert.ToString(reader["service_amount"]);
+                            order.MileageAllowance = Convert.ToString(reader["mileage_allowance"]);
+                            order.Siopi = Convert.ToBoolean(reader["siopi"]);
+                            order.CustomerName = Convert.ToString(reader["customer_name"]);
+                            order.City = Convert.ToString(reader["city"]);
+                            order.ContactName = Convert.ToString(reader["contact_name"]);
+                            order.ContactPhone = Convert.ToString(reader["contact_phone"]);
+                            order.Coordinates = Convert.ToString(reader["coordinates"]);
+                            order.Status = Convert.ToString(reader["status"]);
+                            order.PendingDate = Convert.ToString(reader["pending_date"]);
+                            order.SurveyDate = Convert.ToString(reader["survey_date"]);
+                            order.DoneDate = Convert.ToString(reader["done_date"]);
+                            order.Comments = Convert.ToString(reader["comments"]);
+                            order.InvoiceId = Convert.ToInt64(reader["invoice_id"]);
                         }
 
                         if (order.OrderDate == "01/01/0001 00:00:00")
@@ -477,7 +477,7 @@ namespace FluxusApi.Repositories
                 {
                     connection.Open();
 
-                    var sql = new MySqlCommand(@"
+                    var command = new MySqlCommand(@"
                     INSERT INTO service_order
                         (title, reference_code, branch, order_date, deadline, professional_id, service_id, 
                         service_amount, mileage_allowance, siopi, customer_name, city, contact_name, 
@@ -488,30 +488,30 @@ namespace FluxusApi.Repositories
                         @contact_phone, @coordinates, @status, @pending_date, @survey_date, @done_date, @comments)",
                         connection);
 
-                    sql.Parameters.AddWithValue("@title", dado.Title);
-                    sql.Parameters.AddWithValue("@reference_code", dado.ReferenceCode);
-                    sql.Parameters.AddWithValue("@branch", dado.Branch);
-                    sql.Parameters.AddWithValue("@order_date", Util.DateOrNull(dado.OrderDate));
-                    sql.Parameters.AddWithValue("@deadline", dado.Deadline);
-                    sql.Parameters.AddWithValue("@professional_id", dado.ProfessionalId);
-                    sql.Parameters.AddWithValue("@service_id", dado.ServiceId);
-                    sql.Parameters.AddWithValue("@service_amount", dado.ServiceAmount);
-                    sql.Parameters.AddWithValue("@mileage_allowance", dado.MileageAllowance);
-                    sql.Parameters.AddWithValue("@siopi", dado.Siopi);
-                    sql.Parameters.AddWithValue("@customer_name", dado.CustomerName);
-                    sql.Parameters.AddWithValue("@city", dado.City);
-                    sql.Parameters.AddWithValue("@contact_name", dado.ContactName);
-                    sql.Parameters.AddWithValue("@contact_phone", dado.ContactPhone);
-                    sql.Parameters.AddWithValue("@coordinates", dado.Coordinates);
-                    sql.Parameters.AddWithValue("@status", dado.Status);
-                    sql.Parameters.AddWithValue("@pending_date", Util.DateOrNull(dado.PendingDate));
-                    sql.Parameters.AddWithValue("@survey_date", Util.DateOrNull(dado.SurveyDate));
-                    sql.Parameters.AddWithValue("@done_date", Util.DateOrNull(dado.DoneDate));
-                    sql.Parameters.AddWithValue("@comments", dado.Comments);
+                    command.Parameters.AddWithValue("@title", dado.Title);
+                    command.Parameters.AddWithValue("@reference_code", dado.ReferenceCode);
+                    command.Parameters.AddWithValue("@branch", dado.Branch);
+                    command.Parameters.AddWithValue("@order_date", Util.DateOrNull(dado.OrderDate));
+                    command.Parameters.AddWithValue("@deadline", dado.Deadline);
+                    command.Parameters.AddWithValue("@professional_id", dado.ProfessionalId);
+                    command.Parameters.AddWithValue("@service_id", dado.ServiceId);
+                    command.Parameters.AddWithValue("@service_amount", dado.ServiceAmount);
+                    command.Parameters.AddWithValue("@mileage_allowance", dado.MileageAllowance);
+                    command.Parameters.AddWithValue("@siopi", dado.Siopi);
+                    command.Parameters.AddWithValue("@customer_name", dado.CustomerName);
+                    command.Parameters.AddWithValue("@city", dado.City);
+                    command.Parameters.AddWithValue("@contact_name", dado.ContactName);
+                    command.Parameters.AddWithValue("@contact_phone", dado.ContactPhone);
+                    command.Parameters.AddWithValue("@coordinates", dado.Coordinates);
+                    command.Parameters.AddWithValue("@status", dado.Status);
+                    command.Parameters.AddWithValue("@pending_date", Util.DateOrNull(dado.PendingDate));
+                    command.Parameters.AddWithValue("@survey_date", Util.DateOrNull(dado.SurveyDate));
+                    command.Parameters.AddWithValue("@done_date", Util.DateOrNull(dado.DoneDate));
+                    command.Parameters.AddWithValue("@comments", dado.Comments);
 
-                    sql.ExecuteNonQuery();
+                    command.ExecuteNonQuery();
 
-                    return sql.LastInsertedId;
+                    return command.LastInsertedId;
                 }
             }
             catch (Exception ex)
@@ -529,7 +529,7 @@ namespace FluxusApi.Repositories
                 {
                     connection.Open();
 
-                    var sql = new MySqlCommand(@"
+                    var command = new MySqlCommand(@"
                     UPDATE 
                         service_order 
                     SET 
@@ -555,27 +555,27 @@ namespace FluxusApi.Repositories
                         id = @id",
                         connection);
 
-                    sql.Parameters.AddWithValue("@title", dado.Title);
-                    sql.Parameters.AddWithValue("@order_date", Util.DateOrNull(dado.OrderDate));
-                    sql.Parameters.AddWithValue("@deadline", dado.Deadline);
-                    sql.Parameters.AddWithValue("@professional_id", dado.ProfessionalId);
-                    sql.Parameters.AddWithValue("@service_id", dado.ServiceId);
-                    sql.Parameters.AddWithValue("@service_amount", dado.ServiceAmount);
-                    sql.Parameters.AddWithValue("@mileage_allowance", dado.MileageAllowance);
-                    sql.Parameters.AddWithValue("@siopi", dado.Siopi);
-                    sql.Parameters.AddWithValue("@customer_name", dado.CustomerName);
-                    sql.Parameters.AddWithValue("@city", dado.City);
-                    sql.Parameters.AddWithValue("@contact_name", dado.ContactName);
-                    sql.Parameters.AddWithValue("@contact_phone", dado.ContactPhone);
-                    sql.Parameters.AddWithValue("@coordinates", dado.Coordinates);
-                    sql.Parameters.AddWithValue("@status", dado.Status);
-                    sql.Parameters.AddWithValue("@pending_date", Util.DateOrNull(dado.PendingDate));
-                    sql.Parameters.AddWithValue("@survey_date", Util.DateOrNull(dado.SurveyDate));
-                    sql.Parameters.AddWithValue("@done_date", Util.DateOrNull(dado.DoneDate));
-                    sql.Parameters.AddWithValue("@comments", dado.Comments);
-                    sql.Parameters.AddWithValue("@id", id);
+                    command.Parameters.AddWithValue("@title", dado.Title);
+                    command.Parameters.AddWithValue("@order_date", Util.DateOrNull(dado.OrderDate));
+                    command.Parameters.AddWithValue("@deadline", dado.Deadline);
+                    command.Parameters.AddWithValue("@professional_id", dado.ProfessionalId);
+                    command.Parameters.AddWithValue("@service_id", dado.ServiceId);
+                    command.Parameters.AddWithValue("@service_amount", dado.ServiceAmount);
+                    command.Parameters.AddWithValue("@mileage_allowance", dado.MileageAllowance);
+                    command.Parameters.AddWithValue("@siopi", dado.Siopi);
+                    command.Parameters.AddWithValue("@customer_name", dado.CustomerName);
+                    command.Parameters.AddWithValue("@city", dado.City);
+                    command.Parameters.AddWithValue("@contact_name", dado.ContactName);
+                    command.Parameters.AddWithValue("@contact_phone", dado.ContactPhone);
+                    command.Parameters.AddWithValue("@coordinates", dado.Coordinates);
+                    command.Parameters.AddWithValue("@status", dado.Status);
+                    command.Parameters.AddWithValue("@pending_date", Util.DateOrNull(dado.PendingDate));
+                    command.Parameters.AddWithValue("@survey_date", Util.DateOrNull(dado.SurveyDate));
+                    command.Parameters.AddWithValue("@done_date", Util.DateOrNull(dado.DoneDate));
+                    command.Parameters.AddWithValue("@comments", dado.Comments);
+                    command.Parameters.AddWithValue("@id", id);
 
-                    sql.ExecuteNonQuery();
+                    command.ExecuteNonQuery();
                 }
             }
             catch (Exception ex)
@@ -593,7 +593,7 @@ namespace FluxusApi.Repositories
                 {
                     connection.Open();
 
-                    var sql = new MySqlCommand(@"
+                    var command = new MySqlCommand(@"
                     UPDATE 
                         service_order 
                     SET 
@@ -602,10 +602,10 @@ namespace FluxusApi.Repositories
                         id = @id",
                         connection);
 
-                    sql.Parameters.AddWithValue("@id", id);
-                    sql.Parameters.AddWithValue("@invoice_id", invoice_id);
+                    command.Parameters.AddWithValue("@id", id);
+                    command.Parameters.AddWithValue("@invoice_id", invoice_id);
 
-                    sql.ExecuteNonQuery();
+                    command.ExecuteNonQuery();
                 }
             }
             catch (Exception ex)
@@ -643,21 +643,21 @@ namespace FluxusApi.Repositories
                             break;
                     }
 
-                    var sql = new MySqlCommand(@$"
-                    UPDATE 
-                        service_order 
-                    SET 
-                        status = @status 
-                        {changeDate} 
-                    WHERE 
-                        id = @id",
-                        connection);
+                    var command = new MySqlCommand(@$"
+                        UPDATE 
+                            service_order 
+                        SET 
+                            status = @status 
+                            {changeDate} 
+                        WHERE 
+                            id = @id",
+                            connection);
 
-                    sql.Parameters.AddWithValue("@status", status);
-                    sql.Parameters.AddWithValue("@date", DateTime.Now);
-                    sql.Parameters.AddWithValue("@id", id);
+                    command.Parameters.AddWithValue("@status", status);
+                    command.Parameters.AddWithValue("@date", DateTime.Now);
+                    command.Parameters.AddWithValue("@id", id);
 
-                    sql.ExecuteNonQuery();
+                    command.ExecuteNonQuery();
                 }
             }
             catch (Exception ex)
@@ -675,38 +675,41 @@ namespace FluxusApi.Repositories
                 {
                     connection.Open();
 
-                    var sqlSelect = new MySqlCommand(@"
-                        SELECT 
-                            id 
-                        FROM 
-                            service_order 
-                        WHERE 
-                            id = @id",
-                        connection);
+                    using (var command = new MySqlCommand())
+                    {
+                        command.Connection = connection;
+                        command.CommandText = @"
+                            SELECT 
+                                id 
+                            FROM 
+                                service_order 
+                            WHERE 
+                                id = @id";
+                        command.Parameters.AddWithValue("@id", id);
 
-                    sqlSelect.Parameters.AddWithValue("@id", id);
-                    MySqlDataReader dr = sqlSelect.ExecuteReader();
-
-                    if (!dr.HasRows)
-                        return false;
+                        var reader = command.ExecuteReader();
+                        if (!reader.HasRows)
+                            return false;
+                    }
                 }
 
                 using (var connection = new MySqlConnection(_connectionString))
                 {
                     connection.Open();
 
-                    var sql = new MySqlCommand(@"
-                    DELETE FROM 
-                        service_order 
-                    WHERE 
-                        id = @id",
-                        connection);
+                    using (var command = new MySqlCommand())
+                    {
+                        command.Connection = connection;
+                        command.CommandText = @"
+                            DELETE FROM 
+                                service_order 
+                            WHERE 
+                                id = @id";
+                        command.Parameters.AddWithValue("@id", id);
+                        command.ExecuteNonQuery();
 
-                    sql.Parameters.AddWithValue("@id", id);
-
-                    sql.ExecuteNonQuery();
-
-                    return true;
+                        return true;
+                    }
                 }
             }
             catch (Exception ex)

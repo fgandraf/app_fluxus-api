@@ -22,7 +22,7 @@ namespace FluxusApi.Repositories
                 {
                     connection.Open();
                     
-                    var sql = new MySqlCommand(@"
+                    var command = new MySqlCommand(@"
                         SELECT 
                             id, 
                             tag, 
@@ -36,22 +36,22 @@ namespace FluxusApi.Repositories
                             tag", 
                         connection);
                     
-                    MySqlDataReader dr = sql.ExecuteReader();
+                    var reader = command.ExecuteReader();
 
-                    if (dr.HasRows)
+                    if (reader.HasRows)
                     {
                         var professionals = new ArrayList();
 
-                        while (dr.Read())
+                        while (reader.Read())
                         {
                             Professional professional = new Professional();
 
-                            professional.Id = Convert.ToInt64(dr["id"]);
-                            professional.Tag = Convert.ToString(dr["tag"]);
-                            professional.Name = Convert.ToString(dr["name"]);
-                            professional.Profession = Convert.ToString(dr["profession"]);
-                            professional.Phone1 = Convert.ToString(dr["phone1"]);
-                            professional.UserActive = Convert.ToBoolean(dr["user_active"]);
+                            professional.Id = Convert.ToInt64(reader["id"]);
+                            professional.Tag = Convert.ToString(reader["tag"]);
+                            professional.Name = Convert.ToString(reader["name"]);
+                            professional.Profession = Convert.ToString(reader["profession"]);
+                            professional.Phone1 = Convert.ToString(reader["phone1"]);
+                            professional.UserActive = Convert.ToBoolean(reader["user_active"]);
 
                             professionals.Add(professional);
                         }
@@ -77,7 +77,7 @@ namespace FluxusApi.Repositories
                 {
                     connection.Open();
                     
-                    var sql = new MySqlCommand(@"
+                    var command = new MySqlCommand(@"
                         SELECT 
                             id,
                             tag, 
@@ -88,19 +88,19 @@ namespace FluxusApi.Repositories
                             tag", 
                         connection);
                     
-                    MySqlDataReader dr = sql.ExecuteReader();
+                    var reader = command.ExecuteReader();
 
-                    if (dr.HasRows)
+                    if (reader.HasRows)
                     {
                         var professionals = new ArrayList();
 
-                        while (dr.Read())
+                        while (reader.Read())
                         {
                             dynamic professional = new
                             {
-                                Id = Convert.ToString(dr["id"]),
-                                Tag = Convert.ToString(dr["tag"]),
-                                NameId = Convert.ToString(dr["nameid"])
+                                Id = Convert.ToString(reader["id"]),
+                                Tag = Convert.ToString(reader["tag"]),
+                                NameId = Convert.ToString(reader["nameid"])
                             };
 
                             professionals.Add(professional);
@@ -125,7 +125,7 @@ namespace FluxusApi.Repositories
                 {
                     connection.Open();
                     
-                    var sql = new MySqlCommand(@"
+                    var command = new MySqlCommand(@"
                         SELECT 
                             id, 
                             technician_responsible, 
@@ -139,24 +139,24 @@ namespace FluxusApi.Repositories
                             user_name = @user_name", 
                         connection);
                     
-                    sql.Parameters.AddWithValue("@user_name", userName);
+                    command.Parameters.AddWithValue("@user_name", userName);
                     
-                    MySqlDataReader dr = sql.ExecuteReader();
+                    var reader = command.ExecuteReader();
 
-                    if (dr.HasRows)
+                    if (reader.HasRows)
                     {
                         var users = new ArrayList();
 
-                        if (dr.Read())
+                        if (reader.Read())
                         {
                             dynamic user = new
                             {
-                                Id = Convert.ToString(dr["id"]),
-                                TechnicianResponsible = Convert.ToBoolean(dr["technician_responsible"]),
-                                LegalResponsible = Convert.ToBoolean(dr["legal_responsible"]),
-                                UserActive = Convert.ToBoolean(dr["user_active"]),
-                                UserName = Convert.ToString(dr["user_name"]),
-                                UserPassword = Convert.ToString(dr["user_password"])
+                                Id = Convert.ToString(reader["id"]),
+                                TechnicianResponsible = Convert.ToBoolean(reader["technician_responsible"]),
+                                LegalResponsible = Convert.ToBoolean(reader["legal_responsible"]),
+                                UserActive = Convert.ToBoolean(reader["user_active"]),
+                                UserName = Convert.ToString(reader["user_name"]),
+                                UserPassword = Convert.ToString(reader["user_password"])
                             };
                             users.Add(user);
                         }
@@ -180,7 +180,7 @@ namespace FluxusApi.Repositories
                 {
                     connection.Open();
                     
-                    var sql = new MySqlCommand(@"
+                    var command = new MySqlCommand(@"
                         SELECT 
                             * 
                         FROM 
@@ -189,32 +189,32 @@ namespace FluxusApi.Repositories
                             id = @id", 
                         connection);
                     
-                    sql.Parameters.AddWithValue("@id", id);
+                    command.Parameters.AddWithValue("@id", id);
                     
-                    MySqlDataReader dr = sql.ExecuteReader();
+                    var reader = command.ExecuteReader();
 
-                    if (dr.HasRows)
+                    if (reader.HasRows)
                     {
                         Professional professional = new Professional();
-                        if (dr.Read())
+                        if (reader.Read())
                         {
-                            professional.Id = Convert.ToInt64(dr["id"]);
-                            professional.Tag = Convert.ToString(dr["tag"]);
-                            professional.Name = Convert.ToString(dr["name"]);
-                            professional.NameId = Convert.ToString(dr["nameid"]);
-                            professional.Cpf = Convert.ToString(dr["cpf"]);
-                            professional.Birthday = Convert.ToString(dr["birthday"]);
-                            professional.Profession = Convert.ToString(dr["profession"]);
-                            professional.PermitNumber = Convert.ToString(dr["permit_number"]);
-                            professional.Association = Convert.ToString(dr["association"]);
-                            professional.Phone1 = Convert.ToString(dr["phone1"]);
-                            professional.Phone2 = Convert.ToString(dr["phone2"]);
-                            professional.Email = Convert.ToString(dr["email"]);
-                            professional.TechnicianResponsible = Convert.ToBoolean(dr["technician_responsible"]);
-                            professional.LegalResponsible = Convert.ToBoolean(dr["legal_responsible"]);
-                            professional.UserActive = Convert.ToBoolean(dr["user_active"]);
-                            professional.UserName = Convert.ToString(dr["user_name"]);
-                            professional.UserPassword = Convert.ToString(dr["user_password"]);
+                            professional.Id = Convert.ToInt64(reader["id"]);
+                            professional.Tag = Convert.ToString(reader["tag"]);
+                            professional.Name = Convert.ToString(reader["name"]);
+                            professional.NameId = Convert.ToString(reader["nameid"]);
+                            professional.Cpf = Convert.ToString(reader["cpf"]);
+                            professional.Birthday = Convert.ToString(reader["birthday"]);
+                            professional.Profession = Convert.ToString(reader["profession"]);
+                            professional.PermitNumber = Convert.ToString(reader["permit_number"]);
+                            professional.Association = Convert.ToString(reader["association"]);
+                            professional.Phone1 = Convert.ToString(reader["phone1"]);
+                            professional.Phone2 = Convert.ToString(reader["phone2"]);
+                            professional.Email = Convert.ToString(reader["email"]);
+                            professional.TechnicianResponsible = Convert.ToBoolean(reader["technician_responsible"]);
+                            professional.LegalResponsible = Convert.ToBoolean(reader["legal_responsible"]);
+                            professional.UserActive = Convert.ToBoolean(reader["user_active"]);
+                            professional.UserName = Convert.ToString(reader["user_name"]);
+                            professional.UserPassword = Convert.ToString(reader["user_password"]);
                         }
                         return professional;
                     }
@@ -236,7 +236,7 @@ namespace FluxusApi.Repositories
                 {
                     connection.Open();
                     
-                    var sql = new MySqlCommand(@"
+                    var command = new MySqlCommand(@"
                         INSERT INTO professional
                             (tag, name, nameid, cpf, birthday, profession, permit_number, 
                             association, phone1, phone2, email, technician_responsible, 
@@ -247,25 +247,25 @@ namespace FluxusApi.Repositories
                             @legal_responsible, @user_active, @user_name, @user_password)", 
                         connection);
                     
-                    sql.Parameters.AddWithValue("@tag", professional.Tag);
-                    sql.Parameters.AddWithValue("@name", professional.Name);
-                    sql.Parameters.AddWithValue("@nameid", professional.NameId);
-                    sql.Parameters.AddWithValue("@cpf", professional.Cpf);
-                    sql.Parameters.AddWithValue("@birthday", Util.DateOrNull(professional.Birthday));
-                    sql.Parameters.AddWithValue("@profession", professional.Profession);
-                    sql.Parameters.AddWithValue("@permit_number", professional.PermitNumber);
-                    sql.Parameters.AddWithValue("@association", professional.Association);
-                    sql.Parameters.AddWithValue("@phone1", professional.Phone1);
-                    sql.Parameters.AddWithValue("@phone2", professional.Phone2);
-                    sql.Parameters.AddWithValue("@email", professional.Email);
-                    sql.Parameters.AddWithValue("@technician_responsible", professional.TechnicianResponsible);
-                    sql.Parameters.AddWithValue("@legal_responsible", professional.LegalResponsible);
-                    sql.Parameters.AddWithValue("@user_active", professional.UserActive);
-                    sql.Parameters.AddWithValue("@user_name", professional.UserName);
-                    sql.Parameters.AddWithValue("@user_password", professional.UserPassword);
+                    command.Parameters.AddWithValue("@tag", professional.Tag);
+                    command.Parameters.AddWithValue("@name", professional.Name);
+                    command.Parameters.AddWithValue("@nameid", professional.NameId);
+                    command.Parameters.AddWithValue("@cpf", professional.Cpf);
+                    command.Parameters.AddWithValue("@birthday", Util.DateOrNull(professional.Birthday));
+                    command.Parameters.AddWithValue("@profession", professional.Profession);
+                    command.Parameters.AddWithValue("@permit_number", professional.PermitNumber);
+                    command.Parameters.AddWithValue("@association", professional.Association);
+                    command.Parameters.AddWithValue("@phone1", professional.Phone1);
+                    command.Parameters.AddWithValue("@phone2", professional.Phone2);
+                    command.Parameters.AddWithValue("@email", professional.Email);
+                    command.Parameters.AddWithValue("@technician_responsible", professional.TechnicianResponsible);
+                    command.Parameters.AddWithValue("@legal_responsible", professional.LegalResponsible);
+                    command.Parameters.AddWithValue("@user_active", professional.UserActive);
+                    command.Parameters.AddWithValue("@user_name", professional.UserName);
+                    command.Parameters.AddWithValue("@user_password", professional.UserPassword);
 
-                    sql.ExecuteNonQuery();
-                    return sql.LastInsertedId;
+                    command.ExecuteNonQuery();
+                    return command.LastInsertedId;
                 }
             }
             catch (Exception ex)
@@ -283,7 +283,7 @@ namespace FluxusApi.Repositories
                 {
                     connection.Open();
                     
-                    var sql = new MySqlCommand(@"
+                    var command = new MySqlCommand(@"
                         UPDATE 
                             professional 
                         SET 
@@ -306,23 +306,23 @@ namespace FluxusApi.Repositories
                             id = @id", 
                         connection);
                     
-                    sql.Parameters.AddWithValue("@id", id);
-                    sql.Parameters.AddWithValue("@name", pro.Name);
-                    sql.Parameters.AddWithValue("@nameid", pro.NameId);
-                    sql.Parameters.AddWithValue("@cpf", pro.Cpf);
-                    sql.Parameters.AddWithValue("@birthday", Util.DateOrNull(pro.Birthday));
-                    sql.Parameters.AddWithValue("@profession", pro.Profession);
-                    sql.Parameters.AddWithValue("@permit_number", pro.PermitNumber);
-                    sql.Parameters.AddWithValue("@association", pro.Association);
-                    sql.Parameters.AddWithValue("@phone1", pro.Phone1);
-                    sql.Parameters.AddWithValue("@phone2", pro.Phone2);
-                    sql.Parameters.AddWithValue("@email", pro.Email);
-                    sql.Parameters.AddWithValue("@technician_responsible", pro.TechnicianResponsible);
-                    sql.Parameters.AddWithValue("@legal_responsible", pro.LegalResponsible);
-                    sql.Parameters.AddWithValue("@user_active", pro.UserActive);
-                    sql.Parameters.AddWithValue("@user_name", pro.UserName);
-                    sql.Parameters.AddWithValue("@user_password", pro.UserPassword);
-                    sql.ExecuteNonQuery();
+                    command.Parameters.AddWithValue("@id", id);
+                    command.Parameters.AddWithValue("@name", pro.Name);
+                    command.Parameters.AddWithValue("@nameid", pro.NameId);
+                    command.Parameters.AddWithValue("@cpf", pro.Cpf);
+                    command.Parameters.AddWithValue("@birthday", Util.DateOrNull(pro.Birthday));
+                    command.Parameters.AddWithValue("@profession", pro.Profession);
+                    command.Parameters.AddWithValue("@permit_number", pro.PermitNumber);
+                    command.Parameters.AddWithValue("@association", pro.Association);
+                    command.Parameters.AddWithValue("@phone1", pro.Phone1);
+                    command.Parameters.AddWithValue("@phone2", pro.Phone2);
+                    command.Parameters.AddWithValue("@email", pro.Email);
+                    command.Parameters.AddWithValue("@technician_responsible", pro.TechnicianResponsible);
+                    command.Parameters.AddWithValue("@legal_responsible", pro.LegalResponsible);
+                    command.Parameters.AddWithValue("@user_active", pro.UserActive);
+                    command.Parameters.AddWithValue("@user_name", pro.UserName);
+                    command.Parameters.AddWithValue("@user_password", pro.UserPassword);
+                    command.ExecuteNonQuery();
                 }
             }
             catch (Exception ex)
@@ -340,37 +340,41 @@ namespace FluxusApi.Repositories
                 {
                     connection.Open();
 
-                    var sqlSelect = new MySqlCommand(@"
+                    using (var command = new MySqlCommand())
+                    {
+                        command.Connection = connection;
+                        command.CommandText = @"
                         SELECT 
                             id 
                         FROM 
                             professional 
                         WHERE 
-                            id = @id",
-                        connection);
-
-                    sqlSelect.Parameters.AddWithValue("@id", id);
-                    MySqlDataReader dr = sqlSelect.ExecuteReader();
-
-                    if (!dr.HasRows)
-                        return false;
+                            id = @id";
+                        command.Parameters.AddWithValue("@id", id);
+                        
+                        var reader = command.ExecuteReader();
+                        if (!reader.HasRows)
+                            return false;
+                    }
                 }
 
                 using (var connection = new MySqlConnection(_connectionString))
                 {
                     connection.Open();
-                    
-                    var sql = new MySqlCommand(@"
-                        DELETE FROM 
-                            professional 
-                        WHERE 
-                            id = @id", 
-                        connection);
-                    
-                    sql.Parameters.AddWithValue("@id", id);
-                    sql.ExecuteNonQuery();
 
-                    return true;
+                    using (var command = new MySqlCommand())
+                    {
+                        command.Connection = connection;
+                        command.CommandText = @"
+                            DELETE FROM 
+                                professional 
+                            WHERE 
+                                id = @id";
+                        command.Parameters.AddWithValue("@id", id);
+                        command.ExecuteNonQuery();
+
+                        return true;
+                    }
                 }
             }
             catch (Exception ex)

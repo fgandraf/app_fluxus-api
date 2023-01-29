@@ -22,52 +22,52 @@ namespace FluxusApi.Repositories
                 {
                     connection.Open();
 
-                    var sql = new MySqlCommand(@"
+                    var command = new MySqlCommand(@"
                         SELECT 
                             * 
                         FROM 
                             profile",
                         connection);
 
-                    MySqlDataReader dr = sql.ExecuteReader();
+                    var reader = command.ExecuteReader();
 
 
 
-                    if (dr.HasRows)
+                    if (reader.HasRows)
                     {
                         var profiles = new ArrayList();
 
-                        if (dr.Read())
+                        if (reader.Read())
                         {
                             Profile profile = new Profile();
 
-                            profile.Cnpj = Convert.ToString(dr["cnpj"]);
-                            profile.TradingName = Convert.ToString(dr["trading_name"]);
-                            profile.CompanyName = Convert.ToString(dr["company_name"]);
-                            profile.StateId = Convert.ToString(dr["state_id"]);
-                            profile.CityId = Convert.ToString(dr["city_id"]);
-                            profile.Address = Convert.ToString(dr["address"]);
-                            profile.Complement = Convert.ToString(dr["complement"]);
-                            profile.District = Convert.ToString(dr["district"]);
-                            profile.City = Convert.ToString(dr["city"]);
-                            profile.Zip = Convert.ToString(dr["zip"]);
-                            profile.State = Convert.ToString(dr["state"]);
-                            profile.EstablishmentDate = Convert.ToString(dr["establishment_date"]);
-                            profile.Phone1 = Convert.ToString(dr["phone1"]);
-                            profile.Phone2 = Convert.ToString(dr["phone2"]);
-                            profile.Email = Convert.ToString(dr["email"]);
-                            profile.BankAccountName = Convert.ToString(dr["bank_account_name"]);
-                            profile.BankAccountType = Convert.ToString(dr["bank_account_type"]);
-                            profile.BankAccountBranch = Convert.ToString(dr["bank_account_branch"]);
-                            profile.BankAccountDigit = Convert.ToString(dr["bank_account_digit"]);
-                            profile.BankAccountNumber = Convert.ToString(dr["bank_account_number"]);
-                            profile.ContractorName = Convert.ToString(dr["contractor_name"]);
-                            profile.ContractNotice = Convert.ToString(dr["contract_notice"]);
-                            profile.ContractNumber = Convert.ToString(dr["contract_number"]);
-                            profile.ContractEstablished = Convert.ToString(dr["contract_established"]);
-                            profile.ContractStart = Convert.ToString(dr["contract_start"]);
-                            profile.ContractEnd = Convert.ToString(dr["contract_end"]);
-                            profile.Logo = Convert.ToBase64String((byte[])(dr["logo"]));
+                            profile.Cnpj = Convert.ToString(reader["cnpj"]);
+                            profile.TradingName = Convert.ToString(reader["trading_name"]);
+                            profile.CompanyName = Convert.ToString(reader["company_name"]);
+                            profile.StateId = Convert.ToString(reader["state_id"]);
+                            profile.CityId = Convert.ToString(reader["city_id"]);
+                            profile.Address = Convert.ToString(reader["address"]);
+                            profile.Complement = Convert.ToString(reader["complement"]);
+                            profile.District = Convert.ToString(reader["district"]);
+                            profile.City = Convert.ToString(reader["city"]);
+                            profile.Zip = Convert.ToString(reader["zip"]);
+                            profile.State = Convert.ToString(reader["state"]);
+                            profile.EstablishmentDate = Convert.ToString(reader["establishment_date"]);
+                            profile.Phone1 = Convert.ToString(reader["phone1"]);
+                            profile.Phone2 = Convert.ToString(reader["phone2"]);
+                            profile.Email = Convert.ToString(reader["email"]);
+                            profile.BankAccountName = Convert.ToString(reader["bank_account_name"]);
+                            profile.BankAccountType = Convert.ToString(reader["bank_account_type"]);
+                            profile.BankAccountBranch = Convert.ToString(reader["bank_account_branch"]);
+                            profile.BankAccountDigit = Convert.ToString(reader["bank_account_digit"]);
+                            profile.BankAccountNumber = Convert.ToString(reader["bank_account_number"]);
+                            profile.ContractorName = Convert.ToString(reader["contractor_name"]);
+                            profile.ContractNotice = Convert.ToString(reader["contract_notice"]);
+                            profile.ContractNumber = Convert.ToString(reader["contract_number"]);
+                            profile.ContractEstablished = Convert.ToString(reader["contract_established"]);
+                            profile.ContractStart = Convert.ToString(reader["contract_start"]);
+                            profile.ContractEnd = Convert.ToString(reader["contract_end"]);
+                            profile.Logo = Convert.ToBase64String((byte[])(reader["logo"]));
 
                             profiles.Add(profile);
                         }
@@ -93,7 +93,7 @@ namespace FluxusApi.Repositories
                 {
                     connection.Open();
 
-                    var sql = new MySqlCommand(@"
+                    var command = new MySqlCommand(@"
                         SELECT 
                             logo 
                         FROM 
@@ -102,13 +102,13 @@ namespace FluxusApi.Repositories
                             id = 1",
                         connection);
 
-                    MySqlDataReader dr = sql.ExecuteReader();
+                    var reader = command.ExecuteReader();
 
-                    if (dr.HasRows)
+                    if (reader.HasRows)
                     {
-                        dr.Read();
+                        reader.Read();
 
-                        return (byte[])(dr["logo"]);
+                        return (byte[])(reader["logo"]);
                     }
                 }
             }
@@ -129,7 +129,7 @@ namespace FluxusApi.Repositories
                 {
                     connection.Open();
 
-                    var sql = new MySqlCommand(@"
+                    var command = new MySqlCommand(@"
                         SELECT 
                             cnpj, 
                             company_name, 
@@ -142,21 +142,21 @@ namespace FluxusApi.Repositories
                             id = 1",
                         connection);
 
-                    MySqlDataReader dr = sql.ExecuteReader();
+                    var reader = command.ExecuteReader();
 
-                    if (dr.HasRows)
+                    if (reader.HasRows)
                     {
                         var profiles = new ArrayList();
 
-                        if (dr.Read())
+                        if (reader.Read())
                         {
                             dynamic profile = new
                             {
-                                Cnpj = Convert.ToString(dr["cnpj"]),
-                                CompanyName = Convert.ToString(dr["company_name"]),
-                                ContractNotice = Convert.ToString(dr["contract_notice"]),
-                                ContractNumber = Convert.ToString(dr["contract_number"]),
-                                Logo = (byte[])(dr["logo"])
+                                Cnpj = Convert.ToString(reader["cnpj"]),
+                                CompanyName = Convert.ToString(reader["company_name"]),
+                                ContractNotice = Convert.ToString(reader["contract_notice"]),
+                                ContractNumber = Convert.ToString(reader["contract_number"]),
+                                Logo = (byte[])(reader["logo"])
                             };
 
                             profiles.Add(profile);
@@ -183,7 +183,7 @@ namespace FluxusApi.Repositories
                 {
                     connection.Open();
 
-                    var sql = new MySqlCommand(@"
+                    var command = new MySqlCommand(@"
                     SELECT 
                         trading_name 
                     FROM 
@@ -192,16 +192,16 @@ namespace FluxusApi.Repositories
                         id = 1",
                     connection);
 
-                    MySqlDataReader dr = sql.ExecuteReader();
+                    var reader = command.ExecuteReader();
 
 
-                    if (dr.HasRows)
+                    if (reader.HasRows)
                     {
                         string tradingName = null;
 
-                        if (dr.Read())
+                        if (reader.Read())
                         {
-                            tradingName = Convert.ToString(dr["trading_name"]);
+                            tradingName = Convert.ToString(reader["trading_name"]);
                         }
 
                         return tradingName;
@@ -225,7 +225,7 @@ namespace FluxusApi.Repositories
                 {
                     connection.Open();
 
-                    var sql = new MySqlCommand(@"
+                    var command = new MySqlCommand(@"
                         INSERT INTO profile
                             (id, cnpj, trading_name, company_name, state_id, city_id, address, 
                             complement, district, city, zip, state, establishment_date, phone1, 
@@ -240,38 +240,38 @@ namespace FluxusApi.Repositories
                             @contract_number, @contract_established, @contract_start, @contract_end, @logo)",
                         connection);
 
-                    sql.Parameters.AddWithValue("@id", "1");
-                    sql.Parameters.AddWithValue("@cnpj", profile.Cnpj);
-                    sql.Parameters.AddWithValue("@trading_name", profile.TradingName);
-                    sql.Parameters.AddWithValue("@company_name", profile.CompanyName);
-                    sql.Parameters.AddWithValue("@state_id", profile.StateId);
-                    sql.Parameters.AddWithValue("@city_id", profile.CityId);
-                    sql.Parameters.AddWithValue("@address", profile.Address);
-                    sql.Parameters.AddWithValue("@complement", profile.Complement);
-                    sql.Parameters.AddWithValue("@district", profile.District);
-                    sql.Parameters.AddWithValue("@city", profile.City);
-                    sql.Parameters.AddWithValue("@zip", profile.Zip);
-                    sql.Parameters.AddWithValue("@state", profile.State);
-                    sql.Parameters.AddWithValue("@establishment_date", Util.DateOrNull(profile.EstablishmentDate));
-                    sql.Parameters.AddWithValue("@phone1", profile.Phone1);
-                    sql.Parameters.AddWithValue("@phone2", profile.Phone1);
-                    sql.Parameters.AddWithValue("@email", profile.Email);
-                    sql.Parameters.AddWithValue("@bank_account_name", profile.BankAccountName);
-                    sql.Parameters.AddWithValue("@bank_account_type", profile.BankAccountType);
-                    sql.Parameters.AddWithValue("@bank_account_branch", profile.BankAccountBranch);
-                    sql.Parameters.AddWithValue("@bank_account_digit", profile.BankAccountDigit);
-                    sql.Parameters.AddWithValue("@bank_account_number", profile.BankAccountNumber);
-                    sql.Parameters.AddWithValue("@contractor_name", profile.ContractorName);
-                    sql.Parameters.AddWithValue("@contract_notice", profile.ContractNotice);
-                    sql.Parameters.AddWithValue("@contract_number", profile.ContractNumber);
-                    sql.Parameters.AddWithValue("@contract_established", Util.DateOrNull(profile.ContractEstablished));
-                    sql.Parameters.AddWithValue("@contract_start", Util.DateOrNull(profile.ContractStart));
-                    sql.Parameters.AddWithValue("@contract_end", Util.DateOrNull(profile.ContractEnd));
-                    sql.Parameters.AddWithValue("@logo", (byte[])Convert.FromBase64String(profile.Logo));
+                    command.Parameters.AddWithValue("@id", "1");
+                    command.Parameters.AddWithValue("@cnpj", profile.Cnpj);
+                    command.Parameters.AddWithValue("@trading_name", profile.TradingName);
+                    command.Parameters.AddWithValue("@company_name", profile.CompanyName);
+                    command.Parameters.AddWithValue("@state_id", profile.StateId);
+                    command.Parameters.AddWithValue("@city_id", profile.CityId);
+                    command.Parameters.AddWithValue("@address", profile.Address);
+                    command.Parameters.AddWithValue("@complement", profile.Complement);
+                    command.Parameters.AddWithValue("@district", profile.District);
+                    command.Parameters.AddWithValue("@city", profile.City);
+                    command.Parameters.AddWithValue("@zip", profile.Zip);
+                    command.Parameters.AddWithValue("@state", profile.State);
+                    command.Parameters.AddWithValue("@establishment_date", Util.DateOrNull(profile.EstablishmentDate));
+                    command.Parameters.AddWithValue("@phone1", profile.Phone1);
+                    command.Parameters.AddWithValue("@phone2", profile.Phone1);
+                    command.Parameters.AddWithValue("@email", profile.Email);
+                    command.Parameters.AddWithValue("@bank_account_name", profile.BankAccountName);
+                    command.Parameters.AddWithValue("@bank_account_type", profile.BankAccountType);
+                    command.Parameters.AddWithValue("@bank_account_branch", profile.BankAccountBranch);
+                    command.Parameters.AddWithValue("@bank_account_digit", profile.BankAccountDigit);
+                    command.Parameters.AddWithValue("@bank_account_number", profile.BankAccountNumber);
+                    command.Parameters.AddWithValue("@contractor_name", profile.ContractorName);
+                    command.Parameters.AddWithValue("@contract_notice", profile.ContractNotice);
+                    command.Parameters.AddWithValue("@contract_number", profile.ContractNumber);
+                    command.Parameters.AddWithValue("@contract_established", Util.DateOrNull(profile.ContractEstablished));
+                    command.Parameters.AddWithValue("@contract_start", Util.DateOrNull(profile.ContractStart));
+                    command.Parameters.AddWithValue("@contract_end", Util.DateOrNull(profile.ContractEnd));
+                    command.Parameters.AddWithValue("@logo", (byte[])Convert.FromBase64String(profile.Logo));
 
-                    sql.ExecuteNonQuery();
+                    command.ExecuteNonQuery();
 
-                    return sql.LastInsertedId;
+                    return command.LastInsertedId;
                 }
             }
             catch (Exception ex)
@@ -289,7 +289,7 @@ namespace FluxusApi.Repositories
                 {
                     connection.Open();
 
-                    var sql = new MySqlCommand(@"
+                    var command = new MySqlCommand(@"
                         UPDATE 
                             profile 
                         SET 
@@ -324,36 +324,36 @@ namespace FluxusApi.Repositories
                             id = @id", 
                         connection);
 
-                    sql.Parameters.AddWithValue("@id", "1");
-                    sql.Parameters.AddWithValue("@cnpj", dado.Cnpj);
-                    sql.Parameters.AddWithValue("@trading_name", dado.TradingName);
-                    sql.Parameters.AddWithValue("@company_name", dado.CompanyName);
-                    sql.Parameters.AddWithValue("@state_id", dado.StateId);
-                    sql.Parameters.AddWithValue("@city_id", dado.CityId);
-                    sql.Parameters.AddWithValue("@address", dado.Address);
-                    sql.Parameters.AddWithValue("@complement", dado.Complement);
-                    sql.Parameters.AddWithValue("@district", dado.District);
-                    sql.Parameters.AddWithValue("@city", dado.City);
-                    sql.Parameters.AddWithValue("@zip", dado.Zip);
-                    sql.Parameters.AddWithValue("@state", dado.State);
-                    sql.Parameters.AddWithValue("@establishment_date", Util.DateOrNull(dado.EstablishmentDate));
-                    sql.Parameters.AddWithValue("@phone1", dado.Phone1);
-                    sql.Parameters.AddWithValue("@phone2", dado.Phone2);
-                    sql.Parameters.AddWithValue("@email", dado.Email);
-                    sql.Parameters.AddWithValue("@bank_account_name", dado.BankAccountName);
-                    sql.Parameters.AddWithValue("@bank_account_type", dado.BankAccountType);
-                    sql.Parameters.AddWithValue("@bank_account_branch", dado.BankAccountBranch);
-                    sql.Parameters.AddWithValue("@bank_account_digit", dado.BankAccountDigit);
-                    sql.Parameters.AddWithValue("@bank_account_number", dado.BankAccountNumber);
-                    sql.Parameters.AddWithValue("@contractor_name", dado.ContractorName);
-                    sql.Parameters.AddWithValue("@contract_notice", dado.ContractNotice);
-                    sql.Parameters.AddWithValue("@contract_number", dado.ContractNumber);
-                    sql.Parameters.AddWithValue("@contract_established", Util.DateOrNull(dado.ContractEstablished));
-                    sql.Parameters.AddWithValue("@contract_start", Util.DateOrNull(dado.ContractStart));
-                    sql.Parameters.AddWithValue("@contract_end", Util.DateOrNull(dado.ContractEnd));
-                    sql.Parameters.AddWithValue("@logo", (byte[])Convert.FromBase64String(dado.Logo));
+                    command.Parameters.AddWithValue("@id", "1");
+                    command.Parameters.AddWithValue("@cnpj", dado.Cnpj);
+                    command.Parameters.AddWithValue("@trading_name", dado.TradingName);
+                    command.Parameters.AddWithValue("@company_name", dado.CompanyName);
+                    command.Parameters.AddWithValue("@state_id", dado.StateId);
+                    command.Parameters.AddWithValue("@city_id", dado.CityId);
+                    command.Parameters.AddWithValue("@address", dado.Address);
+                    command.Parameters.AddWithValue("@complement", dado.Complement);
+                    command.Parameters.AddWithValue("@district", dado.District);
+                    command.Parameters.AddWithValue("@city", dado.City);
+                    command.Parameters.AddWithValue("@zip", dado.Zip);
+                    command.Parameters.AddWithValue("@state", dado.State);
+                    command.Parameters.AddWithValue("@establishment_date", Util.DateOrNull(dado.EstablishmentDate));
+                    command.Parameters.AddWithValue("@phone1", dado.Phone1);
+                    command.Parameters.AddWithValue("@phone2", dado.Phone2);
+                    command.Parameters.AddWithValue("@email", dado.Email);
+                    command.Parameters.AddWithValue("@bank_account_name", dado.BankAccountName);
+                    command.Parameters.AddWithValue("@bank_account_type", dado.BankAccountType);
+                    command.Parameters.AddWithValue("@bank_account_branch", dado.BankAccountBranch);
+                    command.Parameters.AddWithValue("@bank_account_digit", dado.BankAccountDigit);
+                    command.Parameters.AddWithValue("@bank_account_number", dado.BankAccountNumber);
+                    command.Parameters.AddWithValue("@contractor_name", dado.ContractorName);
+                    command.Parameters.AddWithValue("@contract_notice", dado.ContractNotice);
+                    command.Parameters.AddWithValue("@contract_number", dado.ContractNumber);
+                    command.Parameters.AddWithValue("@contract_established", Util.DateOrNull(dado.ContractEstablished));
+                    command.Parameters.AddWithValue("@contract_start", Util.DateOrNull(dado.ContractStart));
+                    command.Parameters.AddWithValue("@contract_end", Util.DateOrNull(dado.ContractEnd));
+                    command.Parameters.AddWithValue("@logo", (byte[])Convert.FromBase64String(dado.Logo));
 
-                    sql.ExecuteNonQuery();
+                    command.ExecuteNonQuery();
                 }
             }
             catch (Exception ex)

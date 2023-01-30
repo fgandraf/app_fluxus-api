@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections;
+﻿using System.Collections;
 using MySql.Data.MySqlClient;
 using FluxusApi.Entities;
 using Dapper;
@@ -18,23 +17,22 @@ namespace FluxusApi.Repositories
 
         public IEnumerable GetAll()
         {
+            string query = @"
+                SELECT 
+                    Id, 
+                    Tag, 
+                    Description, 
+                    ServiceAmount, 
+                    MileageAllowance 
+                FROM 
+                    Service 
+                ORDER BY 
+                    Tag";
+
             try
             {
                 using (var connection = new MySqlConnection(_connectionString))
-                {
-                    var service = connection.Query(@"
-                        SELECT 
-                            Id, 
-                            Tag, 
-                            Description, 
-                            ServiceAmount, 
-                            MileageAllowance 
-                        FROM 
-                            Service 
-                        ORDER BY 
-                            Tag");
-                    return service;
-                }
+                    return connection.Query(query);
             }
             catch (Exception ex)
             {
@@ -45,19 +43,18 @@ namespace FluxusApi.Repositories
 
         public IEnumerable GetBy(int id)
         {
+            string query = @"
+                SELECT 
+                    * 
+                FROM 
+                    Service 
+                WHERE 
+                    Id = @id";
+
             try
             {
                 using (var connection = new MySqlConnection(_connectionString))
-                {
-                    var service = connection.QueryFirst(@"
-                        SELECT 
-                            * 
-                        FROM 
-                            Service 
-                        WHERE 
-                            Id = @id", new { id });
-                    return service;
-                }
+                    return connection.QueryFirst(query, new { id });
             }
             catch (Exception ex)
             {
@@ -68,18 +65,16 @@ namespace FluxusApi.Repositories
 
         public int Insert(Service service)
         {
+            string insertSQL = @"
+                INSERT INTO Service
+                    (Tag, Description, ServiceAmount, MileageAllowance) 
+                VALUES 
+                    (@Tag, @Description, @ServiceAmount, @MileageAllowance)";
+
             try
             {
-                string insertSQL = @"
-                    INSERT INTO Service
-                        (Tag, Description, ServiceAmount, MileageAllowance) 
-                    VALUES 
-                        (@Tag, @Description, @ServiceAmount, @MileageAllowance)";
-
                 using (var connection = new MySqlConnection(_connectionString))
-                {
                     return connection.Execute(insertSQL, service);
-                }
             }
             catch (Exception ex)
             {
@@ -90,22 +85,20 @@ namespace FluxusApi.Repositories
 
         public int Update(Service service)
         {
+            string updateSQL = @"
+                UPDATE 
+                    Service 
+                SET 
+                    Description = @Description, 
+                    ServiceAmount = @ServiceAmount, 
+                    MileageAllowance = @MileageAllowance 
+                WHERE 
+                    Id = @Id";
+
             try
             {
-                string updateSQL = @"
-                    UPDATE 
-                        Service 
-                    SET 
-                        Description = @Description, 
-                        ServiceAmount = @ServiceAmount, 
-                        MileageAllowance = @MileageAllowance 
-                    WHERE 
-                        Id = @Id";
-
                 using (var connection = new MySqlConnection(_connectionString))
-                {
                     return connection.Execute(updateSQL, service);
-                }
             }
             catch (Exception ex)
             {
@@ -116,14 +109,14 @@ namespace FluxusApi.Repositories
 
         public int Delete(int id)
         {
+            string deleteSQL = @"
+                DELETE FROM 
+                    Service 
+                WHERE 
+                    Id = @Id";
+
             try
             {
-                string deleteSQL = @"
-                    DELETE FROM 
-                        Service 
-                    WHERE 
-                        Id = @Id";
-
                 using (var connection = new MySqlConnection(_connectionString))
                     return connection.Execute(deleteSQL, new { id });
             }

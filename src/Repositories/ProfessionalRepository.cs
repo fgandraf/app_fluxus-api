@@ -2,14 +2,13 @@
 using FluxusApi.Entities;
 using System.Collections;
 using Dapper;
-using Azure.Identity;
 
 namespace FluxusApi.Repositories
 {
-
     public class ProfessionalRepository
     {
         private string _connectionString = string.Empty;
+
         public ProfessionalRepository()
         {
             _connectionString = ConnectionString.Get();
@@ -18,24 +17,23 @@ namespace FluxusApi.Repositories
 
         public IEnumerable GetAll()
         {
+            string query = @"
+                SELECT 
+                    Id, 
+                    Tag, 
+                    Name, 
+                    Profession, 
+                    Phone1, 
+                    UserActive
+                FROM 
+                    Professional 
+                ORDER BY 
+                    Tag";
+
             try
             {
                 using (var connection = new MySqlConnection(_connectionString))
-                {
-                    var professionals = connection.Query(@"
-                        SELECT 
-                            Id, 
-                            Tag, 
-                            Name, 
-                            Profession, 
-                            Phone1, 
-                            UserActive
-                        FROM 
-                            Professional 
-                        ORDER BY 
-                            Tag");
-                    return professionals;
-                }
+                    return connection.Query(query);
             }
             catch (Exception ex)
             {
@@ -46,21 +44,20 @@ namespace FluxusApi.Repositories
 
         public IEnumerable GetTagNameid()
         {
+            string query = @"
+                SELECT 
+                    Id,
+                    Tag, 
+                    Nameid 
+                FROM 
+                    Professional 
+                ORDER BY 
+                    Tag";
+
             try
             {
                 using (var connection = new MySqlConnection(_connectionString))
-                {
-                    var professionals = connection.Query(@"
-                        SELECT 
-                            Id,
-                            Tag, 
-                            Nameid 
-                        FROM 
-                            Professional 
-                        ORDER BY 
-                            Tag");
-                    return professionals;
-                }
+                    return connection.Query(query);
             }
             catch (Exception ex)
             {
@@ -71,24 +68,23 @@ namespace FluxusApi.Repositories
 
         public IEnumerable GetUserInfoBy(string userName)
         {
+            string query = @"
+                SELECT 
+                    Id, 
+                    TechnicianResponsible, 
+                    LegalResponsible, 
+                    UserName, 
+                    UserPassword, 
+                    UserActive 
+                FROM 
+                    Professional 
+                WHERE 
+                    UserName = @userName";
+
             try
             {
                 using (var connection = new MySqlConnection(_connectionString))
-                {
-                    var professional = connection.QueryFirst(@"
-                        SELECT 
-                            Id, 
-                            TechnicianResponsible, 
-                            LegalResponsible, 
-                            UserName, 
-                            UserPassword, 
-                            UserActive 
-                        FROM 
-                            Professional 
-                        WHERE 
-                            UserName = @userName", new { userName });
-                        return professional;
-                }
+                    return connection.QueryFirst(query, new { userName });
             }
             catch (Exception ex)
             {
@@ -99,19 +95,18 @@ namespace FluxusApi.Repositories
 
         public IEnumerable GetBy(int id)
         {
+            string query = @"
+                SELECT 
+                    * 
+                FROM 
+                    Professional 
+                WHERE 
+                    Id = @id";
+
             try
             {
                 using (var connection = new MySqlConnection(_connectionString))
-                {
-                    var professional = connection.QueryFirst(@"
-                        SELECT 
-                            * 
-                        FROM 
-                            Professional 
-                        WHERE 
-                            Id = @id", new { id });
-                    return professional;
-                }
+                    return connection.QueryFirst(query, new { id });
             }
             catch (Exception ex)
             {
@@ -122,22 +117,20 @@ namespace FluxusApi.Repositories
 
         public int Insert(Professional professional)
         {
+            string insertSQL = @"
+                INSERT INTO Professional
+                    (Tag, Name, Nameid, Cpf, Birthday, Profession, PermitNumber, 
+                    Association, Phone1, Phone2, Email, TechnicianResponsible, 
+                    LegalResponsible, UserActive, UserName, UserPassword) 
+                VALUES
+                    (@Tag, @Name, @Nameid, @Cpf, @Birthday, @Profession, @PermitNumber, 
+                    @Association, @Phone1, @Phone2, @Email, @TechnicianResponsible, 
+                    @LegalResponsible, @UserActive, @UserName, @UserPassword)";
+
             try
             {
-                string insertSQL = @"
-                    INSERT INTO Professional
-                        (Tag, Name, Nameid, Cpf, Birthday, Profession, PermitNumber, 
-                        Association, Phone1, Phone2, Email, TechnicianResponsible, 
-                        LegalResponsible, UserActive, UserName, UserPassword) 
-                    VALUES
-                        (@Tag, @Name, @Nameid, @Cpf, @Birthday, @Profession, @PermitNumber, 
-                        @Association, @Phone1, @Phone2, @Email, @TechnicianResponsible, 
-                        @LegalResponsible, @UserActive, @UserName, @UserPassword)";
-
                 using (var connection = new MySqlConnection(_connectionString))
-                {
                     return connection.Execute(insertSQL, professional);
-                }
             }
             catch (Exception ex)
             {
@@ -148,34 +141,32 @@ namespace FluxusApi.Repositories
 
         public int Update(Professional professional)
         {
+            string updateSQL = @"
+                UPDATE 
+                    Professional 
+                SET 
+                    Name = @Name, 
+                    Nameid = @Nameid, 
+                    Cpf = @Cpf, 
+                    Birthday = @Birthday, 
+                    Profession = @Profession, 
+                    PermitNumber = @PermitNumber, 
+                    Association = @Association, 
+                    Phone1 = @Phone1, 
+                    Phone2 = @Phone2, 
+                    Email = @Email, 
+                    TechnicianResponsible = @TechnicianResponsible, 
+                    LegalResponsible = @LegalResponsible, 
+                    UserActive = @UserActive, 
+                    UserName = @UserName, 
+                    UserPassword = @UserPassword 
+                WHERE 
+                    Id = @Id";
+
             try
             {
-                string updateSQL = @"
-                    UPDATE 
-                        Professional 
-                    SET 
-                        Name = @Name, 
-                        Nameid = @Nameid, 
-                        Cpf = @Cpf, 
-                        Birthday = @Birthday, 
-                        Profession = @Profession, 
-                        PermitNumber = @PermitNumber, 
-                        Association = @Association, 
-                        Phone1 = @Phone1, 
-                        Phone2 = @Phone2, 
-                        Email = @Email, 
-                        TechnicianResponsible = @TechnicianResponsible, 
-                        LegalResponsible = @LegalResponsible, 
-                        UserActive = @UserActive, 
-                        UserName = @UserName, 
-                        UserPassword = @UserPassword 
-                    WHERE 
-                        Id = @Id";
-
                 using (var connection = new MySqlConnection(_connectionString))
-                {
                     return connection.Execute(updateSQL, professional);
-                }
             }
             catch (Exception ex)
             {
@@ -186,14 +177,14 @@ namespace FluxusApi.Repositories
 
         public int Delete(int id)
         {
+            string deleteSQL = @"
+                DELETE FROM 
+                    Professional 
+                WHERE 
+                    Id = @Id";
+
             try
             {
-                string deleteSQL = @"
-                    DELETE FROM 
-                        Professional 
-                    WHERE 
-                        Id = @Id";
-
                 using (var connection = new MySqlConnection(_connectionString))
                     return connection.Execute(deleteSQL, new { id });
             }

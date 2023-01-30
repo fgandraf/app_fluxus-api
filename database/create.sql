@@ -3,139 +3,139 @@ CREATE DATABASE `fluxus`;
 USE `fluxus`;
 
 
-DROP TABLE IF EXISTS bank_branch;
-CREATE TABLE bank_branch (
-	`id` INT NOT NULL AUTO_INCREMENT,
-	`branch_number` VARCHAR(4) NOT NULL,
-	`name` VARCHAR(100) NOT NULL,
-	`address` VARCHAR(100) DEFAULT NULL,
-	`complement` VARCHAR(100) DEFAULT NULL,
-	`district` VARCHAR(100) DEFAULT NULL,
-	`city` VARCHAR(100) DEFAULT NULL,
-	`zip` VARCHAR(9) DEFAULT NULL,
-	`state` VARCHAR(2) DEFAULT NULL,
-	`contact_name` VARCHAR(20) DEFAULT NULL,
-	`phone1` VARCHAR(15) DEFAULT NULL,
-	`phone2` VARCHAR(15) DEFAULT NULL,
-	`email` VARCHAR(50) DEFAULT NULL,
+DROP TABLE IF EXISTS BankBranch;
+CREATE TABLE BankBranch (
+	`Id` INT NOT NULL AUTO_INCREMENT,
+	`BranchNumber` VARCHAR(4) NOT NULL,
+	`Name` VARCHAR(100) NOT NULL,
+	`Address` VARCHAR(100) DEFAULT NULL,
+	`Complement` VARCHAR(100) DEFAULT NULL,
+	`District` VARCHAR(100) DEFAULT NULL,
+	`City` VARCHAR(100) DEFAULT NULL,
+	`Zip` VARCHAR(9) DEFAULT NULL,
+	`State` VARCHAR(2) DEFAULT NULL,
+	`ContactName` VARCHAR(20) DEFAULT NULL,
+	`Phone1` VARCHAR(15) DEFAULT NULL,
+	`Phone2` VARCHAR(15) DEFAULT NULL,
+	`Email` VARCHAR(50) DEFAULT NULL,
 	
-	PRIMARY KEY (`id`),
-	UNIQUE KEY `UQ_bank_branch_branch_number` (`branch_number`)
+	PRIMARY KEY (`Id`),
+	UNIQUE KEY `UQ_BankBranch_BranchNumber` (`BranchNumber`)
 );
 
 
-DROP TABLE IF EXISTS `service`;
-CREATE TABLE `service`(
-	`id` INT NOT NULL AUTO_INCREMENT,
-	`tag` VARCHAR(10),
-	`description` VARCHAR(100),
-	`service_amount` DECIMAL(10,2) NOT NULL DEFAULT 0.00,
-	`mileage_allowance` DECIMAL(10,2) NOT NULL DEFAULT 0.00,
+DROP TABLE IF EXISTS `Service`;
+CREATE TABLE `Service`(
+	`Id` INT NOT NULL AUTO_INCREMENT,
+	`Tag` VARCHAR(10),
+	`Description` VARCHAR(100),
+	`ServiceAmount` DECIMAL(10,2) NOT NULL DEFAULT 0.00,
+	`MileageAllowance` DECIMAL(10,2) NOT NULL DEFAULT 0.00,
 	
-	PRIMARY KEY (`id`),
-	UNIQUE KEY `UQ_services_tag` (`tag`)
+	PRIMARY KEY (`Id`),
+	UNIQUE KEY `UQ_Service_Tag` (`Tag`)
 );
 
 
-DROP TABLE IF EXISTS `profile`;
-CREATE TABLE `profile` (
-	`id` INT NOT NULL AUTO_INCREMENT,
-	`cnpj` VARCHAR(18) NOT NULL,
-	`trading_name` VARCHAR(50) NOT NULL,
-	`company_name` VARCHAR(100),
-	`state_id` VARCHAR(50),
-	`city_id` VARCHAR(50),
-	`address` VARCHAR(100),
-	`complement` VARCHAR(100),
-	`district` VARCHAR(100),
-	`city` VARCHAR(100),
-	`zip` VARCHAR(9),
-	`state` VARCHAR(2),
-	`establishment_date` DATE,
-	`phone1` VARCHAR(15),
-	`phone2` VARCHAR(15),
-	`email` VARCHAR(50),
-	`bank_account_name` VARCHAR(100),
-	`bank_account_type` VARCHAR(100),
-	`bank_account_branch` VARCHAR(6),
-	`bank_account_digit` VARCHAR(3),
-	`bank_account_number` VARCHAR(20),
-	`contractor_name` VARCHAR(100),
-	`contract_notice` VARCHAR(50),
-	`contract_number` VARCHAR(50),
-	`contract_established` DATE,
-	`contract_start` DATE,
-	`contract_end` DATE,
-	`logo` MEDIUMBLOB,
+DROP TABLE IF EXISTS `Profile`;
+CREATE TABLE `Profile` (
+	`Id` INT NOT NULL AUTO_INCREMENT,
+	`Cnpj` VARCHAR(18) NOT NULL,
+	`TradingName` VARCHAR(50) NOT NULL,
+	`CompanyName` VARCHAR(100),
+	`StateId` VARCHAR(50),
+	`CityId` VARCHAR(50),
+	`Address` VARCHAR(100),
+	`Complement` VARCHAR(100),
+	`District` VARCHAR(100),
+	`City` VARCHAR(100),
+	`Zip` VARCHAR(9),
+	`State` VARCHAR(2),
+	`EstablishmentDate` DATE,
+	`Phone1` VARCHAR(15),
+	`Phone2` VARCHAR(15),
+	`Email` VARCHAR(50),
+	`BankAccountName` VARCHAR(100),
+	`BankAccountType` VARCHAR(100),
+	`BankAccountBranch` VARCHAR(6),
+	`BankAccountDigit` VARCHAR(3),
+	`BankAccountNumber` VARCHAR(20),
+	`ContractorName` VARCHAR(100),
+	`ContractNotice` VARCHAR(50),
+	`ContractNumber` VARCHAR(50),
+	`ContractEstablished` DATE,
+	`ContractStart` DATE,
+	`ContractEnd` DATE,
+	`Logo` MEDIUMBLOB,
 	
-	PRIMARY KEY (`id`)
+	PRIMARY KEY (`Id`)
 );
 
 
-DROP TABLE IF EXISTS `professional`;
-CREATE TABLE `professional` (
-	`id` INT NOT NULL AUTO_INCREMENT,
-	`tag` VARCHAR(3) NOT NULL,
-	`name` VARCHAR(100) NOT NULL,
-	`nameid` VARCHAR(100) DEFAULT NULL,
-	`cpf` VARCHAR(14) DEFAULT NULL,
-	`birthday` date DEFAULT NULL,
-	`profession` VARCHAR(100) DEFAULT NULL,
-	`permit_number` VARCHAR(100) DEFAULT NULL,
-	`association` VARCHAR(100) DEFAULT NULL,
-	`phone1` VARCHAR(15) DEFAULT NULL,
-	`phone2` VARCHAR(15) DEFAULT NULL,
-	`email` VARCHAR(50) DEFAULT NULL,
-	`technician_responsible` BIT DEFAULT 0,
-	`legal_responsible` BIT DEFAULT 0,
-	`user_active` BIT DEFAULT 0,
-	`user_name` VARCHAR(40) DEFAULT NULL,
-	`user_password` VARCHAR(15) DEFAULT NULL,
+DROP TABLE IF EXISTS `Professional`;
+CREATE TABLE `Professional` (
+	`Id` INT NOT NULL AUTO_INCREMENT,
+	`Tag` VARCHAR(3) NOT NULL,
+	`Name` VARCHAR(100) NOT NULL,
+	`Nameid` VARCHAR(100) DEFAULT NULL,
+	`Cpf` VARCHAR(14) DEFAULT NULL,
+	`Birthday` date DEFAULT NULL,
+	`Profession` VARCHAR(100) DEFAULT NULL,
+	`PermitNumber` VARCHAR(100) DEFAULT NULL,
+	`Association` VARCHAR(100) DEFAULT NULL,
+	`Phone1` VARCHAR(15) DEFAULT NULL,
+	`Phone2` VARCHAR(15) DEFAULT NULL,
+	`Email` VARCHAR(50) DEFAULT NULL,
+	`TechnicianResponsible` BIT DEFAULT 0,
+	`LegalResponsible` BIT DEFAULT 0,
+	`UserActive` BIT DEFAULT 0,
+	`UserName` VARCHAR(40) DEFAULT NULL,
+	`UserPassword` VARCHAR(15) DEFAULT NULL,
 	
-	PRIMARY KEY (`id`)
+	PRIMARY KEY (`Id`)
 );
 
 
-DROP TABLE IF EXISTS `invoice`;
-CREATE TABLE `invoice` (
-	`id` INT NOT NULL AUTO_INCREMENT,
-	`description` VARCHAR(20),
-	`issue_date` DATE,
-	`subtotal_service` DECIMAL(10,2),
-	`subtotal_mileage_allowance` DECIMAL(10,2),
-	`total` DECIMAL(10,2),
+DROP TABLE IF EXISTS `Invoice`;
+CREATE TABLE `Invoice` (
+	`Id` INT NOT NULL AUTO_INCREMENT,
+	`Description` VARCHAR(20),
+	`IssueDate` DATE,
+	`SubtotalService` DECIMAL(10,2),
+	`SubtotalMileageAllowance` DECIMAL(10,2),
+	`Total` DECIMAL(10,2),
 	
-	PRIMARY KEY (`id`)
+	PRIMARY KEY (`Id`)
 );
 
 
-DROP TABLE IF EXISTS `service_order`;
-CREATE TABLE `service_order` (
-	`id` INT NOT NULL AUTO_INCREMENT,
-	`reference_code` VARCHAR(33) NOT NULL,
-	`branch` VARCHAR(4),
-	`title` VARCHAR(150),
-	`order_date` DATE,
-	`deadline` DATE,
-	`professional_id` INT,
-	`service_id` INT,
-	`service_amount` DECIMAL(10,2) NOT NULL,
-	`mileage_allowance` DECIMAL(10,2) NOT NULL,
-	`siopi` BIT,
-	`customer_name` VARCHAR(100),
-	`city` VARCHAR(100),
-	`contact_name` VARCHAR(100),
-	`contact_phone` VARCHAR(15),
-	`coordinates` VARCHAR(40),
-	`status` VARCHAR(10),
-	`pending_date` DATE,
-	`survey_date` DATE,
-	`done_date` DATE,
-	`comments` TEXT,
-	`invoice_id` INT DEFAULT 0,
+DROP TABLE IF EXISTS `ServiceOrder`;
+CREATE TABLE `ServiceOrder` (
+	`Id` INT NOT NULL AUTO_INCREMENT,
+	`ReferenceCode` VARCHAR(33) NOT NULL,
+	`Branch` VARCHAR(4),
+	`Title` VARCHAR(150),
+	`OrderDate` DATE,
+	`Deadline` DATE,
+	`ProfessionalId` INT,
+	`ServiceId` INT,
+	`ServiceAmount` DECIMAL(10,2) NOT NULL,
+	`MileageAllowance` DECIMAL(10,2) NOT NULL,
+	`Siopi` BIT,
+	`CustomerName` VARCHAR(100),
+	`City` VARCHAR(100),
+	`ContactName` VARCHAR(100),
+	`ContactPhone` VARCHAR(15),
+	`Coordinates` VARCHAR(40),
+	`Status` VARCHAR(10),
+	`PendingDate` DATE,
+	`SurveyDate` DATE,
+	`DoneDate` DATE,
+	`Comments` TEXT,
+	`InvoiceId` INT DEFAULT 0,
 	
-	PRIMARY KEY (`id`),
+	PRIMARY KEY (`Id`),
     
-	CONSTRAINT FK_Professional FOREIGN KEY (professional_id) REFERENCES professional(id),
-	CONSTRAINT FK_Service FOREIGN KEY (service_id) REFERENCES service(id)
+	CONSTRAINT FK_Professional FOREIGN KEY (`ProfessionalId`) REFERENCES `Professional`(`Id`),
+	CONSTRAINT FK_Service FOREIGN KEY (`ServiceId`) REFERENCES `Service`(`Id`)
 );

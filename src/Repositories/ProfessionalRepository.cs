@@ -1,6 +1,8 @@
 ﻿using MySql.Data.MySqlClient;
 using FluxusApi.Entities;
 using System.Collections;
+using Dapper;
+using Azure.Identity;
 
 namespace FluxusApi.Repositories
 {
@@ -14,217 +16,107 @@ namespace FluxusApi.Repositories
         }
 
 
-        public ArrayList GetAll()
+        public IEnumerable GetAll()
         {
             try
             {
                 using (var connection = new MySqlConnection(_connectionString))
                 {
-                    connection.Open();
-                    
-                    var command = new MySqlCommand(@"
+                    var professionals = connection.Query(@"
                         SELECT 
-                            id, 
-                            tag, 
-                            name, 
-                            profession, 
-                            phone1, 
-                            user_active 
+                            Id, 
+                            Tag, 
+                            Name, 
+                            Profession, 
+                            Phone1, 
+                            UserActive
                         FROM 
-                            professional 
+                            Professional 
                         ORDER BY 
-                            tag", 
-                        connection);
-                    
-                    var reader = command.ExecuteReader();
-
-                    if (reader.HasRows)
-                    {
-                        var professionals = new ArrayList();
-
-                        while (reader.Read())
-                        {
-                            Professional professional = new Professional();
-
-                            professional.Id = Convert.ToInt64(reader["id"]);
-                            professional.Tag = Convert.ToString(reader["tag"]);
-                            professional.Name = Convert.ToString(reader["name"]);
-                            professional.Profession = Convert.ToString(reader["profession"]);
-                            professional.Phone1 = Convert.ToString(reader["phone1"]);
-                            professional.UserActive = Convert.ToBoolean(reader["user_active"]);
-
-                            professionals.Add(professional);
-                        }
-
-                        return professionals;
-                    }
+                            Tag");
+                    return professionals;
                 }
             }
             catch (Exception ex)
             {
                 throw ex.InnerException;
             }
-
-            return null;
         }
 
 
-        public ArrayList GetTagNameid()
+        public IEnumerable GetTagNameid()
         {
             try
             {
                 using (var connection = new MySqlConnection(_connectionString))
                 {
-                    connection.Open();
-                    
-                    var command = new MySqlCommand(@"
+                    var professionals = connection.Query(@"
                         SELECT 
-                            id,
-                            tag, 
-                            nameid 
+                            Id,
+                            Tag, 
+                            Nameid 
                         FROM 
-                            professional 
+                            Professional 
                         ORDER BY 
-                            tag", 
-                        connection);
-                    
-                    var reader = command.ExecuteReader();
-
-                    if (reader.HasRows)
-                    {
-                        var professionals = new ArrayList();
-
-                        while (reader.Read())
-                        {
-                            dynamic professional = new
-                            {
-                                Id = Convert.ToString(reader["id"]),
-                                Tag = Convert.ToString(reader["tag"]),
-                                NameId = Convert.ToString(reader["nameid"])
-                            };
-
-                            professionals.Add(professional);
-                        }
-                        return professionals;
-                    }
+                            Tag");
+                    return professionals;
                 }
             }
             catch (Exception ex)
             {
                 throw ex.InnerException;
             }
-            return null;
         }
 
 
-        public ArrayList GetUserInfoBy(string userName)
+        public IEnumerable GetUserInfoBy(string userName)
         {
             try
             {
                 using (var connection = new MySqlConnection(_connectionString))
                 {
-                    connection.Open();
-                    
-                    var command = new MySqlCommand(@"
+                    var professional = connection.QueryFirst(@"
                         SELECT 
-                            id, 
-                            technician_responsible, 
-                            legal_responsible, 
-                            user_name, 
-                            user_password, 
-                            user_active 
+                            Id, 
+                            TechnicianResponsible, 
+                            LegalResponsible, 
+                            UserName, 
+                            UserPassword, 
+                            UserActive 
                         FROM 
-                            professional 
+                            Professional 
                         WHERE 
-                            user_name = @user_name", 
-                        connection);
-                    
-                    command.Parameters.AddWithValue("@user_name", userName);
-                    
-                    var reader = command.ExecuteReader();
-
-                    if (reader.HasRows)
-                    {
-                        var users = new ArrayList();
-
-                        if (reader.Read())
-                        {
-                            dynamic user = new
-                            {
-                                Id = Convert.ToString(reader["id"]),
-                                TechnicianResponsible = Convert.ToBoolean(reader["technician_responsible"]),
-                                LegalResponsible = Convert.ToBoolean(reader["legal_responsible"]),
-                                UserActive = Convert.ToBoolean(reader["user_active"]),
-                                UserName = Convert.ToString(reader["user_name"]),
-                                UserPassword = Convert.ToString(reader["user_password"])
-                            };
-                            users.Add(user);
-                        }
-                        return users;
-                    }
+                            UserName = @userName", new { userName });
+                        return professional;
                 }
             }
             catch (Exception ex)
             {
                 throw ex.InnerException;
             }
-            return null;
         }
 
 
-        public Professional GetBy(int id)
+        public IEnumerable GetBy(int id)
         {
             try
             {
                 using (var connection = new MySqlConnection(_connectionString))
                 {
-                    connection.Open();
-                    
-                    var command = new MySqlCommand(@"
+                    var professional = connection.QueryFirst(@"
                         SELECT 
                             * 
                         FROM 
-                            professional 
+                            Professional 
                         WHERE 
-                            id = @id", 
-                        connection);
-                    
-                    command.Parameters.AddWithValue("@id", id);
-                    
-                    var reader = command.ExecuteReader();
-
-                    if (reader.HasRows)
-                    {
-                        Professional professional = new Professional();
-                        if (reader.Read())
-                        {
-                            professional.Id = Convert.ToInt64(reader["id"]);
-                            professional.Tag = Convert.ToString(reader["tag"]);
-                            professional.Name = Convert.ToString(reader["name"]);
-                            professional.NameId = Convert.ToString(reader["nameid"]);
-                            professional.Cpf = Convert.ToString(reader["cpf"]);
-                            professional.Birthday = Convert.ToString(reader["birthday"]);
-                            professional.Profession = Convert.ToString(reader["profession"]);
-                            professional.PermitNumber = Convert.ToString(reader["permit_number"]);
-                            professional.Association = Convert.ToString(reader["association"]);
-                            professional.Phone1 = Convert.ToString(reader["phone1"]);
-                            professional.Phone2 = Convert.ToString(reader["phone2"]);
-                            professional.Email = Convert.ToString(reader["email"]);
-                            professional.TechnicianResponsible = Convert.ToBoolean(reader["technician_responsible"]);
-                            professional.LegalResponsible = Convert.ToBoolean(reader["legal_responsible"]);
-                            professional.UserActive = Convert.ToBoolean(reader["user_active"]);
-                            professional.UserName = Convert.ToString(reader["user_name"]);
-                            professional.UserPassword = Convert.ToString(reader["user_password"]);
-                        }
-                        return professional;
-                    }
+                            Id = @id", new { id });
+                    return professional;
                 }
             }
             catch (Exception ex)
             {
                 throw ex.InnerException;
             }
-            return null;
         }
 
 

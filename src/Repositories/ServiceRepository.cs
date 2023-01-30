@@ -2,6 +2,7 @@
 using System.Collections;
 using MySql.Data.MySqlClient;
 using FluxusApi.Entities;
+using Dapper;
 
 namespace FluxusApi.Repositories
 {
@@ -15,103 +16,53 @@ namespace FluxusApi.Repositories
         }
 
 
-        public ArrayList GetAll()
+        public IEnumerable GetAll()
         {
             try
             {
                 using (var connection = new MySqlConnection(_connectionString))
                 {
-                    connection.Open();
-
-                    var command = new MySqlCommand(@"
+                    var service = connection.Query(@"
                         SELECT 
-                            id, 
-                            tag, 
-                            description, 
-                            service_amount, 
-                            mileage_allowance 
+                            Id, 
+                            Tag, 
+                            Description, 
+                            ServiceAmount, 
+                            MileageAllowance 
                         FROM 
-                            service 
+                            Service 
                         ORDER BY 
-                            tag",
-                            connection);
-
-                    var reader = command.ExecuteReader();
-
-                    if (reader.HasRows)
-                    {
-                        var services = new ArrayList();
-
-                        while (reader.Read())
-                        {
-                            var service = new Service();
-
-                            service.Id = Convert.ToInt64(reader["id"]);
-                            service.Tag = Convert.ToString(reader["tag"]);
-                            service.Description = Convert.ToString(reader["description"]);
-                            service.ServiceAmount = Convert.ToString(reader["service_amount"]);
-                            service.MileageAllowance = Convert.ToString(reader["mileage_allowance"]);
-
-                            services.Add(service);
-                        }
-
-                        return services;
-                    }
+                            Tag");
+                    return service;
                 }
             }
             catch (Exception ex)
             {
                 throw ex.InnerException;
             }
-
-            return null;
         }
 
 
-        public Service GetBy(int id)
+        public IEnumerable GetBy(int id)
         {
             try
             {
                 using (var connection = new MySqlConnection(_connectionString))
                 {
-                    connection.Open();
-
-                    var command = new MySqlCommand(@"
+                    var service = connection.QueryFirst(@"
                         SELECT 
                             * 
                         FROM 
-                            service 
+                            Service 
                         WHERE 
-                            id = @id",
-                            connection);
-
-                    command.Parameters.AddWithValue("@id", id);
-
-                    var reader = command.ExecuteReader();
-
-                    if (reader.HasRows)
-                    {
-                        var service = new Service();
-
-                        if (reader.Read())
-                        {
-                            service.Id = Convert.ToInt64(reader["id"]);
-                            service.Tag = Convert.ToString(reader["tag"]);
-                            service.Description = Convert.ToString(reader["description"]);
-                            service.ServiceAmount = Convert.ToString(reader["service_amount"]);
-                            service.MileageAllowance = Convert.ToString(reader["mileage_allowance"]);
-                        }
-
-                        return service;
-                    }
+                            Id = @id", new { id });
+                    return service;
                 }
             }
             catch (Exception ex)
             {
                 throw ex.InnerException;
             }
-
-            return null;
         }
 
 

@@ -1,5 +1,4 @@
-﻿using System;
-using MySql.Data.MySqlClient;
+﻿using MySql.Data.MySqlClient;
 using FluxusApi.Entities;
 using System.Collections;
 using Dapper;
@@ -14,163 +13,27 @@ namespace FluxusApi.Repositories
             _connectionString = ConnectionString.Get();
         }
 
-        public ArrayList GetAll()
+        
+
+        public IEnumerable GetAll()
         {
             try
             {
                 using (var connection = new MySqlConnection(_connectionString))
                 {
-                    connection.Open();
-
-                    using (var command = new MySqlCommand())
-                    {
-                        command.Connection = connection;
-                        command.CommandText = @"
-                            SELECT 
-                                id, 
-                                branch_number, 
-                                name, 
-                                city, 
-                                phone1, 
-                                email 
-                            FROM 
-                                bank_branch 
-                            ORDER BY 
-                                branch_number";
-
-                        var reader = command.ExecuteReader();
-
-                        var bankBranches = new ArrayList();
-
-                        if (reader.HasRows)
-                        {
-                            while (reader.Read())
-                            {
-                                dynamic branch = new
-                                {
-                                    Id = Convert.ToInt64(reader["id"]),
-                                    BranchNumber = Convert.ToString(reader["branch_number"]),
-                                    Name = Convert.ToString(reader["name"]),
-                                    City = Convert.ToString(reader["city"]),
-                                    Phone1 = Convert.ToString(reader["phone1"]),
-                                    Email = Convert.ToString(reader["email"])
-                                };
-                                bankBranches.Add(branch);
-                            }
-                            return bankBranches;
-                        }
-                        else
-                            return null;
-                    }
-                }
-
-            }
-            catch (Exception ex)
-            {
-                throw ex.InnerException;
-            }
-        }
-
-
-
-        public BankBranch GetBy(int id)
-        {
-            try
-            {
-                using (var connection = new MySqlConnection(_connectionString))
-                {
-                    connection.Open();
-
-                    using (var command = new MySqlCommand())
-                    {
-                        command.Connection = connection;
-                        command.CommandText = @"
-                            SELECT 
-                                * 
-                            FROM 
-                                bank_branch 
-                            WHERE 
-                                id = @id";
-                        command.Parameters.AddWithValue("@id", id);
-
-                        var reader = command.ExecuteReader();
-
-                        if (reader.HasRows)
-                        {
-                            var bankBranch = new BankBranch();
-
-                            if (reader.Read())
-                            {
-                                bankBranch.Id = Convert.ToInt64(reader["id"]);
-                                bankBranch.BranchNumber = Convert.ToString(reader["branch_number"]);
-                                bankBranch.Name = Convert.ToString(reader["name"]);
-                                bankBranch.Address = Convert.ToString(reader["address"]);
-                                bankBranch.Complement = Convert.ToString(reader["complement"]);
-                                bankBranch.District = Convert.ToString(reader["district"]);
-                                bankBranch.City = Convert.ToString(reader["city"]);
-                                bankBranch.Zip = Convert.ToString(reader["zip"]);
-                                bankBranch.State = Convert.ToString(reader["state"]);
-                                bankBranch.Phone1 = Convert.ToString(reader["phone1"]);
-                                bankBranch.Phone2 = Convert.ToString(reader["phone2"]);
-                                bankBranch.Email = Convert.ToString(reader["email"]);
-                            }
-
-                            return bankBranch;
-                        }
-                        else
-                            return null;
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                throw ex.InnerException;
-            }
-        }
-
-        public ArrayList GetContacts(string branch_number)
-        {
-            try
-            {
-                using (var connection = new MySqlConnection(_connectionString))
-                {
-                    connection.Open();
-
-                    var command = new MySqlCommand(@"
+                    var bankBranches = connection.Query(@"
                         SELECT 
-                            branch_number, 
-                            name, 
-                            phone1, 
-                            email 
+                            Id, 
+                            BranchNumber, 
+                            Name, 
+                            City , 
+                            Phone1, 
+                            Email
                         FROM 
-                            bank_branch 
-                        WHERE 
-                            branch_number = @branch_number",
-                        connection);
-
-                    command.Parameters.AddWithValue("@branch_number", branch_number);
-                    var reader = command.ExecuteReader();
-
-                    if (reader.HasRows)
-                    {
-                        var bankBranches = new ArrayList();
-
-                        if (reader.Read())
-                        {
-                            dynamic bankBranch = new
-                            {
-                                BranchNumber = Convert.ToString(reader["branch_number"]),
-                                Name = Convert.ToString(reader["name"]),
-                                Phone1 = Convert.ToString(reader["phone1"]),
-                                Email = Convert.ToString(reader["email"])
-                            };
-
-                            bankBranches.Add(bankBranch);
-                        }
-                        return bankBranches;
-                    }
-                    else
-                        return null;
+                            BankBranch 
+                        ORDER BY 
+                            BranchNumber");
+                    return bankBranches;
                 }
             }
             catch (Exception ex)
@@ -178,6 +41,56 @@ namespace FluxusApi.Repositories
                 throw ex.InnerException;
             }
         }
+
+
+        public IEnumerable GetBy(int id)
+        {
+            try
+            {
+                using (var connection = new MySqlConnection(_connectionString))
+                {
+                    var bankBranch = connection.Query(@"
+                        SELECT 
+                            * 
+                        FROM 
+                            BankBranch 
+                        WHERE 
+                            Id = @id", new { id });
+                    return bankBranch;
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex.InnerException;
+            }
+        }
+
+
+        public IEnumerable GetContacts(string branchNumber)
+        {
+            try
+            {
+                using (var connection = new MySqlConnection(_connectionString))
+                {
+                    var bankBranch = connection.Query(@"
+                        SELECT 
+                            BranchNumber, 
+                            Name, 
+                            Phone1, 
+                            Email 
+                        FROM 
+                            BankBranch 
+                        WHERE 
+                            BranchNumber = @branchNumber", new { branchNumber });
+                    return bankBranch;
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex.InnerException;
+            }
+        }
+
 
         public void Insert(BankBranch bankBranch)
         {

@@ -1,6 +1,7 @@
 ﻿using MySql.Data.MySqlClient;
 using FluxusApi.Entities;
 using System.Collections;
+using Dapper;
 
 namespace FluxusApi.Repositories
 {
@@ -14,74 +15,26 @@ namespace FluxusApi.Repositories
         }
 
 
-        public ArrayList GetAll()
+        public IEnumerable GetAll()
         {
             try
             {
                 using (var connection = new MySqlConnection(_connectionString))
                 {
-                    connection.Open();
-
-                    var command = new MySqlCommand(@"
+                    var profile = connection.QueryFirst(@"
                         SELECT 
-                            * 
+                            *
                         FROM 
-                            profile",
-                        connection);
-
-                    var reader = command.ExecuteReader();
-
-
-
-                    if (reader.HasRows)
-                    {
-                        var profiles = new ArrayList();
-
-                        if (reader.Read())
-                        {
-                            Profile profile = new Profile();
-
-                            profile.Cnpj = Convert.ToString(reader["cnpj"]);
-                            profile.TradingName = Convert.ToString(reader["trading_name"]);
-                            profile.CompanyName = Convert.ToString(reader["company_name"]);
-                            profile.StateId = Convert.ToString(reader["state_id"]);
-                            profile.CityId = Convert.ToString(reader["city_id"]);
-                            profile.Address = Convert.ToString(reader["address"]);
-                            profile.Complement = Convert.ToString(reader["complement"]);
-                            profile.District = Convert.ToString(reader["district"]);
-                            profile.City = Convert.ToString(reader["city"]);
-                            profile.Zip = Convert.ToString(reader["zip"]);
-                            profile.State = Convert.ToString(reader["state"]);
-                            profile.EstablishmentDate = Convert.ToString(reader["establishment_date"]);
-                            profile.Phone1 = Convert.ToString(reader["phone1"]);
-                            profile.Phone2 = Convert.ToString(reader["phone2"]);
-                            profile.Email = Convert.ToString(reader["email"]);
-                            profile.BankAccountName = Convert.ToString(reader["bank_account_name"]);
-                            profile.BankAccountType = Convert.ToString(reader["bank_account_type"]);
-                            profile.BankAccountBranch = Convert.ToString(reader["bank_account_branch"]);
-                            profile.BankAccountDigit = Convert.ToString(reader["bank_account_digit"]);
-                            profile.BankAccountNumber = Convert.ToString(reader["bank_account_number"]);
-                            profile.ContractorName = Convert.ToString(reader["contractor_name"]);
-                            profile.ContractNotice = Convert.ToString(reader["contract_notice"]);
-                            profile.ContractNumber = Convert.ToString(reader["contract_number"]);
-                            profile.ContractEstablished = Convert.ToString(reader["contract_established"]);
-                            profile.ContractStart = Convert.ToString(reader["contract_start"]);
-                            profile.ContractEnd = Convert.ToString(reader["contract_end"]);
-                            profile.Logo = Convert.ToBase64String((byte[])(reader["logo"]));
-
-                            profiles.Add(profile);
-                        }
-
-                        return profiles;
-                    }
+                            Profile
+                        WHERE
+                            Id = 1");
+                    return profile;
                 }
             }
             catch (Exception ex)
             {
                 throw ex.InnerException;
             }
-
-            return null;
         }
 
 
@@ -91,87 +44,47 @@ namespace FluxusApi.Repositories
             {
                 using (var connection = new MySqlConnection(_connectionString))
                 {
-                    connection.Open();
-
-                    var command = new MySqlCommand(@"
+                    var profile = connection.QueryFirst(@"
                         SELECT 
-                            logo 
+                            Logo 
                         FROM 
-                            profile 
+                            Profile 
                         WHERE 
-                            id = 1",
-                        connection);
-
-                    var reader = command.ExecuteReader();
-
-                    if (reader.HasRows)
-                    {
-                        reader.Read();
-
-                        return (byte[])(reader["logo"]);
-                    }
+                            Id = 1");
+                    return (byte[])(profile.Logo);
                 }
             }
             catch (Exception ex)
             {
                 throw ex.InnerException;
             }
-
-            return null;
         }
 
 
-        public ArrayList GetToPrint()
+        public IEnumerable GetToPrint()
         {
             try
             {
                 using (var connection = new MySqlConnection(_connectionString))
                 {
-                    connection.Open();
-
-                    var command = new MySqlCommand(@"
+                    var profile = connection.QueryFirst(@"
                         SELECT 
-                            cnpj, 
-                            company_name, 
-                            contract_notice, 
-                            contract_number, 
-                            logo 
+                            Cnpj, 
+                            CompanyName, 
+                            ContractNotice, 
+                            ContractNumber, 
+                            Logo 
                         FROM 
-                            profile 
+                            Profile 
                         WHERE 
-                            id = 1",
-                        connection);
-
-                    var reader = command.ExecuteReader();
-
-                    if (reader.HasRows)
-                    {
-                        var profiles = new ArrayList();
-
-                        if (reader.Read())
-                        {
-                            dynamic profile = new
-                            {
-                                Cnpj = Convert.ToString(reader["cnpj"]),
-                                CompanyName = Convert.ToString(reader["company_name"]),
-                                ContractNotice = Convert.ToString(reader["contract_notice"]),
-                                ContractNumber = Convert.ToString(reader["contract_number"]),
-                                Logo = (byte[])(reader["logo"])
-                            };
-
-                            profiles.Add(profile);
-                        }
-
-                        return profiles;
-                    }
+                            Id = 1");
+                        return profile;
                 }
             }
             catch (Exception ex)
             {
                 throw ex.InnerException;
             }
-
-            return null;
         }
 
 
@@ -181,39 +94,20 @@ namespace FluxusApi.Repositories
             {
                 using (var connection = new MySqlConnection(_connectionString))
                 {
-                    connection.Open();
-
-                    var command = new MySqlCommand(@"
-                    SELECT 
-                        trading_name 
-                    FROM 
-                        profile 
-                    WHERE 
-                        id = 1",
-                    connection);
-
-                    var reader = command.ExecuteReader();
-
-
-                    if (reader.HasRows)
-                    {
-                        string tradingName = null;
-
-                        if (reader.Read())
-                        {
-                            tradingName = Convert.ToString(reader["trading_name"]);
-                        }
-
-                        return tradingName;
-                    }
+                    var profile = connection.QueryFirst(@"
+                        SELECT 
+                            TradingName 
+                        FROM 
+                            Profile 
+                        WHERE 
+                            Id = 1");
+                    return profile.TradingName;
                 }
             }
             catch (Exception ex)
             {
                 throw ex.InnerException;
             }
-
-            return null;
         }
 
 

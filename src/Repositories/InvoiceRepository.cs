@@ -1,6 +1,7 @@
 ﻿using MySql.Data.MySqlClient;
 using FluxusApi.Entities;
 using System.Collections;
+using Dapper;
 
 namespace FluxusApi.Repositories
 {
@@ -15,48 +16,26 @@ namespace FluxusApi.Repositories
         }
 
 
-        public ArrayList GetAll()
+        public IEnumerable GetAll()
         {
             try
             {
                 using (var connection = new MySqlConnection(_connectionString))
                 {
-                    connection.Open();
-
-                    var command = new MySqlCommand(@"
-                        SELECT 
-                            * 
+                    var invoices = connection.Query(@"
+                        SELECT
+                            Id,
+                            Description,
+                            IssueDate,
+                            SubtotalService, 
+                            SubtotalMileageAllowance,
+                            Total 
                         FROM 
-                            invoice 
+                            Invoice 
                         ORDER BY 
-                            issue_date
-                        DESC",
-                        connection);
-
-                    var reader = command.ExecuteReader();
-
-                    if (reader.HasRows)
-                    {
-                        var invoices = new ArrayList();
-
-                        while (reader.Read())
-                        {
-                            Invoice invoice = new Invoice();
-
-                            invoice.Id = Convert.ToInt32(reader["id"]);
-                            invoice.Description = Convert.ToString(reader["description"]);
-                            invoice.IssueDate = Convert.ToDateTime(reader["issue_date"]);
-                            invoice.SubtotalService = Convert.ToDouble(reader["subtotal_service"]);
-                            invoice.SubtotalMileageAllowance = Convert.ToDouble(reader["subtotal_mileage_allowance"]);
-                            invoice.Total = Convert.ToDouble(reader["total"]);
-
-                            invoices.Add(invoice);
-                        }
-
-                        return invoices;
-                    }
-                    else
-                        return null;
+                            IssueDate
+                        DESC");
+                    return invoices;
                 }
             }
             catch (Exception ex)
@@ -72,27 +51,14 @@ namespace FluxusApi.Repositories
             {
                 using (var connection = new MySqlConnection(_connectionString))
                 {
-                    connection.Open();
-
-                    var command = new MySqlCommand(@"
+                    var invoice = connection.QueryFirst(@"
                         SELECT 
-                            description 
+                            Description 
                         FROM 
-                            invoice 
+                            Invoice 
                         WHERE 
-                            id = @id",
-                        connection);
-                    command.Parameters.AddWithValue("@id", id);
-                    
-                    var reader = command.ExecuteReader();
-
-                    if (reader.HasRows)
-                    {
-                        reader.Read();
-                        return Convert.ToString(reader["description"]);
-                    }
-                    else
-                        return null;
+                            Id = @id", new { id });
+                    return invoice.Description;
                 }
             }
             catch (Exception ex)

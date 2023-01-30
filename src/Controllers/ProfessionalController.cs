@@ -89,7 +89,7 @@ namespace FluxusApi.Controllers
         }
 
 
-        // PUT api/Professional/<id>
+        // PUT api/Professional
         [HttpPut]
         public IActionResult Put([FromBody] Professional professional)
         {

@@ -4,6 +4,7 @@ using FluxusApi.Entities;
 using System.Collections;
 using System.Globalization;
 using Microsoft.AspNetCore.Components.Routing;
+using Dapper;
 
 namespace FluxusApi.Repositories
 {
@@ -19,453 +20,224 @@ namespace FluxusApi.Repositories
         }
 
 
-        public ArrayList GetOrdersFlow()
+        public IEnumerable GetOrdersFlow()
         {
             try
             {
                 using (var connection = new MySqlConnection(_connectionString))
                 {
-                    connection.Open();
-
-                    var command = new MySqlCommand(@"
-                    SELECT 
-                        id, 
-                        reference_code, 
-                        title, 
-                        status, 
-                        professional_id 
-                    FROM 
-                        service_order 
-                    WHERE 
-                        invoice_id = 0 
-                    ORDER BY 
-                        order_date",
-                        connection);
-
-                    var reader = command.ExecuteReader();
-
-                    if (reader.HasRows)
-                    {
-                        var orders = new ArrayList();
-
-                        while (reader.Read())
-                        {
-                            dynamic order = new
-                            {
-                                Id = Convert.ToInt64(reader["id"]),
-                                ReferenceCode = Convert.ToString(reader["reference_code"]),
-                                Title = Convert.ToString(reader["title"]),
-                                Status = Convert.ToString(reader["status"]),
-                                ProfessionalId = Convert.ToString(reader["professional_id"])
-                            };
-
-                            orders.Add(order);
-                        }
-
-                        return orders;
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                throw ex.InnerException;
-            }
-
-            return null;
-        }
-
-
-        public ArrayList GetInvoiced(int invoiceId)
-        {
-            try
-            {
-                using (var connection = new MySqlConnection(_connectionString))
-                {
-                    connection.Open();
-
-                    var command = new MySqlCommand(@"
-                    SELECT 
-                        os.id, 
-                        os.order_date, 
-                        os.reference_code, 
-                        os.professional_id,
-                        pr.tag professional,
-                        sr.tag service,
-                        os.city, 
-                        os.customer_name, 
-                        os.survey_date, 
-                        os.done_date, 
-                        os.invoice_id, 
-                        os.status, 
-                        os.service_amount, 
-                        os.mileage_allowance 
-                    FROM 
-                        service_order os
-                    INNER JOIN
-                        service sr
-                    ON
-                        os.service_id = sr.id
-                    INNER JOIN
-                        professional pr
-                    ON
-                        os.professional_id = pr.id
-                    WHERE 
-                        invoice_id = @invoice_id
-                    ORDER BY 
-                        done_date",
-                        connection);
-
-                    command.Parameters.AddWithValue("@invoice_id", invoiceId);
-
-                    var reader = command.ExecuteReader();
-
-                    if (reader.HasRows)
-                    {
-                        var orders = new ArrayList();
-
-                        while (reader.Read())
-                        {
-                            dynamic order = new
-                            {
-                                Id = Convert.ToInt64(reader["id"]),
-                                OrderDate = Convert.ToDateTime(reader["order_date"]),
-                                ReferenceCode = Convert.ToString(reader["reference_code"]),
-                                Professional = Convert.ToString(reader["professional"]),
-                                ProfessionalId = Convert.ToString(reader["professional_id"]),
-                                Service = Convert.ToString(reader["service"]),
-                                City = Convert.ToString(reader["city"]),
-                                CustomerName = Convert.ToString(reader["customer_name"]),
-                                SurveyDate = Convert.ToDateTime(reader["survey_date"]),
-                                DoneDate = Convert.ToDateTime(reader["done_date"]),
-                                InvoiceId = Convert.ToInt64(reader["invoice_id"]),
-                                Status = Convert.ToString(reader["status"]),
-                                ServiceAmount = Convert.ToDouble(reader["service_amount"]),
-                                MileageAllowance = Convert.ToDouble(reader["mileage_allowance"])
-                            };
-                            orders.Add(order);
-                        }
-
-                        return orders;
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                throw ex.InnerException;
-            }
-
-            return null;
-        }
-
-
-        public ArrayList GetDoneToInvoice()
-        {
-            try
-            {
-                using (var connection = new MySqlConnection(_connectionString))
-                {
-                    connection.Open();
-
-                    var command = new MySqlCommand(@"
-                    SELECT 
-                        id, order_date, reference_code, professional_id, service_id, city, 
-                        customer_name, survey_date, done_date, service_amount, mileage_allowance 
-                    FROM 
-                        service_order 
-                    WHERE 
-                        invoice_id = 0 
-                    AND 
-                        status = 'CONCLUÍDA' 
-                    ORDER BY 
-                        done_date",
-                        connection);
-
-                    var reader = command.ExecuteReader();
-
-                    if (reader.HasRows)
-                    {
-                        var orders = new ArrayList();
-
-                        while (reader.Read())
-                        {
-                            dynamic order = new
-                            {
-                                Id = Convert.ToInt64(reader["id"]),
-                                OrderDate = Convert.ToDateTime(reader["order_date"]),
-                                ReferenceCode = Convert.ToString(reader["reference_code"]),
-                                ProfessionalId = Convert.ToString(reader["professional_id"]),
-                                ServiceId = Convert.ToString(reader["service_id"]),
-                                City = Convert.ToString(reader["city"]),
-                                CustomerName = Convert.ToString(reader["customer_name"]),
-                                SurveyDate = Convert.ToDateTime(reader["survey_date"]),
-                                DoneDate = Convert.ToDateTime(reader["done_date"]),
-                                ServiceAmount = Convert.ToDouble(reader["service_amount"]),
-                                MileageAllowance = Convert.ToDouble(reader["mileage_allowance"])
-                            };
-                            orders.Add(order);
-                        }
-
-                        return orders;
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                throw ex.InnerException;
-            }
-
-            return null;
-        }
-
-        public ArrayList GetFiltered(string filter)
-        {
-            try
-            {
-                using (var connection = new MySqlConnection(_connectionString))
-                {
-                    connection.Open();
-
-                    var command = new MySqlCommand(@$"
+                    var serviceOrders = connection.Query(@"
                         SELECT 
-                            os.id,
-                            os.status,
-                            pr.tag professional,
-                            os.order_date,
-                            os.reference_code,
-                            sr.tag service,
-                            os.city,
-                            os.customer_name,
-                            os.survey_date,
-                            os.done_date,
-                            os.invoice_id
-                        FROM
-                            service_order os
-                        INNER JOIN
-                            service sr
-                        ON
-                            os.service_id = sr.id
-                        INNER JOIN
-                            professional pr
-                        ON
-                            os.professional_id = pr.id
-                        WHERE 
-                            {filter}
-                        ORDER BY 
-                            order_date",
-                        connection);
-
-                    var reader = command.ExecuteReader();
-
-                    if (reader.HasRows)
-                    {
-                        var orders = new ArrayList();
-
-                        while (reader.Read())
-                        {
-                            dynamic order = new
-                            {
-                                Id = Convert.ToInt64(reader["id"]),
-                                Status = Convert.ToString(reader["status"]),
-                                Professional = Convert.ToString(reader["professional"]),
-                                OrderDate = Convert.ToString(reader["order_date"]),
-                                ReferenceCode = Convert.ToString(reader["reference_code"]),
-                                Service = Convert.ToString(reader["service"]),
-                                City = Convert.ToString(reader["city"]),
-                                CustomerName = Convert.ToString(reader["customer_name"]),
-                                SurveyDate = Convert.ToString(reader["survey_date"]),
-                                DoneDate = Convert.ToString(reader["done_date"]),
-                                InvoiceId = Convert.ToInt64(reader["invoice_id"])
-                            };
-                        orders.Add(order);
-                        }
-
-                        return orders;
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                throw ex.InnerException;
-            }
-
-            return null;
-        }
-
-
-        public ArrayList GetProfessionals(int invoiceId)
-        {
-            try
-            {
-                using (var connection = new MySqlConnection(_connectionString))
-                {
-                    connection.Open();
-
-                    var command = new MySqlCommand(@"
-                        SELECT DISTINCT 
-                            t1.professional_id, 
-                            t2.nameid 
+                            Id, 
+                            ReferenceCode, 
+                            Title, 
+                            Status, 
+                            ProfessionalId 
                         FROM 
-                            service_order t1 
-                        INNER JOIN 
-                            professional t2 
-                        on 
-                            t1.professional_id = t2.id 
+                            ServiceOrder 
                         WHERE 
-                            t1.invoice_id = @invoice_id 
+                            InvoiceId = 0 
                         ORDER BY 
-                            t2.nameid",
-                            connection);
-
-                    command.Parameters.AddWithValue("@invoice_id", invoiceId);
-
-                    var reader = command.ExecuteReader();
-
-
-                    if (reader.HasRows)
-                    {
-                        var professionals = new ArrayList();
-
-                        while (reader.Read())
-                        {
-                            dynamic professional = new
-                            {
-                                ProfessionalId = Convert.ToString(reader["professional_id"]),
-                                Nameid = Convert.ToString(reader["nameid"])
-                            };
-                            professionals.Add(professional);
-                        }
-
-                        return professionals;
-                    }
+                            OrderDate");
+                    return serviceOrders;
                 }
             }
             catch (Exception ex)
             {
                 throw ex.InnerException;
             }
-
-            return null;
         }
 
 
-        public ArrayList GetOrderedCities()
+        public IEnumerable GetInvoiced(int invoiceId)
         {
             try
             {
                 using (var connection = new MySqlConnection(_connectionString))
                 {
-                    connection.Open();
-
-                    var command = new MySqlCommand(@"
-                    SELECT DISTINCT 
-                        city 
-                    FROM 
-                        service_order 
-                    ORDER BY 
-                        city",
-                        connection);
-
-                    var reader = command.ExecuteReader();
-
-                    if (reader.HasRows)
-                    {
-                        var cities = new ArrayList();
-
-                        while (reader.Read())
-                        {
-                            dynamic city = new
-                            {
-                                City = Convert.ToString(reader["city"])
-                            };
-                            cities.Add(city);
-                        }
-
-                        return cities;
-                    }
+                    var serviceOrders = connection.Query(@"
+                        SELECT 
+                            os.Id, 
+                            os.OrderDate, 
+                            os.ReferenceCode, 
+                            os.ProfessionalId,
+                            pr.Tag Professional,
+                            sr.Tag Service,
+                            os.City, 
+                            os.CustomerName, 
+                            os.SurveyDate, 
+                            os.DoneDate, 
+                            os.InvoiceId, 
+                            os.Status, 
+                            os.ServiceAmount, 
+                            os.MileageAllowance 
+                        FROM 
+                            ServiceOrder os
+                        INNER JOIN
+                            Service sr
+                        ON
+                            os.ServiceId = sr.Id
+                        INNER JOIN
+                            Professional pr
+                        ON
+                            os.ProfessionalId = pr.Id
+                        WHERE 
+                            InvoiceId = @invoiceId
+                        ORDER BY 
+                            DoneDate", new { invoiceId });
+                    return serviceOrders;
                 }
             }
             catch (Exception ex)
             {
                 throw ex.InnerException;
             }
-
-            return null;
         }
 
 
-        public ServiceOrder GetBy(int id)
+        public IEnumerable GetDoneToInvoice()
         {
             try
             {
                 using (var connection = new MySqlConnection(_connectionString))
                 {
-                    connection.Open();
+                    var serviceOrders = connection.Query(@"
+                        SELECT 
+                            Id, OrderSate, ReferenceCode, ProfessionalId, ServiceId, City, 
+                            CustomerName, SurveyDate, DoneDate, ServiceAmount, MileageAllowance 
+                        FROM 
+                            ServiceOrder 
+                        WHERE 
+                            InvoiceId = 0 
+                        AND 
+                            Status = 'CONCLUÍDA' 
+                        ORDER BY 
+                            DoneDate");
+                    return serviceOrders;
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex.InnerException;
+            }
+        }
 
-                    var command = new MySqlCommand(@"
+        public IEnumerable GetFiltered(string filter)
+        {
+            try
+            {
+                using (var connection = new MySqlConnection(_connectionString))
+                {
+                    var serviceOrders = connection.Query(@"
+                        SELECT 
+                            os.Id,
+                            os.Status,
+                            pr.Tag Professional,
+                            os.OrderDate,
+                            os.ReferenceCode,
+                            sr.Tag Service,
+                            os.City,
+                            os.CustomerName,
+                            os.SurveyDate,
+                            os.DoneDate,
+                            os.InvoiceId
+                        FROM
+                            ServiceOrder os
+                        INNER JOIN
+                            Service sr
+                        ON
+                            os.ServiceId = sr.Id
+                        INNER JOIN
+                            Professional pr
+                        ON
+                            os.ProfessionalId = pr.Id
+                        WHERE 
+                            @filter
+                        ORDER BY 
+                            OrderDate", new { filter });
+                    return serviceOrders;
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex.InnerException;
+            }
+        }
+
+
+        public IEnumerable GetProfessional(int invoiceId)
+        {
+            try
+            {
+                using (var connection = new MySqlConnection(_connectionString))
+                {
+                    var professional = connection.QueryFirst(@"
+                        SELECT DISTINCT 
+                            t1.ProfessionalId, 
+                            t2.Nameid 
+                        FROM 
+                            ServiceOrder t1 
+                        INNER JOIN 
+                            Professional t2 
+                        on 
+                            t1.ProfessionalId = t2.Id 
+                        WHERE 
+                            t1.InvoiceId = @invoiceId 
+                        ORDER BY 
+                            t2.Nameid", new { invoiceId });
+                    return professional;
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex.InnerException;
+            }
+        }
+
+
+        public IEnumerable GetOrderedCities()
+        {
+            try
+            {
+                using (var connection = new MySqlConnection(_connectionString))
+                {
+                    var cities = connection.Query(@"
+                        SELECT DISTINCT 
+                            City 
+                        FROM 
+                            ServiceOrder 
+                        ORDER BY 
+                            City");
+                    return cities;
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex.InnerException;
+            }
+        }
+
+
+        public IEnumerable GetBy(int id)
+        {
+            try
+            {
+                using (var connection = new MySqlConnection(_connectionString))
+                {
+                    var serviceOrder = connection.QueryFirst(@"
                         SELECT 
                             * 
                         FROM 
-                            service_order 
+                            ServiceOrder 
                         WHERE 
-                            id = @id",
-                            connection);
-
-                    command.Parameters.AddWithValue("@id", id);
-
-                    var reader = command.ExecuteReader();
-
-                    if (reader.HasRows)
-                    {
-                        var order = new ServiceOrder();
-
-                        if (reader.Read())
-                        {
-                            order.Id = Convert.ToInt64(reader["id"]);
-                            order.ReferenceCode = Convert.ToString(reader["reference_code"]);
-                            order.Branch = Convert.ToString(reader["branch"]);
-                            order.Title = Convert.ToString(reader["title"]);
-                            order.OrderDate = Convert.ToString(reader["order_date"]);
-                            order.Deadline = Convert.ToDateTime(reader["deadline"]);
-                            order.ProfessionalId = Convert.ToString(reader["professional_id"]);
-                            order.ServiceId = Convert.ToString(reader["service_id"]);
-                            order.ServiceAmount = Convert.ToString(reader["service_amount"]);
-                            order.MileageAllowance = Convert.ToString(reader["mileage_allowance"]);
-                            order.Siopi = Convert.ToBoolean(reader["siopi"]);
-                            order.CustomerName = Convert.ToString(reader["customer_name"]);
-                            order.City = Convert.ToString(reader["city"]);
-                            order.ContactName = Convert.ToString(reader["contact_name"]);
-                            order.ContactPhone = Convert.ToString(reader["contact_phone"]);
-                            order.Coordinates = Convert.ToString(reader["coordinates"]);
-                            order.Status = Convert.ToString(reader["status"]);
-                            order.PendingDate = Convert.ToString(reader["pending_date"]);
-                            order.SurveyDate = Convert.ToString(reader["survey_date"]);
-                            order.DoneDate = Convert.ToString(reader["done_date"]);
-                            order.Comments = Convert.ToString(reader["comments"]);
-                            order.InvoiceId = Convert.ToInt64(reader["invoice_id"]);
-                        }
-
-                        if (order.OrderDate == "01/01/0001 00:00:00")
-                            order.OrderDate = string.Empty;
-
-                        if (order.PendingDate == "01/01/0001 00:00:00")
-                            order.PendingDate = string.Empty;
-
-                        if (order.SurveyDate == "01/01/0001 00:00:00")
-                            order.SurveyDate = string.Empty;
-
-                        if (order.DoneDate == "01/01/0001 00:00:00")
-                            order.DoneDate = string.Empty;
-
-                        return order;
-                    }
+                            Id = @id", new { id });
+                    return serviceOrder;
                 }
             }
             catch (Exception ex)
             {
                 throw ex.InnerException;
             }
-
-            return null;
         }
 
 

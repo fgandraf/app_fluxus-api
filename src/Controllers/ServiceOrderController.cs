@@ -79,8 +79,8 @@ namespace FluxusApi.Controllers
         }
 
 
-        // GET api/ServiceOrder/Invoiced/<invoice_id>
-        [HttpGet("Invoiced/{invoice_id}")]
+        // GET api/ServiceOrder/Invoiced/<invoiceId>
+        [HttpGet("Invoiced/{invoiceId}")]
         public IActionResult GetInvoiced(int invoiceId)
         {
             AutenticacaoServico.Authenticate();
@@ -94,13 +94,13 @@ namespace FluxusApi.Controllers
         }
 
 
-        // GET api/ServiceOrder/Professionals/<fatura_cod>
-        [HttpGet("Professionals/{fatura_cod}")]
+        // GET api/ServiceOrder/Professionals/<invoiceId>
+        [HttpGet("Professionals/{invoiceId}")]
         public IActionResult GetProfessionals(int invoiceId)
         {
             AutenticacaoServico.Authenticate();
 
-            var result = new ServiceOrderRepository().GetProfessionals(invoiceId);
+            var result = new ServiceOrderRepository().GetProfessional(invoiceId);
 
             if (result == null)
                 return NotFound();

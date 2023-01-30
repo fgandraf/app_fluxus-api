@@ -66,29 +66,19 @@ namespace FluxusApi.Repositories
         }
 
 
-        public long Insert(Service service)
+        public int Insert(Service service)
         {
             try
             {
+                string insertSQL = @"
+                    INSERT INTO Service
+                        (Tag, Description, ServiceAmount, MileageAllowance) 
+                    VALUES 
+                        (@Tag, @Description, @ServiceAmount, @MileageAllowance)";
+
                 using (var connection = new MySqlConnection(_connectionString))
                 {
-                    connection.Open();
-
-                    var reader = new MySqlCommand(@"
-                        INSERT INTO service
-                            (tag, description, service_amount, mileage_allowance) 
-                        VALUES 
-                            (@tag, @description, @service_amount, @mileage_allowance)",
-                            connection);
-
-                    reader.Parameters.AddWithValue("@tag", service.Tag);
-                    reader.Parameters.AddWithValue("@description", service.Description);
-                    reader.Parameters.AddWithValue("@service_amount", service.ServiceAmount);
-                    reader.Parameters.AddWithValue("@mileage_allowance", service.MileageAllowance);
-
-                    reader.ExecuteNonQuery();
-
-                    return reader.LastInsertedId;
+                    return connection.Execute(insertSQL, service);
                 }
             }
             catch (Exception ex)
@@ -98,31 +88,23 @@ namespace FluxusApi.Repositories
         }
 
 
-        public void Update(Service service)
+        public int Update(Service service)
         {
             try
             {
+                string updateSQL = @"
+                    UPDATE 
+                        Service 
+                    SET 
+                        Description = @Description, 
+                        ServiceAmount = @ServiceAmount, 
+                        MileageAllowance = @MileageAllowance 
+                    WHERE 
+                        Id = @Id";
+
                 using (var connection = new MySqlConnection(_connectionString))
                 {
-                    connection.Open();
-
-                    var reader = new MySqlCommand(@"
-                        UPDATE 
-                            service 
-                        SET 
-                            description = @description, 
-                            service_amount = @service_amount, 
-                            mileage_allowance = @mileage_allowance 
-                        WHERE 
-                            id = @id",
-                            connection);
-
-                    reader.Parameters.AddWithValue("@id", service.Id);
-                    reader.Parameters.AddWithValue("@description", service.Description);
-                    reader.Parameters.AddWithValue("@service_amount", service.ServiceAmount);
-                    reader.Parameters.AddWithValue("@mileage_allowance", service.MileageAllowance);
-
-                    reader.ExecuteNonQuery();
+                    return connection.Execute(updateSQL, service);
                 }
             }
             catch (Exception ex)
@@ -132,50 +114,18 @@ namespace FluxusApi.Repositories
         }
 
 
-        public bool Delete(int id)
+        public int Delete(int id)
         {
             try
             {
-                using (var connection = new MySqlConnection(_connectionString))
-                {
-                    connection.Open();
-
-                    using (var command = new MySqlCommand())
-                    {
-                        command.Connection = connection;
-                        command.CommandText = @"
-                            SELECT 
-                                id 
-                            FROM 
-                                service 
-                            WHERE 
-                                id = @id";
-                        command.Parameters.AddWithValue("@id", id);
-
-                        var reader = command.ExecuteReader();
-                        if (!reader.HasRows)
-                            return false;
-                    }
-                }
+                string deleteSQL = @"
+                    DELETE FROM 
+                        Service 
+                    WHERE 
+                        Id = @Id";
 
                 using (var connection = new MySqlConnection(_connectionString))
-                {
-                    connection.Open();
-
-                    using (var command = new MySqlCommand())
-                    {
-                        command.Connection = connection;
-                        command.CommandText = @"
-                            DELETE FROM 
-                                service 
-                            WHERE 
-                                id = @id";
-                        command.Parameters.AddWithValue("@id", id);
-                        command.ExecuteNonQuery();
-
-                        return true;
-                    }
-                }
+                    return connection.Execute(deleteSQL, new { id });
             }
             catch (Exception ex)
             {

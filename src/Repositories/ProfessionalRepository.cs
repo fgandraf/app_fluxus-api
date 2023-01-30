@@ -120,44 +120,23 @@ namespace FluxusApi.Repositories
         }
 
 
-        public long Insert(Professional professional)
+        public int Insert(Professional professional)
         {
             try
             {
+                string insertSQL = @"
+                    INSERT INTO Professional
+                        (Tag, Name, Nameid, Cpf, Birthday, Profession, PermitNumber, 
+                        Association, Phone1, Phone2, Email, TechnicianResponsible, 
+                        LegalResponsible, UserActive, UserName, UserPassword) 
+                    VALUES
+                        (@Tag, @Name, @Nameid, @Cpf, @Birthday, @Profession, @PermitNumber, 
+                        @Association, @Phone1, @Phone2, @Email, @TechnicianResponsible, 
+                        @LegalResponsible, @UserActive, @UserName, @UserPassword)";
+
                 using (var connection = new MySqlConnection(_connectionString))
                 {
-                    connection.Open();
-                    
-                    var command = new MySqlCommand(@"
-                        INSERT INTO professional
-                            (tag, name, nameid, cpf, birthday, profession, permit_number, 
-                            association, phone1, phone2, email, technician_responsible, 
-                            legal_responsible, user_active, user_name, user_password) 
-                        VALUES
-                            (@tag, @name, @nameid, @cpf, @birthday, @profession, @permit_number, 
-                            @association, @phone1, @phone2, @email, @technician_responsible, 
-                            @legal_responsible, @user_active, @user_name, @user_password)", 
-                        connection);
-                    
-                    command.Parameters.AddWithValue("@tag", professional.Tag);
-                    command.Parameters.AddWithValue("@name", professional.Name);
-                    command.Parameters.AddWithValue("@nameid", professional.NameId);
-                    command.Parameters.AddWithValue("@cpf", professional.Cpf);
-                    command.Parameters.AddWithValue("@birthday", professional.Birthday);
-                    command.Parameters.AddWithValue("@profession", professional.Profession);
-                    command.Parameters.AddWithValue("@permit_number", professional.PermitNumber);
-                    command.Parameters.AddWithValue("@association", professional.Association);
-                    command.Parameters.AddWithValue("@phone1", professional.Phone1);
-                    command.Parameters.AddWithValue("@phone2", professional.Phone2);
-                    command.Parameters.AddWithValue("@email", professional.Email);
-                    command.Parameters.AddWithValue("@technician_responsible", professional.TechnicianResponsible);
-                    command.Parameters.AddWithValue("@legal_responsible", professional.LegalResponsible);
-                    command.Parameters.AddWithValue("@user_active", professional.UserActive);
-                    command.Parameters.AddWithValue("@user_name", professional.UserName);
-                    command.Parameters.AddWithValue("@user_password", professional.UserPassword);
-
-                    command.ExecuteNonQuery();
-                    return command.LastInsertedId;
+                    return connection.Execute(insertSQL, professional);
                 }
             }
             catch (Exception ex)
@@ -167,54 +146,35 @@ namespace FluxusApi.Repositories
         }
 
 
-        public void Update(Professional professional)
+        public int Update(Professional professional)
         {
             try
             {
+                string updateSQL = @"
+                    UPDATE 
+                        Professional 
+                    SET 
+                        Name = @Name, 
+                        Nameid = @Nameid, 
+                        Cpf = @Cpf, 
+                        Birthday = @Birthday, 
+                        Profession = @Profession, 
+                        PermitNumber = @PermitNumber, 
+                        Association = @Association, 
+                        Phone1 = @Phone1, 
+                        Phone2 = @Phone2, 
+                        Email = @Email, 
+                        TechnicianResponsible = @TechnicianResponsible, 
+                        LegalResponsible = @LegalResponsible, 
+                        UserActive = @UserActive, 
+                        UserName = @UserName, 
+                        UserPassword = @UserPassword 
+                    WHERE 
+                        Id = @Id";
+
                 using (var connection = new MySqlConnection(_connectionString))
                 {
-                    connection.Open();
-                    
-                    var command = new MySqlCommand(@"
-                        UPDATE 
-                            professional 
-                        SET 
-                            name = @name, 
-                            nameid = @nameid, 
-                            cpf = @cpf, 
-                            birthday = @birthday, 
-                            profession = @profession, 
-                            permit_number = @permit_number, 
-                            association = @association, 
-                            phone1 = @phone1, 
-                            phone2 = @phone2, 
-                            email = @email, 
-                            technician_responsible = @technician_responsible, 
-                            legal_responsible = @legal_responsible, 
-                            user_active = @user_active, 
-                            user_name = @user_name, 
-                            user_password = @user_password 
-                        WHERE 
-                            id = @id", 
-                        connection);
-                    
-                    command.Parameters.AddWithValue("@id", professional.Id);
-                    command.Parameters.AddWithValue("@name", professional.Name);
-                    command.Parameters.AddWithValue("@nameid", professional.NameId);
-                    command.Parameters.AddWithValue("@cpf", professional.Cpf);
-                    command.Parameters.AddWithValue("@birthday", professional.Birthday);
-                    command.Parameters.AddWithValue("@profession", professional.Profession);
-                    command.Parameters.AddWithValue("@permit_number", professional.PermitNumber);
-                    command.Parameters.AddWithValue("@association", professional.Association);
-                    command.Parameters.AddWithValue("@phone1", professional.Phone1);
-                    command.Parameters.AddWithValue("@phone2", professional.Phone2);
-                    command.Parameters.AddWithValue("@email", professional.Email);
-                    command.Parameters.AddWithValue("@technician_responsible", professional.TechnicianResponsible);
-                    command.Parameters.AddWithValue("@legal_responsible", professional.LegalResponsible);
-                    command.Parameters.AddWithValue("@user_active", professional.UserActive);
-                    command.Parameters.AddWithValue("@user_name", professional.UserName);
-                    command.Parameters.AddWithValue("@user_password", professional.UserPassword);
-                    command.ExecuteNonQuery();
+                    return connection.Execute(updateSQL, professional);
                 }
             }
             catch (Exception ex)
@@ -224,50 +184,18 @@ namespace FluxusApi.Repositories
         }
 
 
-        public bool Delete(int id)
+        public int Delete(int id)
         {
             try
             {
-                using (var connection = new MySqlConnection(_connectionString))
-                {
-                    connection.Open();
-
-                    using (var command = new MySqlCommand())
-                    {
-                        command.Connection = connection;
-                        command.CommandText = @"
-                        SELECT 
-                            id 
-                        FROM 
-                            professional 
-                        WHERE 
-                            id = @id";
-                        command.Parameters.AddWithValue("@id", id);
-                        
-                        var reader = command.ExecuteReader();
-                        if (!reader.HasRows)
-                            return false;
-                    }
-                }
+                string deleteSQL = @"
+                    DELETE FROM 
+                        Professional 
+                    WHERE 
+                        Id = @Id";
 
                 using (var connection = new MySqlConnection(_connectionString))
-                {
-                    connection.Open();
-
-                    using (var command = new MySqlCommand())
-                    {
-                        command.Connection = connection;
-                        command.CommandText = @"
-                            DELETE FROM 
-                                professional 
-                            WHERE 
-                                id = @id";
-                        command.Parameters.AddWithValue("@id", id);
-                        command.ExecuteNonQuery();
-
-                        return true;
-                    }
-                }
+                    return connection.Execute(deleteSQL, new { id });
             }
             catch (Exception ex)
             {

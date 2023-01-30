@@ -80,9 +80,9 @@ namespace FluxusApi.Controllers
         {
             AutenticacaoServico.Authenticate();
 
-            bool deleted = new ServiceRepository().Delete(id);
+            int rowsAffected = new ServiceRepository().Delete(id);
 
-            if (deleted)
+            if (rowsAffected > 0)
                 return Ok();
             else
                 return NotFound();

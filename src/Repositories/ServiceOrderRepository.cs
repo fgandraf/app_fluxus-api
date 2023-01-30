@@ -5,6 +5,7 @@ using System.Collections;
 using System.Globalization;
 using Microsoft.AspNetCore.Components.Routing;
 using Dapper;
+using Mysqlx.Crud;
 
 namespace FluxusApi.Repositories
 {
@@ -241,50 +242,22 @@ namespace FluxusApi.Repositories
         }
 
 
-        public long Insert(ServiceOrder serviceOrder)
+        public int Insert(ServiceOrder serviceOrder)
         {
             try
             {
-                using (var connection = new MySqlConnection(_connectionString))
-                {
-                    connection.Open();
-
-                    var command = new MySqlCommand(@"
-                    INSERT INTO service_order
-                        (title, reference_code, branch, order_date, deadline, professional_id, service_id, 
-                        service_amount, mileage_allowance, siopi, customer_name, city, contact_name, 
-                        contact_phone, coordinates, status, pending_date, survey_date, done_date, comments) 
+                string insertSQL = @"
+                    INSERT INTO ServiceOrder
+                        (Title, ReferenceCode, Branch, OrderDate, Deadline, ProfessionalId, ServiceId, 
+                        ServiceAmount, MileageAllowance, Siopi, CustomerName, City, ContactName, 
+                        ContactPhone, Coordinates, Status, PendingDate, SurveyDate, DoneDate, Comments) 
                     VALUES 
-                        (@title, @reference_code, @branch, @order_date, @deadline, @professional_id, @service_id, 
-                        @service_amount, @mileage_allowance, @siopi, @customer_name, @city, @contact_name, 
-                        @contact_phone, @coordinates, @status, @pending_date, @survey_date, @done_date, @comments)",
-                        connection);
+                        (@Title, @ReferenceCode, @Branch, @OrderDate, @Deadline, @ProfessionalId, @ServiceId, 
+                        @ServiceAmount, @MileageAllowance, @Siopi, @CustomerName, @City, @ContactName, 
+                        @ContactPhone, @Coordinates, @Status, @PendingDate, @SurveyDate, @DoneDate, @Comments)";
 
-                    command.Parameters.AddWithValue("@title", serviceOrder.Title);
-                    command.Parameters.AddWithValue("@reference_code", serviceOrder.ReferenceCode);
-                    command.Parameters.AddWithValue("@branch", serviceOrder.Branch);
-                    command.Parameters.AddWithValue("@order_date", serviceOrder.OrderDate);
-                    command.Parameters.AddWithValue("@deadline", serviceOrder.Deadline);
-                    command.Parameters.AddWithValue("@professional_id", serviceOrder.ProfessionalId);
-                    command.Parameters.AddWithValue("@service_id", serviceOrder.ServiceId);
-                    command.Parameters.AddWithValue("@service_amount", serviceOrder.ServiceAmount);
-                    command.Parameters.AddWithValue("@mileage_allowance", serviceOrder.MileageAllowance);
-                    command.Parameters.AddWithValue("@siopi", serviceOrder.Siopi);
-                    command.Parameters.AddWithValue("@customer_name", serviceOrder.CustomerName);
-                    command.Parameters.AddWithValue("@city", serviceOrder.City);
-                    command.Parameters.AddWithValue("@contact_name", serviceOrder.ContactName);
-                    command.Parameters.AddWithValue("@contact_phone", serviceOrder.ContactPhone);
-                    command.Parameters.AddWithValue("@coordinates", serviceOrder.Coordinates);
-                    command.Parameters.AddWithValue("@status", serviceOrder.Status);
-                    command.Parameters.AddWithValue("@pending_date", serviceOrder.PendingDate);
-                    command.Parameters.AddWithValue("@survey_date", serviceOrder.SurveyDate);
-                    command.Parameters.AddWithValue("@done_date", serviceOrder.DoneDate);
-                    command.Parameters.AddWithValue("@comments", serviceOrder.Comments);
-
-                    command.ExecuteNonQuery();
-
-                    return command.LastInsertedId;
-                }
+                using (var connection = new MySqlConnection(_connectionString))
+                    return connection.Execute(insertSQL, serviceOrder);
             }
             catch (Exception ex)
             {
@@ -293,62 +266,37 @@ namespace FluxusApi.Repositories
         }
 
 
-        public void Update(ServiceOrder serviceOrder)
+        public int Update(ServiceOrder serviceOrder)
         {
             try
             {
-                using (var connection = new MySqlConnection(_connectionString))
-                {
-                    connection.Open();
-
-                    var command = new MySqlCommand(@"
+                string updateSQL = @"
                     UPDATE 
-                        service_order 
+                        ServiceOrder 
                     SET 
-                        title = @title, 
-                        order_date = @order_date, 
-                        deadline = @deadline, 
-                        professional_id = @professional_id, 
-                        service_id = @service_id, 
-                        service_amount = service_amount, 
-                        mileage_allowance = mileage_allowance, 
-                        siopi = @siopi, 
-                        customer_name = @customer_name, 
-                        city = @city, 
-                        contact_name = @contact_name, 
-                        contact_phone = @contact_phone, 
-                        coordinates = @coordinates, 
-                        status = @status, 
-                        pending_date = @pending_date, 
-                        survey_date = @survey_date, 
-                        done_date = @done_date, 
-                        comments = @comments 
+                        Title = @Title, 
+                        OrderDate = @OrderDate, 
+                        Deadline = @Deadline, 
+                        ProfessionalId = @ProfessionalId, 
+                        ServiceId = @ServiceId, 
+                        ServiceAmount = ServiceAmount, 
+                        MileageAllowance = MileageAllowance, 
+                        Siopi = @Siopi, 
+                        CustomerName = @CustomerName, 
+                        City = @City, 
+                        ContactName = @ContactName, 
+                        ContactPhone = @ContactPhone, 
+                        Coordinates = @Coordinates, 
+                        Status = @Status, 
+                        PendingDate = @PendingDate, 
+                        SurveyDate = @SurveyDate, 
+                        DoneDate = @DoneDate, 
+                        Comments = @Comments 
                     WHERE 
-                        id = @id",
-                        connection);
+                        Id = @Id";
 
-                    command.Parameters.AddWithValue("@title", serviceOrder.Title);
-                    command.Parameters.AddWithValue("@order_date", serviceOrder.OrderDate);
-                    command.Parameters.AddWithValue("@deadline", serviceOrder.Deadline);
-                    command.Parameters.AddWithValue("@professional_id", serviceOrder.ProfessionalId);
-                    command.Parameters.AddWithValue("@service_id", serviceOrder.ServiceId);
-                    command.Parameters.AddWithValue("@service_amount", serviceOrder.ServiceAmount);
-                    command.Parameters.AddWithValue("@mileage_allowance", serviceOrder.MileageAllowance);
-                    command.Parameters.AddWithValue("@siopi", serviceOrder.Siopi);
-                    command.Parameters.AddWithValue("@customer_name", serviceOrder.CustomerName);
-                    command.Parameters.AddWithValue("@city", serviceOrder.City);
-                    command.Parameters.AddWithValue("@contact_name", serviceOrder.ContactName);
-                    command.Parameters.AddWithValue("@contact_phone", serviceOrder.ContactPhone);
-                    command.Parameters.AddWithValue("@coordinates", serviceOrder.Coordinates);
-                    command.Parameters.AddWithValue("@status", serviceOrder.Status);
-                    command.Parameters.AddWithValue("@pending_date", serviceOrder.PendingDate);
-                    command.Parameters.AddWithValue("@survey_date", serviceOrder.SurveyDate);
-                    command.Parameters.AddWithValue("@done_date", serviceOrder.DoneDate);
-                    command.Parameters.AddWithValue("@comments", serviceOrder.Comments);
-                    command.Parameters.AddWithValue("@id", serviceOrder.Id);
-
-                    command.ExecuteNonQuery();
-                }
+                using (var connection = new MySqlConnection(_connectionString))
+                    return connection.Execute(updateSQL, serviceOrder);
             }
             catch (Exception ex)
             {
@@ -357,28 +305,65 @@ namespace FluxusApi.Repositories
         }
 
 
-        public void UpdateInvoiceId(int id, int invoiceId)
+        public int UpdateInvoiceId(int id, int invoiceId)
         {
             try
             {
-                using (var connection = new MySqlConnection(_connectionString))
-                {
-                    connection.Open();
+                string updateSQL = @"
+                    UPDATE
+                        ServiceOrder
+                    SET
+                        InvoiceId = @InvoiceId
+                    WHERE
+                        Id = @Id";
 
-                    var command = new MySqlCommand(@"
+                var invoice = new
+                {
+                    InvoiceId = invoiceId,
+                    Id = id
+                };
+
+                using (var connection = new MySqlConnection(_connectionString))
+                    return connection.Execute(updateSQL, invoice);
+            }
+            catch (Exception ex)
+            {
+                throw ex.InnerException;
+            }
+        }
+
+
+        public int UpdateStatus(int id, string status)
+        {
+            try
+            {
+                string changeDate = string.Empty;
+                switch (status)
+                {
+                    case "RECEBIDA": break;
+                    case "PENDENTE": changeDate = ", PendingDate = @Date"; break;
+                    case "VISTORIADA": changeDate = ", SurveyDate = @Date"; break;
+                    case "CONCLUÍDA": changeDate = ", DoneDate = @Date"; break;
+                }
+
+                string updateSQL = @"
                     UPDATE 
-                        service_order 
+                        ServiceOrder 
                     SET 
-                        invoice_id = @invoice_id 
+                        Status = @Status 
+                        @changeDate 
                     WHERE 
-                        id = @id",
-                        connection);
+                        Id = @Id";
 
-                    command.Parameters.AddWithValue("@id", id);
-                    command.Parameters.AddWithValue("@invoice_id", invoiceId);
+                var order = new
+                {
+                    Status = status,
+                    Date = DateTime.Now,
+                    Id = id
+                };
 
-                    command.ExecuteNonQuery();
-                }
+                using (var connection = new MySqlConnection(_connectionString))
+                    return connection.Execute(updateSQL, order);
             }
             catch (Exception ex)
             {
@@ -387,102 +372,18 @@ namespace FluxusApi.Repositories
         }
 
 
-        public void UpdateStatus(int id, string status)
+        public int Delete(int id)
         {
             try
             {
-                using (var connection = new MySqlConnection(_connectionString))
-                {
-                    connection.Open();
-
-                    string changeDate = "";
-
-                    switch (status)
-                    {
-                        case "RECEBIDA":
-                            break;
-
-                        case "PENDENTE":
-                            changeDate = ", pending_date = @date";
-                            break;
-
-                        case "VISTORIADA":
-                            changeDate = ", survey_date = @date";
-                            break;
-
-                        case "CONCLUÍDA":
-                            changeDate = ", done_date = @date";
-                            break;
-                    }
-
-                    var command = new MySqlCommand(@$"
-                        UPDATE 
-                            service_order 
-                        SET 
-                            status = @status 
-                            {changeDate} 
-                        WHERE 
-                            id = @id",
-                            connection);
-
-                    command.Parameters.AddWithValue("@status", status);
-                    command.Parameters.AddWithValue("@date", DateTime.Now);
-                    command.Parameters.AddWithValue("@id", id);
-
-                    command.ExecuteNonQuery();
-                }
-            }
-            catch (Exception ex)
-            {
-                throw ex.InnerException;
-            }
-        }
-
-
-        public bool Delete(int id)
-        {
-            try
-            {
-                using (var connection = new MySqlConnection(_connectionString))
-                {
-                    connection.Open();
-
-                    using (var command = new MySqlCommand())
-                    {
-                        command.Connection = connection;
-                        command.CommandText = @"
-                            SELECT 
-                                id 
-                            FROM 
-                                service_order 
-                            WHERE 
-                                id = @id";
-                        command.Parameters.AddWithValue("@id", id);
-
-                        var reader = command.ExecuteReader();
-                        if (!reader.HasRows)
-                            return false;
-                    }
-                }
+                string deleteSQL = @"
+                    DELETE FROM 
+                        ServiceOrder 
+                    WHERE 
+                        Id = @Id";
 
                 using (var connection = new MySqlConnection(_connectionString))
-                {
-                    connection.Open();
-
-                    using (var command = new MySqlCommand())
-                    {
-                        command.Connection = connection;
-                        command.CommandText = @"
-                            DELETE FROM 
-                                service_order 
-                            WHERE 
-                                id = @id";
-                        command.Parameters.AddWithValue("@id", id);
-                        command.ExecuteNonQuery();
-
-                        return true;
-                    }
-                }
+                    return connection.Execute(deleteSQL, new { id });
             }
             catch (Exception ex)
             {

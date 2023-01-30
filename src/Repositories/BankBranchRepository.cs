@@ -92,36 +92,21 @@ namespace FluxusApi.Repositories
         }
 
 
-        public void Insert(BankBranch bankBranch)
+        public int Insert(BankBranch bankBranch)
         {
             try
             {
+                string insertSQL = @"
+                    INSERT INTO BankBranch
+                        (BranchNumber, Name, Address, Complement, District, City, 
+                        Zip, State, ContactName, Phone1, Phone2, Email) 
+                    VALUES
+                        (@BranchNumber, @Name, @Address, @Complement, @District, @City, 
+                        @Zip, @State, @ContactName, @Phone1, @Phone2, @Email)";
+
                 using (var connection = new MySqlConnection(_connectionString))
                 {
-                    connection.Open();
-
-                    var command = new MySqlCommand(@"
-                        INSERT INTO bank_branch
-                            (branch_number, name, address, complement,district,city, 
-                            zip, state, contact_name, phone1, phone2, email) 
-                        VALUES
-                            (@branch_number, @name, @address, @complement, @district, @city, 
-                            @zip, @state, @contact_name, @phone1, @phone2, @email)",
-                        connection);
-
-                    command.Parameters.AddWithValue("@branch_number", bankBranch.BranchNumber);
-                    command.Parameters.AddWithValue("@name", bankBranch.Name);
-                    command.Parameters.AddWithValue("@address", bankBranch.Address);
-                    command.Parameters.AddWithValue("@complement", bankBranch.Complement);
-                    command.Parameters.AddWithValue("@district", bankBranch.District);
-                    command.Parameters.AddWithValue("@city", bankBranch.City);
-                    command.Parameters.AddWithValue("@zip", bankBranch.Zip);
-                    command.Parameters.AddWithValue("@state", bankBranch.State);
-                    command.Parameters.AddWithValue("@contact_name", bankBranch.ContactName);
-                    command.Parameters.AddWithValue("@phone1", bankBranch.Phone1);
-                    command.Parameters.AddWithValue("@phone2", bankBranch.Phone2);
-                    command.Parameters.AddWithValue("@email", bankBranch.Email);
-                    command.ExecuteNonQuery();
+                    return connection.Execute(insertSQL, bankBranch);
                 }
             }
             catch (Exception ex)
@@ -130,48 +115,33 @@ namespace FluxusApi.Repositories
             }
         }
 
-        public void Update(BankBranch bankBranch)
+
+        public int Update(BankBranch bankBranch)
         {
             try
             {
+                string updateSQL = @"
+                    UPDATE 
+                        BankBranch
+                    SET
+                        BranchNumber = @BranchNumber, 
+                        Name = @Name, 
+                        Address = @Address, 
+                        Complement = @Complement, 
+                        District = @District, 
+                        City = @City, 
+                        Zip = @Zip, 
+                        State = @State, 
+                        ContactName = @ContactName, 
+                        Phone1 = @Phone1, 
+                        Phone2 = @Phone2, 
+                        Email = @Email 
+                    WHERE 
+                        Id = @Id";
+
                 using (var connection = new MySqlConnection(_connectionString))
                 {
-                    connection.Open();
-
-                    var command = new MySqlCommand(@"
-                        UPDATE 
-                            bank_branch
-                        SET
-                            branch_number = @branch_number, 
-                            name = @name, 
-                            address = @address, 
-                            complement = @complement, 
-                            district = @district, 
-                            city = @city, 
-                            zip = @zip, 
-                            state = @state, 
-                            contact_name = @contact_name, 
-                            phone1 = @phone1, 
-                            phone2 = @phone2, 
-                            email = @email 
-                        WHERE 
-                            id = @id",
-                        connection);
-
-                    command.Parameters.AddWithValue("@branch_number", bankBranch.BranchNumber);
-                    command.Parameters.AddWithValue("@name", bankBranch.Name);
-                    command.Parameters.AddWithValue("@address", bankBranch.Address);
-                    command.Parameters.AddWithValue("@complement", bankBranch.Complement);
-                    command.Parameters.AddWithValue("@district", bankBranch.District);
-                    command.Parameters.AddWithValue("@city", bankBranch.City);
-                    command.Parameters.AddWithValue("@zip", bankBranch.Zip);
-                    command.Parameters.AddWithValue("@state", bankBranch.State);
-                    command.Parameters.AddWithValue("@contact_name", bankBranch.ContactName);
-                    command.Parameters.AddWithValue("@phone1", bankBranch.Phone1);
-                    command.Parameters.AddWithValue("@phone2", bankBranch.Phone2);
-                    command.Parameters.AddWithValue("@email", bankBranch.Email);
-                    command.Parameters.AddWithValue("@id", bankBranch.Id);
-                    command.ExecuteNonQuery();
+                    return connection.Execute(updateSQL, bankBranch);
                 }
             }
             catch (Exception ex)
@@ -180,51 +150,18 @@ namespace FluxusApi.Repositories
             }
         }
 
-        public bool Delete(int id)
+        public int Delete(int id)
         {
             try
             {
-                using (var connection = new MySqlConnection(_connectionString))
-                {
-                    connection.Open();
-
-                    using (var command = new MySqlCommand())
-                    {
-                        command.Connection = connection;
-                        command.CommandText = @"
-                            SELECT 
-                                id 
-                            FROM 
-                                bank_branch 
-                            WHERE 
-                                id = @id";
-                        command.Parameters.AddWithValue("@id", id);
-                        
-                        var reader = command.ExecuteReader();
-                        if (!reader.HasRows)
-                            return false;
-                    }
-                }
-
+                string deleteSQL = @"
+                    DELETE FROM 
+                        BankBranch 
+                    WHERE 
+                        Id = @Id";
 
                 using (var connection = new MySqlConnection(_connectionString))
-                {
-                    connection.Open();
-
-                    using (var command = new MySqlCommand())
-                    {
-                        command.Connection = connection;
-                        command.CommandText = @"
-                            DELETE FROM 
-                                bank_branch 
-                            WHERE 
-                                id = @id";
-                        command.Parameters.AddWithValue("@id", id);
-                        command.ExecuteNonQuery();
-                        
-                        return true;
-                    }
-                }
+                    return connection.Execute(deleteSQL, new { id });
             }
             catch (Exception ex)
             {

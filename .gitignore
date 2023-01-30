@@ -10,3 +10,6 @@
 
 # Ignore directory
 database/ignore/
+
+# Mac files
+.DS_Store

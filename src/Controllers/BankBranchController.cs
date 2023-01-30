@@ -92,9 +92,9 @@ namespace FluxusApi.Controllers
         {
             Authenticator.Authenticate();
 
-            bool deleted = new BankBranchRepository().Delete(id);
+            int rowsAffected = new BankBranchRepository().Delete(id);
 
-            if (deleted)
+            if (rowsAffected > 0)
                 return Ok(); 
             else
                 return NotFound();

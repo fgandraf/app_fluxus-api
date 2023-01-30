@@ -68,29 +68,21 @@ namespace FluxusApi.Repositories
         }
 
 
-        public void Insert(Invoice invoice)
+        public int Insert(Invoice invoice)
         {
             try
             {
+                string insertSQL = @"
+                    INSERT INTO Invoice
+                        (Description,  IssueDate, SubtotalService, 
+                        SubtotalMileageAllowance, Total) 
+                    VALUES
+                        (@Description, @Issue_date, @SubtotalService, 
+                        @SubtotalMileageAllowance, @Total)";
+
                 using (var connection = new MySqlConnection(_connectionString))
                 {
-                    connection.Open();
-
-                    var command = new MySqlCommand(@"
-                        INSERT INTO invoice
-                            (description,  issue_date, subtotal_service, 
-                            subtotal_mileage_allowance, total) 
-                        VALUES
-                            (@description, @issue_date, @subtotal_service, 
-                            @subtotal_mileage_allowance, @total)",
-                        connection);
-
-                    command.Parameters.AddWithValue("@description", invoice.Description);
-                    command.Parameters.AddWithValue("@issue_date", invoice.IssueDate);
-                    command.Parameters.AddWithValue("@subtotal_service", invoice.SubtotalService);
-                    command.Parameters.AddWithValue("@subtotal_mileage_allowance", invoice.SubtotalMileageAllowance);
-                    command.Parameters.AddWithValue("@total", invoice.Total);
-                    command.ExecuteNonQuery();
+                    return connection.Execute(insertSQL, invoice);
                 }
             }
             catch (Exception ex)
@@ -100,30 +92,23 @@ namespace FluxusApi.Repositories
         }
 
 
-        public void UpdateTotals(Invoice invoice)
+        public int UpdateTotals(Invoice invoice)
         {
             try
             {
+                string updateSQL = @"
+                    UPDATE 
+                        Invoice
+                    SET
+                        SubtotalService = @SubtotalService, 
+                        SubtotalMileageAllowance = @SubtotalMileageAllowance, 
+                        Total = @Total
+                    WHERE
+                        Id = @Id";
+
                 using (var connection = new MySqlConnection(_connectionString))
                 {
-                    connection.Open();
-
-                    var command = new MySqlCommand(@"
-                        UPDATE 
-                            invoice
-                        SET
-                            subtotal_service = @subtotal_service, 
-                            subtotal_mileage_allowance = @subtotal_mileage_allowance, 
-                            total = @total
-                        WHERE
-                            id = @id",
-                        connection);
-
-                    command.Parameters.AddWithValue("@subtotal_service", invoice.SubtotalService);
-                    command.Parameters.AddWithValue("@subtotal_mileage_allowance", invoice.SubtotalMileageAllowance);
-                    command.Parameters.AddWithValue("@total", invoice.Total);
-                    command.Parameters.AddWithValue("@id", invoice.Id);
-                    command.ExecuteNonQuery();
+                    return connection.Execute(updateSQL, invoice);
                 }
             }
             catch (Exception ex)
@@ -133,50 +118,18 @@ namespace FluxusApi.Repositories
         }
 
 
-        public bool Delete(int id)
+        public int Delete(int id)
         {
             try
             {
-                using (var connection = new MySqlConnection(_connectionString))
-                {
-                    connection.Open();
-
-                    using (var command = new MySqlCommand())
-                    {
-                        command.Connection = connection;
-                        command.CommandText = @"
-                            SELECT 
-                                id 
-                            FROM 
-                                invoice 
-                            WHERE 
-                                id = @id";
-                        command.Parameters.AddWithValue("@id", id);
-                        
-                        var reader = command.ExecuteReader();
-                        if (!reader.HasRows)
-                            return false;
-                    }
-                }
+                string deleteSQL = @"
+                    DELETE FROM 
+                        Invoice 
+                    WHERE 
+                        Id = @Id";
 
                 using (var connection = new MySqlConnection(_connectionString))
-                {
-                    connection.Open();
-
-                    using (var command = new MySqlCommand())
-                    {
-                        command.Connection = connection;
-                        command.CommandText = @"
-                            DELETE FROM 
-                                invoice 
-                            WHERE 
-                                id = @id";
-                        command.Parameters.AddWithValue("@id", id);
-                        command.ExecuteNonQuery();
-
-                        return true;
-                    }
-                }
+                    return connection.Execute(deleteSQL, new { id });
             }
             catch (Exception ex)
             {

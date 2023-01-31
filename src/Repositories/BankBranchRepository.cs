@@ -55,7 +55,7 @@ namespace FluxusApi.Repositories
             try
             {
                 using (var connection = new MySqlConnection(_connectionString))
-                    return connection.Query(query, new { id });
+                    return connection.QueryFirst(query, new { id });
             }
             catch (Exception ex)
             {

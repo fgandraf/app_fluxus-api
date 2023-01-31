@@ -322,13 +322,13 @@ namespace FluxusApi.Repositories
 
         public int UpdateStatus(int id, string status)
         {
-            string changeDate = string.Empty;
+            string changeDate = "";
             switch (status)
             {
                 case "RECEBIDA": break;
-                case "PENDENTE": changeDate = ", PendingDate = @Date"; break;
-                case "VISTORIADA": changeDate = ", SurveyDate = @Date"; break;
-                case "CONCLUÍDA": changeDate = ", DoneDate = @Date"; break;
+                case "PENDENTE": changeDate = $", PendingDate = {DateTime.Now.Date.ToString()}"; break;
+                case "VISTORIADA": changeDate = $", SurveyDate = {DateTime.Now.Date.ToString()}"; break;
+                case "CONCLUÍDA": changeDate = $", DoneDate = {DateTime.Now.Date.ToString()}"; break;
             }
 
             string updateSQL = @"
@@ -343,7 +343,7 @@ namespace FluxusApi.Repositories
             var order = new
             {
                 Status = status,
-                Date = DateTime.Now,
+                changeDate = changeDate,
                 Id = id
             };
 

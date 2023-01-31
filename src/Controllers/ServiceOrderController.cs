@@ -149,7 +149,7 @@ namespace FluxusApi.Controllers
 
 
         // PUT api/ServiceOrder/UpdateInvoiceId/<id>,<invoice_id>
-        [HttpPut("UpdateInvoiceId/{id},{invoice_id}")]
+        [HttpPut("UpdateInvoiceId/{id},{invoiceId}")]
         public IActionResult UpdateInvoiceId(int id, int invoiceId)
         {
             AutenticacaoServico.Authenticate();

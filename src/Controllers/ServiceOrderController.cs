@@ -64,13 +64,13 @@ namespace FluxusApi.Controllers
         }
 
 
-        // GET: api/ServiceOrder/Filtered/<parameters>
-        [HttpGet("Filtered/{parameters}")]
-        public IActionResult GetFiltered(string parameters)
+        // GET: api/ServiceOrder/Filtered/<filter><
+        [HttpGet("Filtered/{filter}")]
+        public IActionResult GetFiltered(string filter)
         {
             AutenticacaoServico.Authenticate();
 
-            var result = new ServiceOrderRepository().GetFiltered(parameters);
+            var result = new ServiceOrderRepository().GetFiltered(filter);
 
             if (result == null)
                 return NotFound();

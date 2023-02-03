@@ -2,6 +2,7 @@
 using FluxusApi.Entities;
 using System.Collections;
 using Dapper;
+using Org.BouncyCastle.Tls;
 
 namespace FluxusApi.Repositories
 {
@@ -128,7 +129,7 @@ namespace FluxusApi.Repositories
                     os.CustomerName,
                     os.SurveyDate,
                     os.DoneDate,
-                    os.InvoiceId
+                    os.Invoiced
                 FROM
                     ServiceOrder os
                 INNER JOIN
@@ -140,14 +141,26 @@ namespace FluxusApi.Repositories
                 ON
                     os.ProfessionalId = pr.Id
                 WHERE 
-                    @filter
+                    pr.Tag LIKE @professional AND sr.Tag LIKE @service AND os.City LIKE @city AND os.Status LIKE @status AND os.Invoiced = @invoiced
                 ORDER BY 
                     OrderDate";
+
+
+            
+            string[] filters = filter.Split(',');
+            var param = new
+            {
+                professional = filters[0],
+                service = filters[1],
+                city = filters[2],
+                status = filters[3],
+                invoiced = filters[4]
+            };
 
             try
             {
                 using (var connection = new MySqlConnection(_connectionString))
-                    return connection.Query(query, new { filter });
+                    return connection.Query(query, param);
             }
             catch (Exception ex)
             {
@@ -298,7 +311,8 @@ namespace FluxusApi.Repositories
                 UPDATE
                     ServiceOrder
                 SET
-                    InvoiceId = @InvoiceId
+                    InvoiceId = @InvoiceId,
+                    Invoiced = 1
                 WHERE
                     Id = @Id";
 
@@ -326,31 +340,31 @@ namespace FluxusApi.Repositories
             switch (status)
             {
                 case "RECEBIDA": break;
-                case "PENDENTE": changeDate = $", PendingDate = {DateTime.Now.Date.ToString()}"; break;
-                case "VISTORIADA": changeDate = $", SurveyDate = {DateTime.Now.Date.ToString()}"; break;
-                case "CONCLUÍDA": changeDate = $", DoneDate = {DateTime.Now.Date.ToString()}"; break;
+                case "PENDENTE": changeDate = ", PendingDate = @ActualDate "; break;
+                case "VISTORIADA": changeDate = ", SurveyDate = @ActualDate "; break;
+                case "CONCLUÍDA": changeDate = ", DoneDate = @ActualDate "; break;
             }
 
-            string updateSQL = @"
-                UPDATE 
-                    ServiceOrder 
-                SET 
-                    Status = @Status 
-                    @changeDate 
-                WHERE 
+            string updateSQL = @$"
+                UPDATE
+                    ServiceOrder
+                SET
+                    Status = @Status
+                    {changeDate}
+                WHERE
                     Id = @Id";
 
-            var order = new
+            var orderObj = new
             {
                 Status = status,
-                changeDate = changeDate,
+                ActualDate = DateTime.Now,
                 Id = id
             };
 
             try
             {
                 using (var connection = new MySqlConnection(_connectionString))
-                    return connection.Execute(updateSQL, order);
+                    return connection.Execute(updateSQL, orderObj);
             }
             catch (Exception ex)
             {

@@ -132,6 +132,7 @@ CREATE TABLE `ServiceOrder` (
 	`SurveyDate` DATE,
 	`DoneDate` DATE,
 	`Comments` TEXT,
+	`Invoiced` BIT DEFAULT 0,
 	`InvoiceId` INT DEFAULT 0,
 	
 	PRIMARY KEY (`Id`),

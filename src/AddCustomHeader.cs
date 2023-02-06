@@ -1,7 +1,7 @@
 ﻿using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.SwaggerGen;
 
-public class AddCustomHeaderParameter : IOperationFilter
+public class AddCustomHeader : IOperationFilter
 {
     public void Apply(OpenApiOperation operation, OperationFilterContext context)
     {
@@ -18,7 +18,7 @@ public class AddCustomHeaderParameter : IOperationFilter
         {
             Name = "Token",
             In = ParameterLocation.Header,
-            Description = "Token  xz8wM6zr2RfF18GBM0B5yrkoo",
+            Description = "Token",
             Required = true,
         });
     

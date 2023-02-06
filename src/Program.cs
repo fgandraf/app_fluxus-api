@@ -11,12 +11,13 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 
+//Add custom header parameter
 builder.Services.AddSwaggerGen(c =>
 {
-    c.OperationFilter<AddCustomHeaderParameter>();
-}); // adicionar custom header - token
+    c.OperationFilter<AddCustomHeader>();
+});
 
-builder.WebHost.UseIISIntegration(); //acrescentado para executar iis local
+builder.WebHost.UseIISIntegration();
 
 var app = builder.Build();
 

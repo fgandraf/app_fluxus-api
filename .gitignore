@@ -8,8 +8,8 @@
 .vs/
 .vscode/
 
-# Ignore directory
-database/ignore/
-
 # Mac files
 .DS_Store
+
+# Publish files
+PublishProfiles/

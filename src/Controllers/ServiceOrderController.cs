@@ -162,7 +162,7 @@ namespace FluxusApi.Controllers
 
         // PUT api/ServiceOrder/UpdateStatus/<id>,<status>
         [HttpPut("UpdateStatus/{id},{status}")]
-        public IActionResult UpdateStatus(int id, string status)
+        public IActionResult UpdateStatus(int id, EnumStatus status)
         {
             AutenticacaoServico.Authenticate();
 

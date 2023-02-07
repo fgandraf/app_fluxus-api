@@ -19,7 +19,7 @@ namespace FluxusApi.Entities
         public string ContactName { get; set; }
         public string ContactPhone { get; set; }
         public string Coordinates { get; set; }
-        public string Status { get; set; }
+        public EnumStatus Status { get; set; }
         public string PendingDate { get; set; }
         public string SurveyDate { get; set; }
         public string DoneDate { get; set; }

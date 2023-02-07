@@ -93,21 +93,21 @@ namespace FluxusApi.Repositories
         {
             string query = @"
                 SELECT 
-                    Id, OrderSate, ReferenceCode, ProfessionalId, ServiceId, City, 
-                    CustomerName, SurveyDate, DoneDate, ServiceAmount, MileageAllowance 
+                    Id, OrderDate, ReferenceCode, ProfessionalId, ServiceId, City, 
+                    CustomerName, SurveyDate, DoneDate, ServiceAmount, MileageAllowance
                 FROM 
                     ServiceOrder 
                 WHERE 
-                    InvoiceId = 0 
+                    Invoiced = @invoiced 
                 AND 
-                    Status = 'CONCLUÍDA' 
+                    Status = @status
                 ORDER BY 
                     DoneDate";
 
             try
             {
                 using (var connection = new MySqlConnection(_connectionString))
-                    return connection.Query(query);
+                    return connection.Query(query, new { invoiced = false, status = EnumStatus.DONE });
             }
             catch (Exception ex)
             {
@@ -141,7 +141,7 @@ namespace FluxusApi.Repositories
                 ON
                     os.ProfessionalId = pr.Id
                 WHERE 
-                    pr.Tag LIKE @professional AND sr.Tag LIKE @service AND os.City LIKE @city AND os.Status LIKE @status AND os.Invoiced = @invoiced
+                    pr.Tag LIKE @professional AND sr.Tag LIKE @service AND os.City LIKE @city AND os.Status LIKE @status AND os.Invoiced LIKE @invoiced
                 ORDER BY 
                     OrderDate";
 
@@ -334,15 +334,15 @@ namespace FluxusApi.Repositories
         }
 
 
-        public int UpdateStatus(int id, string status)
+        public int UpdateStatus(int id, EnumStatus status)
         {
             string changeDate = "";
             switch (status)
             {
-                case "RECEBIDA": break;
-                case "PENDENTE": changeDate = ", PendingDate = @ActualDate "; break;
-                case "VISTORIADA": changeDate = ", SurveyDate = @ActualDate "; break;
-                case "CONCLUÍDA": changeDate = ", DoneDate = @ActualDate "; break;
+                case EnumStatus.RECEIVED: break;
+                case EnumStatus.PENDING: changeDate = ", PendingDate = @ActualDate "; break;
+                case EnumStatus.SURVEYED: changeDate = ", SurveyDate = @ActualDate "; break;
+                case EnumStatus.DONE: changeDate = ", DoneDate = @ActualDate "; break;
             }
 
             string updateSQL = @$"

@@ -1,7 +1,8 @@
-﻿using System;
+﻿using Dapper.Contrib.Extensions;
 
 namespace FluxusApi.Entities
 {
+    [Table("Invoice")]
     public class Invoice
     {
         public long Id { get; set; }

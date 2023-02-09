@@ -2,6 +2,7 @@
 using FluxusApi.Entities;
 using System.Collections;
 using Dapper;
+using Dapper.Contrib.Extensions;
 
 namespace FluxusApi.Repositories
 {
@@ -10,31 +11,15 @@ namespace FluxusApi.Repositories
         private string _connectionString = string.Empty;
 
         public InvoiceRepository()
-        {
-            _connectionString = ConnectionString.Get();
-        }
+            => _connectionString = ConnectionString.Get();
 
 
         public IEnumerable GetAll()
         {
-            string query = @"
-                SELECT
-                    Id,
-                    Description,
-                    IssueDate,
-                    SubtotalService, 
-                    SubtotalMileageAllowance,
-                    Total 
-                FROM 
-                    Invoice 
-                ORDER BY 
-                    IssueDate
-                DESC";
-
             try
             {
                 using (var connection = new MySqlConnection(_connectionString))
-                    return connection.Query(query);
+                    return connection.GetAll<Invoice>(); //Order By IssueDate DESC
             }
             catch (Exception ex)
             {
@@ -65,20 +50,12 @@ namespace FluxusApi.Repositories
         }
 
 
-        public int Insert(Invoice invoice)
+        public void Insert(Invoice invoice)
         {
-            string insertSQL = @"
-                INSERT INTO Invoice
-                    (Description,  IssueDate, SubtotalService, 
-                    SubtotalMileageAllowance, Total) 
-                VALUES
-                    (@Description, @Issue_date, @SubtotalService, 
-                    @SubtotalMileageAllowance, @Total)";
-
             try
             {
                 using (var connection = new MySqlConnection(_connectionString))
-                    return connection.Execute(insertSQL, invoice);
+                    connection.Insert<Invoice>(invoice);
             }
             catch (Exception ex)
             {
@@ -111,18 +88,16 @@ namespace FluxusApi.Repositories
         }
 
 
-        public int Delete(int id)
+        public bool Delete(int id)
         {
-            string deleteSQL = @"
-                DELETE FROM 
-                    Invoice 
-                WHERE 
-                    Id = @Id";
-
             try
             {
                 using (var connection = new MySqlConnection(_connectionString))
-                    return connection.Execute(deleteSQL, new { id });
+                {
+                    var invoice = connection.Get<Invoice>(id);
+                    return connection.Delete<Invoice>(invoice);
+                }
+                    
             }
             catch (Exception ex)
             {

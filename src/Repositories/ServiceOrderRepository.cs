@@ -2,7 +2,7 @@
 using FluxusApi.Entities;
 using System.Collections;
 using Dapper;
-using Org.BouncyCastle.Tls;
+using Dapper.Contrib.Extensions;
 
 namespace FluxusApi.Repositories
 {
@@ -11,9 +11,7 @@ namespace FluxusApi.Repositories
         private string _connectionString = string.Empty;
 
         public ServiceOrderRepository()
-        {
-            _connectionString = ConnectionString.Get();
-        }
+            => _connectionString = ConnectionString.Get();
 
 
         public IEnumerable GetOrdersFlow()
@@ -220,20 +218,12 @@ namespace FluxusApi.Repositories
         }
 
 
-        public IEnumerable GetBy(int id)
+        public ServiceOrder GetBy(int id)
         {
-            string query = @"
-                SELECT 
-                    * 
-                FROM 
-                    ServiceOrder 
-                WHERE 
-                    Id = @id";
-
             try
             {
                 using (var connection = new MySqlConnection(_connectionString))
-                    return connection.QueryFirst(query, new { id });
+                    return connection.Get<ServiceOrder>(id);
             }
             catch (Exception ex)
             {
@@ -242,22 +232,12 @@ namespace FluxusApi.Repositories
         }
 
 
-        public int Insert(ServiceOrder serviceOrder)
+        public void Insert(ServiceOrder serviceOrder)
         {
-            string insertSQL = @"
-                INSERT INTO ServiceOrder
-                    (Title, ReferenceCode, Branch, OrderDate, Deadline, ProfessionalId, ServiceId, 
-                    ServiceAmount, MileageAllowance, Siopi, CustomerName, City, ContactName, 
-                    ContactPhone, Coordinates, Status, PendingDate, SurveyDate, DoneDate, Comments) 
-                VALUES 
-                    (@Title, @ReferenceCode, @Branch, @OrderDate, @Deadline, @ProfessionalId, @ServiceId, 
-                    @ServiceAmount, @MileageAllowance, @Siopi, @CustomerName, @City, @ContactName, 
-                    @ContactPhone, @Coordinates, @Status, @PendingDate, @SurveyDate, @DoneDate, @Comments)";
-
             try
             {
                 using (var connection = new MySqlConnection(_connectionString))
-                    return connection.Execute(insertSQL, serviceOrder);
+                    connection.Insert<ServiceOrder>(serviceOrder);
             }
             catch (Exception ex)
             {
@@ -266,37 +246,12 @@ namespace FluxusApi.Repositories
         }
 
 
-        public int Update(ServiceOrder serviceOrder)
+        public void Update(ServiceOrder serviceOrder)
         {
-            string updateSQL = @"
-                UPDATE 
-                    ServiceOrder 
-                SET 
-                    Title = @Title, 
-                    OrderDate = @OrderDate, 
-                    Deadline = @Deadline, 
-                    ProfessionalId = @ProfessionalId, 
-                    ServiceId = @ServiceId, 
-                    ServiceAmount = ServiceAmount, 
-                    MileageAllowance = MileageAllowance, 
-                    Siopi = @Siopi, 
-                    CustomerName = @CustomerName, 
-                    City = @City, 
-                    ContactName = @ContactName, 
-                    ContactPhone = @ContactPhone, 
-                    Coordinates = @Coordinates, 
-                    Status = @Status, 
-                    PendingDate = @PendingDate, 
-                    SurveyDate = @SurveyDate, 
-                    DoneDate = @DoneDate, 
-                    Comments = @Comments 
-                WHERE 
-                    Id = @Id";
-
             try
             {
                 using (var connection = new MySqlConnection(_connectionString))
-                    return connection.Execute(updateSQL, serviceOrder);
+                    connection.Update<ServiceOrder>(serviceOrder);
             }
             catch (Exception ex)
             {
@@ -373,18 +328,16 @@ namespace FluxusApi.Repositories
         }
 
 
-        public int Delete(int id)
+        public bool Delete(int id)
         {
-            string deleteSQL = @"
-                DELETE FROM 
-                    ServiceOrder 
-                WHERE 
-                    Id = @Id";
-
             try
             {
                 using (var connection = new MySqlConnection(_connectionString))
-                    return connection.Execute(deleteSQL, new { id });
+                {
+                    var serviceOrder = connection.Get<ServiceOrder>(id);
+                    return connection.Delete<ServiceOrder>(serviceOrder);
+                }
+                    
             }
             catch (Exception ex)
             {

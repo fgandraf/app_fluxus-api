@@ -2,6 +2,7 @@
 using FluxusApi.Entities;
 using System.Collections;
 using Dapper;
+using Dapper.Contrib.Extensions;
 
 namespace FluxusApi.Repositories
 {
@@ -10,9 +11,7 @@ namespace FluxusApi.Repositories
         private string _connectionString = string.Empty;
 
         public ProfessionalRepository()
-        {
-            _connectionString = ConnectionString.Get();
-        }
+            => _connectionString = ConnectionString.Get();
 
 
         public IEnumerable GetAll()
@@ -93,20 +92,12 @@ namespace FluxusApi.Repositories
         }
 
 
-        public IEnumerable GetBy(int id)
+        public Professional GetBy(int id)
         {
-            string query = @"
-                SELECT 
-                    * 
-                FROM 
-                    Professional 
-                WHERE 
-                    Id = @id";
-
             try
             {
                 using (var connection = new MySqlConnection(_connectionString))
-                    return connection.QueryFirst(query, new { id });
+                    return connection.Get<Professional>(id);
             }
             catch (Exception ex)
             {
@@ -115,22 +106,12 @@ namespace FluxusApi.Repositories
         }
 
 
-        public int Insert(Professional professional)
+        public void Insert(Professional professional)
         {
-            string insertSQL = @"
-                INSERT INTO Professional
-                    (Tag, Name, Nameid, Cpf, Birthday, Profession, PermitNumber, 
-                    Association, Phone1, Phone2, Email, TechnicianResponsible, 
-                    LegalResponsible, UserActive, UserName, UserPassword) 
-                VALUES
-                    (@Tag, @Name, @Nameid, @Cpf, @Birthday, @Profession, @PermitNumber, 
-                    @Association, @Phone1, @Phone2, @Email, @TechnicianResponsible, 
-                    @LegalResponsible, @UserActive, @UserName, @UserPassword)";
-
             try
             {
                 using (var connection = new MySqlConnection(_connectionString))
-                    return connection.Execute(insertSQL, professional);
+                    connection.Insert<Professional>(professional);
             }
             catch (Exception ex)
             {
@@ -139,54 +120,30 @@ namespace FluxusApi.Repositories
         }
 
 
-        public int Update(Professional professional)
+        public void Update(Professional professional)
         {
-            string updateSQL = @"
-                UPDATE 
-                    Professional 
-                SET 
-                    Name = @Name, 
-                    Nameid = @Nameid, 
-                    Cpf = @Cpf, 
-                    Birthday = @Birthday, 
-                    Profession = @Profession, 
-                    PermitNumber = @PermitNumber, 
-                    Association = @Association, 
-                    Phone1 = @Phone1, 
-                    Phone2 = @Phone2, 
-                    Email = @Email, 
-                    TechnicianResponsible = @TechnicianResponsible, 
-                    LegalResponsible = @LegalResponsible, 
-                    UserActive = @UserActive, 
-                    UserName = @UserName, 
-                    UserPassword = @UserPassword 
-                WHERE 
-                    Id = @Id";
-
             try
             {
                 using (var connection = new MySqlConnection(_connectionString))
-                    return connection.Execute(updateSQL, professional);
+                    connection.Update<Professional>(professional);
             }
             catch (Exception ex)
             {
                 throw ex.InnerException;
             }
         }
+        
 
-
-        public int Delete(int id)
+        public bool Delete(int id)
         {
-            string deleteSQL = @"
-                DELETE FROM 
-                    Professional 
-                WHERE 
-                    Id = @Id";
-
             try
             {
                 using (var connection = new MySqlConnection(_connectionString))
-                    return connection.Execute(deleteSQL, new { id });
+                {
+                    var professional = connection.Get<Professional>(id);
+                    return connection.Delete<Professional>(professional);
+                }
+                    
             }
             catch (Exception ex)
             {

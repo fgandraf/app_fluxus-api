@@ -1,6 +1,8 @@
-﻿
+﻿using Dapper.Contrib.Extensions;
+
 namespace FluxusApi.Entities
 {
+    [Table("Professional")]
     public class Professional
     {
         public long Id { get; set; }

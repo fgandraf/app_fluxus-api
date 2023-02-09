@@ -2,6 +2,8 @@
 using FluxusApi.Entities;
 using System.Collections;
 using Dapper;
+using Dapper.Contrib;
+using Dapper.Contrib.Extensions;
 
 namespace FluxusApi.Repositories
 {
@@ -10,11 +12,9 @@ namespace FluxusApi.Repositories
         private string _connectionString = string.Empty;
 
         public BankBranchRepository()
-        {
-            _connectionString = ConnectionString.Get();
-        }
+            => _connectionString = ConnectionString.Get();
+            
 
-        
         public IEnumerable GetAll()
         {
             string query = @"
@@ -42,20 +42,12 @@ namespace FluxusApi.Repositories
         }
 
 
-        public IEnumerable GetBy(int id)
+        public BankBranch GetBy(int id)
         {
-            string query = @"
-                SELECT 
-                    * 
-                FROM 
-                    BankBranch 
-                WHERE 
-                    Id = @id";
-
             try
             {
                 using (var connection = new MySqlConnection(_connectionString))
-                    return connection.QueryFirst(query, new { id });
+                    return connection.Get<BankBranch>(id);
             }
             catch (Exception ex)
             {
@@ -89,20 +81,12 @@ namespace FluxusApi.Repositories
         }
 
 
-        public int Insert(BankBranch bankBranch)
+        public void Insert(BankBranch bankBranch)
         {
-            string insertSQL = @"
-                INSERT INTO BankBranch
-                    (BranchNumber, Name, Address, Complement, District, City, 
-                    Zip, State, ContactName, Phone1, Phone2, Email) 
-                VALUES
-                    (@BranchNumber, @Name, @Address, @Complement, @District, @City, 
-                    @Zip, @State, @ContactName, @Phone1, @Phone2, @Email)";
-
             try
             {
                 using (var connection = new MySqlConnection(_connectionString))
-                    return connection.Execute(insertSQL, bankBranch);
+                    connection.Insert<BankBranch>(bankBranch);
             }
             catch (Exception ex)
             {
@@ -111,31 +95,12 @@ namespace FluxusApi.Repositories
         }
 
 
-        public int Update(BankBranch bankBranch)
+        public void Update(BankBranch bankBranch)
         {
-            string updateSQL = @"
-                UPDATE 
-                    BankBranch
-                SET
-                    BranchNumber = @BranchNumber, 
-                    Name = @Name, 
-                    Address = @Address, 
-                    Complement = @Complement, 
-                    District = @District, 
-                    City = @City, 
-                    Zip = @Zip, 
-                    State = @State, 
-                    ContactName = @ContactName, 
-                    Phone1 = @Phone1, 
-                    Phone2 = @Phone2, 
-                    Email = @Email 
-                WHERE 
-                    Id = @Id";
-
             try
             {
                 using (var connection = new MySqlConnection(_connectionString))
-                    return connection.Execute(updateSQL, bankBranch);
+                    connection.Update<BankBranch>(bankBranch);
             }
             catch (Exception ex)
             {
@@ -143,18 +108,16 @@ namespace FluxusApi.Repositories
             }
         }
 
-        public int Delete(int id)
+        public bool Delete(int id)
         {
-            string deleteSQL = @"
-                DELETE FROM 
-                    BankBranch 
-                WHERE 
-                    Id = @Id";
-
+            
             try
             {
                 using (var connection = new MySqlConnection(_connectionString))
-                    return connection.Execute(deleteSQL, new { id });
+                {
+                    var bankBranch = connection.Get<BankBranch>(id);
+                    return connection.Delete<BankBranch>(bankBranch);
+                }
             }
             catch (Exception ex)
             {

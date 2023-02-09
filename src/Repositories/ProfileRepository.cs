@@ -2,6 +2,7 @@
 using FluxusApi.Entities;
 using System.Collections;
 using Dapper;
+using Dapper.Contrib.Extensions;
 
 namespace FluxusApi.Repositories
 {
@@ -10,9 +11,7 @@ namespace FluxusApi.Repositories
         private string _connectionString = string.Empty;
 
         public ProfileRepository()
-        {
-            _connectionString = ConnectionString.Get();
-        }
+            => _connectionString = ConnectionString.Get();
 
 
         public IEnumerable GetAll()
@@ -113,26 +112,12 @@ namespace FluxusApi.Repositories
         }
 
 
-        public int Insert(Profile profile)
+        public void Insert(Profile profile)
         {
-            string insertSQL = @"
-                INSERT INTO Profile
-                    (Id, Cnpj, TradingName, CompanyName, StateId, CityId, Address,
-                    Complement, District, City, Zip, State, EstablishmentDate, Phone1,
-                    Phone2, Email, BankAccountName, BankAccountType, BankAccountBranch, 
-                    BankAccountDigit, BankAccountNumber, ContractorName, ContractNotice,
-                    ContractNumber, ContractEstablished, ContractStart, ContractEnd, Logo) 
-                VALUES 
-                    (1, @Cnpj, @TradingName, @CompanyName, @StateId, @CityId, @Address, 
-                    @Complement, @District, @City, @Zip, @State, @EstablishmentDate, @Phone1, 
-                    @Phone2, @Email, @BankAccountName, @BankAccountType, @BankAccountBranch, 
-                    @BankAccountDigit, @BankAccountNumber, @ContractorName, @ContractNotice, 
-                    @ContractNumber, @ContractEstablished, @ContractStart, @ContractEnd, @Logo)";
-
             try
             {
                 using (var connection = new MySqlConnection(_connectionString))
-                    return connection.Execute(insertSQL, profile);
+                    connection.Insert<Profile>(profile);
             }
             catch (Exception ex)
             {
@@ -141,46 +126,12 @@ namespace FluxusApi.Repositories
         }
 
 
-        public int Update(Profile profile)
+        public void Update(Profile profile)
         {
-            string updateSQL = @"
-                UPDATE 
-                    Profile 
-                SET 
-                    Cnpj = @Cnpj, 
-                    TradingName = @TradingName, 
-                    CompanyName = @CompanyName, 
-                    StateId = @StateId, 
-                    CityId = @CityId, 
-                    Address = @Address, 
-                    Complement = @Complement, 
-                    District = @District, 
-                    City = @City, 
-                    Zip = @Zip, 
-                    State = @State, 
-                    EstablishmentDate = @EstablishmentDate, 
-                    Phone1 = @Phone1, 
-                    Phone2 = @Phone2, 
-                    Email = @Email, 
-                    BankAccountName = @BankAccountName, 
-                    BankAccountType = @BankAccountType, 
-                    BankAccountBranch = @BankAccountBranch, 
-                    BankAccountDigit = @BankAccountDigit, 
-                    BankAccountNumber = @BankAccountNumber, 
-                    ContractorName = @ContractorName, 
-                    ContractNotice = @ContractNotice, 
-                    ContractNumber = @ContractNumber, 
-                    ContractEstablished = @ContractEstablished, 
-                    ContractStart = @ContractStart, 
-                    ContractEnd = @ContractEnd, 
-                    Logo = @Logo 
-                WHERE 
-                    Id = 1";
-
             try
             {
                 using (var connection = new MySqlConnection(_connectionString))
-                    return connection.Execute(updateSQL, profile);
+                    connection.Update<Profile>(profile);
             }
             catch (Exception ex)
             {

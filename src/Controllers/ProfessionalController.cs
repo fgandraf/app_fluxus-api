@@ -9,11 +9,11 @@ namespace FluxusApi.Controllers
 
     public class ProfessionalController : ControllerBase
     {
-        Autentication AutenticacaoServico;
+        Autentication Authenticator;
 
         public ProfessionalController(IHttpContextAccessor context)
         {
-            AutenticacaoServico = new Autentication(context);
+            Authenticator = new Autentication(context);
         }
 
 
@@ -21,7 +21,7 @@ namespace FluxusApi.Controllers
         [HttpGet]
         public IActionResult GetAll()
         {
-            AutenticacaoServico.Authenticate();
+            Authenticator.Authenticate();
 
             var result = new ProfessionalRepository().GetAll();
 
@@ -36,7 +36,7 @@ namespace FluxusApi.Controllers
         [HttpGet("TagNameId")]
         public IActionResult GetTagNameid()
         {
-            AutenticacaoServico.Authenticate();
+            Authenticator.Authenticate();
 
             var result = new ProfessionalRepository().GetTagNameid();
 
@@ -51,7 +51,7 @@ namespace FluxusApi.Controllers
         [HttpGet("UserInfo/{userName}")]
         public IActionResult GetUserInfo(string userName)
         {
-            AutenticacaoServico.Authenticate();
+            Authenticator.Authenticate();
 
             var result = new ProfessionalRepository().GetUserInfoBy(userName);
 
@@ -64,11 +64,11 @@ namespace FluxusApi.Controllers
 
         // GET api/Professional/<id>
         [HttpGet("{id}")]
-        public IActionResult GetBy(int id)
+        public IActionResult Get(int id)
         {
-            AutenticacaoServico.Authenticate();
+            Authenticator.Authenticate();
 
-            var result = new ProfessionalRepository().GetBy(id);
+            var result = new ProfessionalRepository().Get(id);
 
             if (result == null)
                 return NotFound();
@@ -81,7 +81,7 @@ namespace FluxusApi.Controllers
         [HttpPost]
         public IActionResult Post([FromBody] Professional professional)
         {
-            AutenticacaoServico.Authenticate();
+            Authenticator.Authenticate();
 
             new ProfessionalRepository().Insert(professional);
 
@@ -93,7 +93,7 @@ namespace FluxusApi.Controllers
         [HttpPut]
         public IActionResult Put([FromBody] Professional professional)
         {
-            AutenticacaoServico.Authenticate();
+            Authenticator.Authenticate();
 
             new ProfessionalRepository().Update(professional);
 
@@ -105,9 +105,13 @@ namespace FluxusApi.Controllers
         [HttpDelete("{id}")]
         public IActionResult Delete(int id)
         {
-            AutenticacaoServico.Authenticate();
+            Authenticator.Authenticate();
 
-            bool deleted = new ProfessionalRepository().Delete(id);
+            var professional = new ProfessionalRepository().Get(id);
+            bool deleted = false;
+
+            if (professional.Id != 0)
+                deleted = new ProfessionalRepository().Delete(professional);
 
             if (deleted)
                 return Ok();

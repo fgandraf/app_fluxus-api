@@ -34,11 +34,11 @@ namespace FluxusApi.Controllers
 
         // GET: api/BankBranch/<id>
         [HttpGet("{id}")]
-        public IActionResult GetBy(int id)
+        public IActionResult Get(int id)
         {
             Authenticator.Authenticate();
 
-            var result = new BankBranchRepository().GetBy(id);
+            var result = new BankBranchRepository().Get(id);
 
             if (result == null)
                 return NotFound();
@@ -92,7 +92,11 @@ namespace FluxusApi.Controllers
         {
             Authenticator.Authenticate();
 
-            bool deleted = new BankBranchRepository().Delete(id);
+            var bankBranch = new BankBranchRepository().Get(id);
+            bool deleted = false;
+
+            if (bankBranch.Id != 0)
+                deleted = new BankBranchRepository().Delete(bankBranch);
 
             if (deleted)
                 return Ok(); 

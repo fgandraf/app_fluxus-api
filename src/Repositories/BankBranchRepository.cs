@@ -7,15 +7,10 @@ using Dapper.Contrib.Extensions;
 
 namespace FluxusApi.Repositories
 {
-    public class BankBranchRepository
+    public class BankBranchRepository : Repository<BankBranch>
     {
-        private string _connectionString = string.Empty;
 
-        public BankBranchRepository()
-            => _connectionString = ConnectionString.Get();
-            
-
-        public IEnumerable GetAll()
+        public override IEnumerable GetAll()
         {
             string query = @"
                 SELECT 
@@ -32,22 +27,7 @@ namespace FluxusApi.Repositories
 
             try
             {
-                using (var connection = new MySqlConnection(_connectionString))
-                    return connection.Query(query);
-            }
-            catch (Exception ex)
-            {
-                throw ex.InnerException;
-            }
-        }
-
-
-        public BankBranch GetBy(int id)
-        {
-            try
-            {
-                using (var connection = new MySqlConnection(_connectionString))
-                    return connection.Get<BankBranch>(id);
+                return Connection.Query(query);
             }
             catch (Exception ex)
             {
@@ -71,60 +51,12 @@ namespace FluxusApi.Repositories
 
             try
             {
-                using (var connection = new MySqlConnection(_connectionString))
-                    return connection.Query(query, new { branchNumber });
+                return Connection.Query(query, new { branchNumber });
             }
             catch (Exception ex)
             {
                 throw ex.InnerException;
             }
         }
-
-
-        public void Insert(BankBranch bankBranch)
-        {
-            try
-            {
-                using (var connection = new MySqlConnection(_connectionString))
-                    connection.Insert<BankBranch>(bankBranch);
-            }
-            catch (Exception ex)
-            {
-                throw ex.InnerException;
-            }
-        }
-
-
-        public void Update(BankBranch bankBranch)
-        {
-            try
-            {
-                using (var connection = new MySqlConnection(_connectionString))
-                    connection.Update<BankBranch>(bankBranch);
-            }
-            catch (Exception ex)
-            {
-                throw ex.InnerException;
-            }
-        }
-
-        public bool Delete(int id)
-        {
-            
-            try
-            {
-                using (var connection = new MySqlConnection(_connectionString))
-                {
-                    var bankBranch = connection.Get<BankBranch>(id);
-                    return connection.Delete<BankBranch>(bankBranch);
-                }
-            }
-            catch (Exception ex)
-            {
-                throw ex.InnerException;
-            }
-        }
-
     }
-
 }

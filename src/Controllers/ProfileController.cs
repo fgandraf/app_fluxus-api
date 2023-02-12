@@ -9,12 +9,12 @@ namespace FluxusApi.Controllers
 
     public class ProfileController : ControllerBase
     {
-        Autentication AutenticacaoServico;
+        Autentication Authenticator;
 
         public ProfileController(IHttpContextAccessor context)
         {
 
-            AutenticacaoServico = new Autentication(context);
+            Authenticator = new Autentication(context);
         }
 
 
@@ -22,9 +22,9 @@ namespace FluxusApi.Controllers
         [HttpGet]
         public IActionResult GetAll()
         {
-            AutenticacaoServico.Authenticate();
+            Authenticator.Authenticate();
 
-            var result = new ProfileRepository().GetAll();
+            var result = new ProfileRepository().Get(1);
 
             if (result == null)
                 return NotFound();
@@ -37,7 +37,7 @@ namespace FluxusApi.Controllers
         [HttpGet("Logo")]
         public IActionResult GetLogo()
         {
-            AutenticacaoServico.Authenticate();
+            Authenticator.Authenticate();
 
             var result = new ProfileRepository().GetLogo();
 
@@ -52,7 +52,7 @@ namespace FluxusApi.Controllers
         [HttpGet("ToPrint")]
         public IActionResult GetToPrint()
         {
-            AutenticacaoServico.Authenticate();
+            Authenticator.Authenticate();
 
             var result = new ProfileRepository().GetToPrint();
 
@@ -68,7 +68,7 @@ namespace FluxusApi.Controllers
         [Route("TradingName")]
         public IActionResult GetTradingName()
         {
-            AutenticacaoServico.Authenticate();
+            Authenticator.Authenticate();
 
             var result = new ProfileRepository().GetTradingName();
 
@@ -83,7 +83,7 @@ namespace FluxusApi.Controllers
         [HttpPost]
         public IActionResult Post([FromBody] Profile profile)
         {
-            AutenticacaoServico.Authenticate();
+            Authenticator.Authenticate();
 
             new ProfileRepository().Insert(profile);
 
@@ -95,7 +95,7 @@ namespace FluxusApi.Controllers
         [HttpPut]
         public IActionResult Put([FromBody] Profile profile)
         {
-            AutenticacaoServico.Authenticate();
+            Authenticator.Authenticate();
 
             new ProfileRepository().Update(profile);
             

@@ -12,11 +12,11 @@ namespace FluxusApi.Controllers
 
     public class ServiceController : ControllerBase
     {
-        Autentication AutenticacaoServico;
+        Autentication Authenticator;
 
         public ServiceController(IHttpContextAccessor context)
         {
-            AutenticacaoServico = new Autentication(context);
+            Authenticator = new Autentication(context);
         }
 
 
@@ -24,7 +24,7 @@ namespace FluxusApi.Controllers
         [HttpGet]
         public IActionResult GetAll()
         {
-            AutenticacaoServico.Authenticate();
+            Authenticator.Authenticate();
 
             var result = new ServiceRepository().GetAll();
 
@@ -37,11 +37,11 @@ namespace FluxusApi.Controllers
 
         // GET api/Service/<id>
         [HttpGet("{id}")]
-        public IActionResult GetBy(int id)
+        public IActionResult Get(int id)
         {
-            AutenticacaoServico.Authenticate();
+            Authenticator.Authenticate();
 
-            var result = new ServiceRepository().GetBy(id);
+            var result = new ServiceRepository().Get(id);
 
             if (result == null)
                 return NotFound();
@@ -54,7 +54,7 @@ namespace FluxusApi.Controllers
         [HttpPost]
         public IActionResult Post([FromBody] Service service)
         {
-            AutenticacaoServico.Authenticate();
+            Authenticator.Authenticate();
 
             new ServiceRepository().Insert(service);
 
@@ -66,7 +66,7 @@ namespace FluxusApi.Controllers
         [HttpPut]
         public IActionResult Put([FromBody] Service service)
         {
-            AutenticacaoServico.Authenticate();
+            Authenticator.Authenticate();
 
             new ServiceRepository().Update(service);
 
@@ -78,9 +78,13 @@ namespace FluxusApi.Controllers
         [HttpDelete("{id}")]
         public IActionResult Delete(int id)
         {
-            AutenticacaoServico.Authenticate();
+            Authenticator.Authenticate();
 
-            bool deleted = new ServiceRepository().Delete(id);
+            var service = new ServiceRepository().Get(id);
+            bool deleted = false;
+
+            if (service.Id != 0)
+                deleted = new ServiceRepository().Delete(service);
 
             if (deleted)
                 return Ok();

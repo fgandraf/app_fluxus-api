@@ -6,15 +6,9 @@ using Dapper.Contrib.Extensions;
 
 namespace FluxusApi.Repositories
 {
-    public class ProfessionalRepository
+    public class ProfessionalRepository : Repository<Professional>
     {
-        private string _connectionString = string.Empty;
-
-        public ProfessionalRepository()
-            => _connectionString = ConnectionString.Get();
-
-
-        public IEnumerable GetAll()
+        public override IEnumerable GetAll()
         {
             string query = @"
                 SELECT 
@@ -31,8 +25,7 @@ namespace FluxusApi.Repositories
 
             try
             {
-                using (var connection = new MySqlConnection(_connectionString))
-                    return connection.Query(query);
+                return Connection.Query(query);
             }
             catch (Exception ex)
             {
@@ -55,8 +48,7 @@ namespace FluxusApi.Repositories
 
             try
             {
-                using (var connection = new MySqlConnection(_connectionString))
-                    return connection.Query(query);
+                return Connection.Query(query);
             }
             catch (Exception ex)
             {
@@ -82,75 +74,13 @@ namespace FluxusApi.Repositories
 
             try
             {
-                using (var connection = new MySqlConnection(_connectionString))
-                    return connection.Query(query, new { userName });
+                return Connection.Query(query, new { userName });
             }
             catch (Exception ex)
             {
                 throw ex.InnerException;
             }
         }
-
-
-        public Professional GetBy(int id)
-        {
-            try
-            {
-                using (var connection = new MySqlConnection(_connectionString))
-                    return connection.Get<Professional>(id);
-            }
-            catch (Exception ex)
-            {
-                throw ex.InnerException;
-            }
-        }
-
-
-        public void Insert(Professional professional)
-        {
-            try
-            {
-                using (var connection = new MySqlConnection(_connectionString))
-                    connection.Insert<Professional>(professional);
-            }
-            catch (Exception ex)
-            {
-                throw ex.InnerException;
-            }
-        }
-
-
-        public void Update(Professional professional)
-        {
-            try
-            {
-                using (var connection = new MySqlConnection(_connectionString))
-                    connection.Update<Professional>(professional);
-            }
-            catch (Exception ex)
-            {
-                throw ex.InnerException;
-            }
-        }
-        
-
-        public bool Delete(int id)
-        {
-            try
-            {
-                using (var connection = new MySqlConnection(_connectionString))
-                {
-                    var professional = connection.Get<Professional>(id);
-                    return connection.Delete<Professional>(professional);
-                }
-                    
-            }
-            catch (Exception ex)
-            {
-                throw ex.InnerException;
-            }
-        }
-
     }
 
 }

@@ -9,11 +9,11 @@ namespace FluxusApi.Controllers
 
     public class InvoiceController : ControllerBase
     {
-        Autentication AutenticacaoServico;
+        Autentication Authenticator;
 
         public InvoiceController(IHttpContextAccessor context)
         {
-            AutenticacaoServico = new Autentication(context);
+            Authenticator = new Autentication(context);
         }
 
 
@@ -21,14 +21,14 @@ namespace FluxusApi.Controllers
         [HttpGet]
         public IActionResult GetAll()
         {
-            AutenticacaoServico.Authenticate();
+            Authenticator.Authenticate();
 
-            var result = new InvoiceRepository().GetAll();
+            var result = (List<Invoice>)new InvoiceRepository().GetAll();
 
             if (result == null)
                 return NotFound();
 
-            return Ok(result);
+            return Ok(result.OrderBy(x => x.IssueDate));
         }
 
 
@@ -36,7 +36,7 @@ namespace FluxusApi.Controllers
         [HttpGet("Description/{id}")]
         public IActionResult GetDescription(int id)
         {
-            AutenticacaoServico.Authenticate();
+            Authenticator.Authenticate();
 
             var result = new InvoiceRepository().GetDescription(id);
 
@@ -51,7 +51,7 @@ namespace FluxusApi.Controllers
         [HttpPost]
         public IActionResult Post([FromBody] Invoice invoice)
         {
-            AutenticacaoServico.Authenticate();
+            Authenticator.Authenticate();
 
             new InvoiceRepository().Insert(invoice);
 
@@ -63,7 +63,7 @@ namespace FluxusApi.Controllers
         [HttpPut("Totals")]
         public IActionResult PutTotals([FromBody] Invoice invoice)
         {
-            AutenticacaoServico.Authenticate();
+            Authenticator.Authenticate();
 
             new InvoiceRepository().UpdateTotals(invoice);
 
@@ -75,9 +75,13 @@ namespace FluxusApi.Controllers
         [HttpDelete("{id}")]
         public IActionResult Delete(int id)
         {
-            AutenticacaoServico.Authenticate();
+            Authenticator.Authenticate();
 
-            bool deleted = new InvoiceRepository().Delete(id);
+            var invoice = new InvoiceRepository().Get(id);
+            bool deleted = false;
+
+            if (invoice.Id != 0)
+                deleted = new InvoiceRepository().Delete(invoice);
 
             if (deleted)
                 return Ok(); 

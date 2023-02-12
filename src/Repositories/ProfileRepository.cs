@@ -6,53 +6,16 @@ using Dapper.Contrib.Extensions;
 
 namespace FluxusApi.Repositories
 {
-    public class ProfileRepository
+    public class ProfileRepository : Repository<Profile>
     {
-        private string _connectionString = string.Empty;
-
-        public ProfileRepository()
-            => _connectionString = ConnectionString.Get();
-
-
-        public IEnumerable GetAll()
-        {
-            string query = @"
-                SELECT 
-                    *
-                FROM 
-                    Profile
-                WHERE
-                    Id = 1";
-
-            try
-            {
-                using (var connection = new MySqlConnection(_connectionString))
-                    return connection.Query(query);
-            }
-            catch (Exception ex)
-            {
-                throw ex.InnerException;
-            }
-        }
-
-
         public byte[] GetLogo()
         {
-            string query = @"
-                SELECT 
-                    Logo 
-                FROM 
-                    Profile 
-                WHERE 
-                    Id = 1";
+            string query = @"SELECT Logo FROM Profile WHERE Id = 1";
 
             try
             {
-                using (var connection = new MySqlConnection(_connectionString))
-                {
-                    var profile = connection.QueryFirst(query);
-                    return (byte[])(profile.Logo);
-                }
+                var profile = Connection.QueryFirst(query);
+                return (byte[])(profile.Logo);
             }
             catch (Exception ex)
             {
@@ -77,8 +40,7 @@ namespace FluxusApi.Repositories
 
             try
             {
-                using (var connection = new MySqlConnection(_connectionString))
-                    return connection.QueryFirst(query);
+                return Connection.QueryFirst(query);
             }
             catch (Exception ex)
             {
@@ -99,39 +61,8 @@ namespace FluxusApi.Repositories
 
             try
             {
-                using (var connection = new MySqlConnection(_connectionString))
-                {
-                    var profile = connection.QueryFirst(query);
-                    return profile.TradingName;
-                }
-            }
-            catch (Exception ex)
-            {
-                throw ex.InnerException;
-            }
-        }
-
-
-        public void Insert(Profile profile)
-        {
-            try
-            {
-                using (var connection = new MySqlConnection(_connectionString))
-                    connection.Insert<Profile>(profile);
-            }
-            catch (Exception ex)
-            {
-                throw ex.InnerException;
-            }
-        }
-
-
-        public void Update(Profile profile)
-        {
-            try
-            {
-                using (var connection = new MySqlConnection(_connectionString))
-                    connection.Update<Profile>(profile);
+                var profile = Connection.QueryFirst(query);
+                return profile.TradingName;
             }
             catch (Exception ex)
             {

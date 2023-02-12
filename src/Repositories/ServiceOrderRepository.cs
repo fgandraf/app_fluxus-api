@@ -6,13 +6,8 @@ using Dapper.Contrib.Extensions;
 
 namespace FluxusApi.Repositories
 {
-    public class ServiceOrderRepository
+    public class ServiceOrderRepository : Repository<ServiceOrder>
     {
-        private string _connectionString = string.Empty;
-
-        public ServiceOrderRepository()
-            => _connectionString = ConnectionString.Get();
-
 
         public IEnumerable GetOrdersFlow()
         {
@@ -32,8 +27,7 @@ namespace FluxusApi.Repositories
 
             try
             {
-                using (var connection = new MySqlConnection(_connectionString))
-                    return connection.Query(query);
+                return Connection.Query(query);
             }
             catch (Exception ex)
             {
@@ -77,8 +71,7 @@ namespace FluxusApi.Repositories
 
             try
             {
-                using (var connection = new MySqlConnection(_connectionString))
-                    return connection.Query(query, new { invoiceId });
+                return Connection.Query(query, new { invoiceId });
             }
             catch (Exception ex)
             {
@@ -104,8 +97,7 @@ namespace FluxusApi.Repositories
 
             try
             {
-                using (var connection = new MySqlConnection(_connectionString))
-                    return connection.Query(query, new { invoiced = false, status = EnumStatus.DONE });
+                return Connection.Query(query, new { invoiced = false, status = EnumStatus.DONE });
             }
             catch (Exception ex)
             {
@@ -157,8 +149,7 @@ namespace FluxusApi.Repositories
 
             try
             {
-                using (var connection = new MySqlConnection(_connectionString))
-                    return connection.Query(query, param);
+                return Connection.Query(query, param);
             }
             catch (Exception ex)
             {
@@ -186,8 +177,7 @@ namespace FluxusApi.Repositories
 
             try
             {
-                using (var connection = new MySqlConnection(_connectionString))
-                    return connection.QueryFirst(query, new { invoiceId });
+                return Connection.QueryFirst(query, new { invoiceId });
             }
             catch (Exception ex)
             {
@@ -208,57 +198,13 @@ namespace FluxusApi.Repositories
 
             try
             {
-                using (var connection = new MySqlConnection(_connectionString))
-                    return connection.Query(query);
+                return Connection.Query(query);
             }
             catch (Exception ex)
             {
                 throw ex.InnerException;
             }
         }
-
-
-        public ServiceOrder GetBy(int id)
-        {
-            try
-            {
-                using (var connection = new MySqlConnection(_connectionString))
-                    return connection.Get<ServiceOrder>(id);
-            }
-            catch (Exception ex)
-            {
-                throw ex.InnerException;
-            }
-        }
-
-
-        public void Insert(ServiceOrder serviceOrder)
-        {
-            try
-            {
-                using (var connection = new MySqlConnection(_connectionString))
-                    connection.Insert<ServiceOrder>(serviceOrder);
-            }
-            catch (Exception ex)
-            {
-                throw ex.InnerException;
-            }
-        }
-
-
-        public void Update(ServiceOrder serviceOrder)
-        {
-            try
-            {
-                using (var connection = new MySqlConnection(_connectionString))
-                    connection.Update<ServiceOrder>(serviceOrder);
-            }
-            catch (Exception ex)
-            {
-                throw ex.InnerException;
-            }
-        }
-
 
         public int UpdateInvoiceId(int id, int invoiceId)
         {
@@ -279,8 +225,7 @@ namespace FluxusApi.Repositories
 
             try
             {
-                using (var connection = new MySqlConnection(_connectionString))
-                    return connection.Execute(updateSQL, invoice);
+                return Connection.Execute(updateSQL, invoice);
             }
             catch (Exception ex)
             {
@@ -318,26 +263,7 @@ namespace FluxusApi.Repositories
 
             try
             {
-                using (var connection = new MySqlConnection(_connectionString))
-                    return connection.Execute(updateSQL, orderObj);
-            }
-            catch (Exception ex)
-            {
-                throw ex.InnerException;
-            }
-        }
-
-
-        public bool Delete(int id)
-        {
-            try
-            {
-                using (var connection = new MySqlConnection(_connectionString))
-                {
-                    var serviceOrder = connection.Get<ServiceOrder>(id);
-                    return connection.Delete<ServiceOrder>(serviceOrder);
-                }
-                    
+                return Connection.Execute(updateSQL, orderObj);
             }
             catch (Exception ex)
             {

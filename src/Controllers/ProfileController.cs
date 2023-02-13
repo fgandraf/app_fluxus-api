@@ -1,6 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using FluxusApi.Entities;
 using FluxusApi.Repositories;
+using System.Collections;
+using MySql.Data.MySqlClient;
 
 namespace FluxusApi.Controllers
 {
@@ -12,93 +14,121 @@ namespace FluxusApi.Controllers
         Autentication Authenticator;
 
         public ProfileController(IHttpContextAccessor context)
-        {
-
-            Authenticator = new Autentication(context);
-        }
+            => Authenticator = new Autentication(context);
 
 
-        // GET: api/Profile
-        [HttpGet]
+        [HttpGet] // GET:api/Profile
         public IActionResult GetAll()
         {
-            Authenticator.Authenticate();
+            Profile result;
 
-            var result = new ProfileRepository().Get(1);
+            try
+            {
+                Authenticator.Authenticate();
+                using (var connection = new MySqlConnection(ConnectionString.Get()))
+                    result = new ProfileRepository(connection).Get(1);
+            }
+            catch (Exception ex)
+            {
+                throw ex.InnerException;
+            }
 
-            if (result == null)
-                return NotFound();
-
-            return Ok(result);
+            return result == null ? NotFound() : Ok(result);
         }
 
 
-        // GET: api/Profile/Logo
-        [HttpGet("Logo")]
+        [HttpGet("Logo")] // GET:api/Profile/Logo
         public IActionResult GetLogo()
         {
-            Authenticator.Authenticate();
+            byte[] result;
 
-            var result = new ProfileRepository().GetLogo();
+            try
+            {
+                Authenticator.Authenticate();
+                using (var connection = new MySqlConnection(ConnectionString.Get()))
+                    result = new ProfileRepository(connection).GetLogo();
+            }
+            catch (Exception ex)
+            {
+                throw ex.InnerException;
+            }
 
-            if (result == null)
-                return NotFound();
-
-            return Ok(result);
+            return result == null ? NotFound() : Ok(result);
         }
 
 
-        // GET api/Profile/ToPrint
-        [HttpGet("ToPrint")]
+        [HttpGet("ToPrint")] // GET:api/Profile/ToPrint
         public IActionResult GetToPrint()
         {
-            Authenticator.Authenticate();
+            IEnumerable result;
 
-            var result = new ProfileRepository().GetToPrint();
+            try
+            {
+                Authenticator.Authenticate();
+                using (var connection = new MySqlConnection(ConnectionString.Get()))
+                    result = new ProfileRepository(connection).GetToPrint();
+            }
+            catch (Exception ex)
+            {
+                throw ex.InnerException;
+            }
 
-            if (result == null)
-                return NotFound();
-
-            return Ok(result);
+            return result == null ? NotFound() : Ok(result);
         }
 
 
-        // GET api/Profile/TradingName
-        [HttpGet]
-        [Route("TradingName")]
+        [HttpGet("TradingName")] // GET:api/Profile/TradingName
         public IActionResult GetTradingName()
         {
-            Authenticator.Authenticate();
+            string result;
 
-            var result = new ProfileRepository().GetTradingName();
+            try
+            {
+                Authenticator.Authenticate();
+                using (var connection = new MySqlConnection(ConnectionString.Get()))
+                    result = new ProfileRepository(connection).GetTradingName();
+            }
+            catch (Exception ex)
+            {
+                throw ex.InnerException;
+            }
 
-            if (result == null)
-                return NotFound();
-
-            return Ok(result);
+            return result == null ? NotFound() : Ok(result);
         }
 
 
-        // POST api/Profile
-        [HttpPost]
+        [HttpPost] // POST:api/Profile
         public IActionResult Post([FromBody] Profile profile)
         {
-            Authenticator.Authenticate();
-
-            new ProfileRepository().Insert(profile);
+            try
+            {
+                Authenticator.Authenticate();
+                using (var connection = new MySqlConnection(ConnectionString.Get()))
+                    new ProfileRepository(connection).Insert(profile);
+            }
+            catch (Exception ex)
+            {
+                throw ex.InnerException;
+            }
 
             return Ok();
         }
 
 
-        // PUT api/Profile
-        [HttpPut]
+        [HttpPut] // PUT:api/Profile
         public IActionResult Put([FromBody] Profile profile)
         {
-            Authenticator.Authenticate();
+            try
+            {
+                Authenticator.Authenticate();
+                using (var connection = new MySqlConnection(ConnectionString.Get()))
+                    new ProfileRepository(connection).Update(profile);
+            }
+            catch (Exception ex)
+            {
+                throw ex.InnerException;
+            }
 
-            new ProfileRepository().Update(profile);
-            
             return Ok();
         }
     }

@@ -8,19 +8,14 @@ namespace FluxusApi.Repositories
 {
     public class ProfileRepository : Repository<Profile>
     {
+        public ProfileRepository(MySqlConnection connection) : base(connection) { }
+
         public byte[] GetLogo()
         {
             string query = @"SELECT Logo FROM Profile WHERE Id = 1";
 
-            try
-            {
-                var profile = Connection.QueryFirst(query);
-                return (byte[])(profile.Logo);
-            }
-            catch (Exception ex)
-            {
-                throw ex.InnerException;
-            }
+            var profile = _connection.QueryFirst(query);
+            return (byte[])(profile.Logo);
         }
 
 
@@ -38,14 +33,7 @@ namespace FluxusApi.Repositories
                 WHERE 
                     Id = 1";
 
-            try
-            {
-                return Connection.QueryFirst(query);
-            }
-            catch (Exception ex)
-            {
-                throw ex.InnerException;
-            }
+            return _connection.QueryFirst(query);
         }
 
 
@@ -59,15 +47,8 @@ namespace FluxusApi.Repositories
                 WHERE 
                     Id = 1";
 
-            try
-            {
-                var profile = Connection.QueryFirst(query);
-                return profile.TradingName;
-            }
-            catch (Exception ex)
-            {
-                throw ex.InnerException;
-            }
+            var profile = _connection.QueryFirst(query);
+            return profile.TradingName;
         }
     }
 }

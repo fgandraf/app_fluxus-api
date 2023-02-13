@@ -1,6 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using FluxusApi.Entities;
 using FluxusApi.Repositories;
+using System.Collections;
+using MySql.Data.MySqlClient;
 
 namespace FluxusApi.Controllers
 {
@@ -12,111 +14,147 @@ namespace FluxusApi.Controllers
         Autentication Authenticator;
 
         public ProfessionalController(IHttpContextAccessor context)
-        {
-            Authenticator = new Autentication(context);
-        }
+            => Authenticator = new Autentication(context);
 
 
-        // GET: api/Professional
-        [HttpGet]
+        [HttpGet] // GET:api/Professional
         public IActionResult GetAll()
         {
-            Authenticator.Authenticate();
+            IEnumerable result;
 
-            var result = new ProfessionalRepository().GetAll();
+            try
+            {
+                Authenticator.Authenticate();
+                using (var connection = new MySqlConnection(ConnectionString.Get()))
+                    result = new ProfessionalRepository(connection).GetIndex();
+            }
+            catch (Exception ex)
+            {
+                throw ex.InnerException;
+            }
 
-            if (result == null)
-                return NotFound();
-
-            return Ok(result);
+            return result == null ? NotFound() : Ok(result);
         }
 
 
-        // GET api/Professional/TagNameId
-        [HttpGet("TagNameId")]
+        [HttpGet("TagNameId")] // GET:api/Professional/TagNameId
         public IActionResult GetTagNameid()
         {
-            Authenticator.Authenticate();
+            IEnumerable result;
 
-            var result = new ProfessionalRepository().GetTagNameid();
+            try
+            {
+                Authenticator.Authenticate();
+                using (var connection = new MySqlConnection(ConnectionString.Get()))
+                    result = new ProfessionalRepository(connection).GetTagNameid();
+            }
+            catch (Exception ex)
+            {
+                throw ex.InnerException;
+            }
 
-            if (result == null)
-                return NotFound();
-
-            return Ok(result);
+            return result == null ? NotFound() : Ok(result);
         }
 
 
-        // GET api/Professional/UserInfo/<userName>
-        [HttpGet("UserInfo/{userName}")]
+        [HttpGet("UserInfo/{userName}")] // GET:api/Professional/UserInfo/<userName>
         public IActionResult GetUserInfo(string userName)
         {
-            Authenticator.Authenticate();
+            IEnumerable result;
 
-            var result = new ProfessionalRepository().GetUserInfoBy(userName);
+            try
+            {
+                Authenticator.Authenticate();
+                using (var connection = new MySqlConnection(ConnectionString.Get()))
+                    result = new ProfessionalRepository(connection).GetUserInfoBy(userName);
+            }
+            catch (Exception ex)
+            {
+                throw ex.InnerException;
+            }
 
-            if (result == null)
-                return NotFound();
-
-            return Ok(result);
+            return result == null ? NotFound() : Ok(result);
         }
 
 
-        // GET api/Professional/<id>
-        [HttpGet("{id}")]
+        [HttpGet("{id}")] // GET:api/Professional/<id>
         public IActionResult Get(int id)
         {
-            Authenticator.Authenticate();
+            Professional result;
 
-            var result = new ProfessionalRepository().Get(id);
+            try
+            {
+                Authenticator.Authenticate();
+                using (var connection = new MySqlConnection(ConnectionString.Get()))
+                    result = new ProfessionalRepository(connection).Get(id);
+            }
+            catch (Exception ex)
+            {
+                throw ex.InnerException;
+            }
 
-            if (result == null)
-                return NotFound();
-
-            return Ok(result);
+            return result == null ? NotFound() : Ok(result);
         }
 
 
-        // POST api/Professional
-        [HttpPost]
+        [HttpPost] // POST:api/Professional
         public IActionResult Post([FromBody] Professional professional)
         {
-            Authenticator.Authenticate();
-
-            new ProfessionalRepository().Insert(professional);
+            try
+            {
+                Authenticator.Authenticate();
+                using (var connection = new MySqlConnection(ConnectionString.Get()))
+                    new ProfessionalRepository(connection).Insert(professional);
+            }
+            catch (Exception ex)
+            {
+                throw ex.InnerException;
+            }
 
             return Ok();
         }
 
 
-        // PUT api/Professional
-        [HttpPut]
+        [HttpPut] // PUT:api/Professional
         public IActionResult Put([FromBody] Professional professional)
         {
-            Authenticator.Authenticate();
-
-            new ProfessionalRepository().Update(professional);
+            try
+            {
+                Authenticator.Authenticate();
+                using (var connection = new MySqlConnection(ConnectionString.Get()))
+                    new ProfessionalRepository(connection).Update(professional);
+            }
+            catch (Exception ex)
+            {
+                throw ex.InnerException;
+            }
 
             return Ok();
         }
 
 
-        // DELETE api/Professional/<id>
-        [HttpDelete("{id}")]
+        [HttpDelete("{id}")] // DELETE:api/Professional/<id>
         public IActionResult Delete(int id)
         {
-            Authenticator.Authenticate();
-
-            var professional = new ProfessionalRepository().Get(id);
             bool deleted = false;
 
-            if (professional.Id != 0)
-                deleted = new ProfessionalRepository().Delete(professional);
+            try
+            {
+                Authenticator.Authenticate();
+                using (var connection = new MySqlConnection(ConnectionString.Get()))
+                {
+                    var professional = new ProfessionalRepository(connection).Get(id);
 
-            if (deleted)
-                return Ok();
-            else
-                return NotFound();
+                    if (professional.Id != 0)
+                        deleted = new ProfessionalRepository(connection).Delete(professional);
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex.InnerException;
+            }
+
+            return deleted == false ? NotFound() : Ok();
         }
     }
 }

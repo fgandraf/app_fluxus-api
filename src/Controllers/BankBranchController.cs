@@ -1,6 +1,9 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using FluxusApi.Repositories;
 using FluxusApi.Entities;
+using System.Collections;
+using MySqlX.XDevAPI.Common;
+using MySql.Data.MySqlClient;
 
 namespace FluxusApi.Controllers
 {
@@ -12,96 +15,127 @@ namespace FluxusApi.Controllers
         Autentication Authenticator;
 
         public BankBranchController(IHttpContextAccessor context)
-        {
-            Authenticator = new Autentication(context);
-        }
+            => Authenticator = new Autentication(context);
 
 
-        // GET: api/BankBranch
-        [HttpGet]
+        [HttpGet] // GET:api/BankBranch
         public IActionResult GetAll()
         {
-            Authenticator.Authenticate();
+            IEnumerable result;
 
-            var result = new BankBranchRepository().GetAll();
+            try
+            {
+                Authenticator.Authenticate();
+                using (var connection = new MySqlConnection(ConnectionString.Get()))
+                    result = new BankBranchRepository(connection).GetIndex();
+            }
+            catch (Exception ex)
+            {
+                throw ex.InnerException;
+            }
 
-            if (result == null)
-                return NotFound();
-
-            return Ok(result);
+            return result == null ? NotFound() : Ok(result);
         }
 
 
-        // GET: api/BankBranch/<id>
-        [HttpGet("{id}")]
+        [HttpGet("{id}")] // GET:api/BankBranch/<id>
         public IActionResult Get(int id)
         {
-            Authenticator.Authenticate();
+            BankBranch result;
 
-            var result = new BankBranchRepository().Get(id);
+            try
+            {
+                Authenticator.Authenticate();
+                using (var connection = new MySqlConnection(ConnectionString.Get()))
+                    result = new BankBranchRepository(connection).Get(id);
+            }
+            catch (Exception ex)
+            {
+                throw ex.InnerException;
+            }
 
-            if (result == null)
-                return NotFound();
-
-            return Ok(result);
+            return result == null ? NotFound() : Ok(result);
         }
 
 
-        // GET: api/BankBranch/Contacts/<branch_number>
-        [HttpGet("Contacts/{branch_number}")]
+        [HttpGet("Contacts/{branch_number}")] // GET:api/BankBranch/Contacts/<branch_number>
         public IActionResult GetContacts(string branch_number)
         {
-            Authenticator.Authenticate();
+            IEnumerable result;
 
-            var result = new BankBranchRepository().GetContacts(branch_number);
+            try
+            {
+                Authenticator.Authenticate();
+                using (var connection = new MySqlConnection(ConnectionString.Get()))
+                    result = new BankBranchRepository(connection).GetContacts(branch_number);
+            }
+            catch (Exception ex)
+            {
+                throw ex.InnerException;
+            }
 
-            if (result == null)
-                return NotFound();
-
-            return Ok(result);
+            return result == null ? NotFound() : Ok(result);
         }
 
 
-        // POST api/BankBranch
-        [HttpPost]
+        [HttpPost] // POST:api/BankBranch
         public IActionResult Post([FromBody] BankBranch bankBranch)
         {
-            Authenticator.Authenticate();
-
-            new BankBranchRepository().Insert(bankBranch);
+            try
+            {
+                Authenticator.Authenticate();
+                using (var connection = new MySqlConnection(ConnectionString.Get()))
+                    new BankBranchRepository(connection).Insert(bankBranch);
+            }
+            catch (Exception ex)
+            {
+                throw ex.InnerException;
+            }
 
             return Ok();
         }
 
 
-        // PUT api/BankBranch/
-        [HttpPut]
+        [HttpPut] // PUT:api/BankBranch/
         public IActionResult Put([FromBody] BankBranch bankBranch)
         {
-            Authenticator.Authenticate();
-
-            new BankBranchRepository().Update(bankBranch);
+            try
+            {
+                Authenticator.Authenticate();
+                using (var connection = new MySqlConnection(ConnectionString.Get()))
+                    new BankBranchRepository(connection).Update(bankBranch);
+            }
+            catch (Exception ex)
+            {
+                throw ex.InnerException;
+            }
 
             return Ok();
         }
 
 
-        // DELETE api/BankBranch/<id>
-        [HttpDelete("{id}")]
+        [HttpDelete("{id}")] // DELETE:api/BankBranch/<id>
         public IActionResult Delete(int id)
         {
-            Authenticator.Authenticate();
-
-            var bankBranch = new BankBranchRepository().Get(id);
             bool deleted = false;
 
-            if (bankBranch.Id != 0)
-                deleted = new BankBranchRepository().Delete(bankBranch);
+            try
+            {
+                Authenticator.Authenticate();
+                using (var connection = new MySqlConnection(ConnectionString.Get()))
+                {
+                    var bankBranch = new BankBranchRepository(connection).Get(id);
 
-            if (deleted)
-                return Ok(); 
-            else
-                return NotFound();
+                    if (bankBranch.Id != 0)
+                        deleted = new BankBranchRepository(connection).Delete(bankBranch);
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex.InnerException;
+            }
+
+            return deleted == false ? NotFound() : Ok();
         }
     }
 }

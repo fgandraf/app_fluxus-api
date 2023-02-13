@@ -8,18 +8,13 @@ namespace FluxusApi.Repositories
 {
     public class InvoiceRepository : Repository<Invoice>
     {
+        public InvoiceRepository(MySqlConnection connection) : base(connection) { }
+
         public string GetDescription(int id)
         {
             string query = @"SELECT Description FROM Invoice WHERE Id = @id";
 
-            try
-            {
-                return Connection.QueryFirst<string>(query, new { id = id });
-            }
-            catch (Exception ex)
-            {
-                throw ex.InnerException;
-            }
+            return _connection.QueryFirst<string>(query, new { id = id });
         }
 
         public int UpdateTotals(Invoice invoice)
@@ -34,14 +29,7 @@ namespace FluxusApi.Repositories
                 WHERE
                     Id = @Id";
 
-            try
-            {
-                return Connection.Execute(updateSQL, invoice);
-            }
-            catch (Exception ex)
-            {
-                throw ex.InnerException;
-            }
+            return _connection.Execute(updateSQL, invoice);
         }
     }
 }

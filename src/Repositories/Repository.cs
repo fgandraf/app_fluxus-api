@@ -9,31 +9,31 @@ namespace FluxusApi.Repositories
     public class Repository<T> where T : class
     {
 
-        protected readonly MySqlConnection Connection;
+        protected readonly MySqlConnection _connection;
 
 
-        public Repository()
-            => Connection = new MySqlConnection(ConnectionString.Get());
+        public Repository(MySqlConnection connection)
+            => _connection = connection;
 
 
         public void Insert(T model)
-            => Connection.Insert<T>(model);
+            => _connection.Insert<T>(model);
 
 
         public void Update(T model)
-            => Connection.Update<T>(model);
+            => _connection.Update<T>(model);
 
 
         public bool Delete(T model)
-            => Connection.Delete<T>(model);
+            => _connection.Delete<T>(model);
 
 
         public T Get(int id)
-            => Connection.Get<T>(id);
+            => _connection.Get<T>(id);
 
 
-        public virtual IEnumerable GetAll()
-            => Connection.GetAll<T>();
+        public IEnumerable GetAll()
+            => _connection.GetAll<T>();
 
     }
 }

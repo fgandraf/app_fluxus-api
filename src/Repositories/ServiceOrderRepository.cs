@@ -8,6 +8,7 @@ namespace FluxusApi.Repositories
 {
     public class ServiceOrderRepository : Repository<ServiceOrder>
     {
+        public ServiceOrderRepository(MySqlConnection connection) : base(connection) { }
 
         public IEnumerable GetOrdersFlow()
         {
@@ -25,14 +26,7 @@ namespace FluxusApi.Repositories
                 ORDER BY 
                     OrderDate";
 
-            try
-            {
-                return Connection.Query(query);
-            }
-            catch (Exception ex)
-            {
-                throw ex.InnerException;
-            }
+            return _connection.Query(query);
         }
 
 
@@ -69,14 +63,7 @@ namespace FluxusApi.Repositories
                 ORDER BY 
                     DoneDate";
 
-            try
-            {
-                return Connection.Query(query, new { invoiceId });
-            }
-            catch (Exception ex)
-            {
-                throw ex.InnerException;
-            }
+            return _connection.Query(query, new { invoiceId });
         }
 
 
@@ -95,14 +82,7 @@ namespace FluxusApi.Repositories
                 ORDER BY 
                     DoneDate";
 
-            try
-            {
-                return Connection.Query(query, new { invoiced = false, status = EnumStatus.DONE });
-            }
-            catch (Exception ex)
-            {
-                throw ex.InnerException;
-            }
+            return _connection.Query(query, new { invoiced = false, status = EnumStatus.DONE });
         }
 
         public IEnumerable GetFiltered(string filter)
@@ -135,8 +115,6 @@ namespace FluxusApi.Repositories
                 ORDER BY 
                     OrderDate";
 
-
-            
             string[] filters = filter.Split(',');
             var param = new
             {
@@ -147,14 +125,7 @@ namespace FluxusApi.Repositories
                 invoiced = filters[4]
             };
 
-            try
-            {
-                return Connection.Query(query, param);
-            }
-            catch (Exception ex)
-            {
-                throw ex.InnerException;
-            }
+            return _connection.Query(query, param);
         }
 
 
@@ -175,14 +146,7 @@ namespace FluxusApi.Repositories
                 ORDER BY 
                     t2.Nameid";
 
-            try
-            {
-                return Connection.QueryFirst(query, new { invoiceId });
-            }
-            catch (Exception ex)
-            {
-                throw ex.InnerException;
-            }
+            return _connection.QueryFirst(query, new { invoiceId });
         }
 
 
@@ -196,14 +160,7 @@ namespace FluxusApi.Repositories
                 ORDER BY 
                     City";
 
-            try
-            {
-                return Connection.Query(query);
-            }
-            catch (Exception ex)
-            {
-                throw ex.InnerException;
-            }
+            return _connection.Query(query);
         }
 
         public int UpdateInvoiceId(int id, int invoiceId)
@@ -223,14 +180,7 @@ namespace FluxusApi.Repositories
                 Id = id
             };
 
-            try
-            {
-                return Connection.Execute(updateSQL, invoice);
-            }
-            catch (Exception ex)
-            {
-                throw ex.InnerException;
-            }
+            return _connection.Execute(updateSQL, invoice);
         }
 
 
@@ -261,14 +211,7 @@ namespace FluxusApi.Repositories
                 Id = id
             };
 
-            try
-            {
-                return Connection.Execute(updateSQL, orderObj);
-            }
-            catch (Exception ex)
-            {
-                throw ex.InnerException;
-            }
+            return _connection.Execute(updateSQL, orderObj);
         }
     }
 }

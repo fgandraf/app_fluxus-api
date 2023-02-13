@@ -11,7 +11,7 @@ namespace FluxusApi
         public Autentication(IHttpContextAccessor context)
         {
             _context = context;
-         }
+        }
 
 
         public void Authenticate()

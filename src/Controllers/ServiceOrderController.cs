@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using FluxusApi.Entities;
 using FluxusApi.Repositories;
 using Microsoft.AspNetCore.Http;
+using MySql.Data.MySqlClient;
 
 namespace FluxusApi.Controllers
 {
@@ -15,180 +16,243 @@ namespace FluxusApi.Controllers
         Autentication Authenticator;
 
         public ServiceOrderController(IHttpContextAccessor context)
-        {
-            Authenticator = new Autentication(context);
-        }
+            => Authenticator = new Autentication(context);
 
 
-        // GET: api/ServiceOrder/OrdersFlow
-        [HttpGet("OrdersFlow")]
+        [HttpGet("OrdersFlow")] // GET:api/ServiceOrder/OrdersFlow
         public IActionResult GetOrdersFlow()
         {
-            Authenticator.Authenticate();
+            IEnumerable result;
 
-            var result = new ServiceOrderRepository().GetOrdersFlow();
+            try
+            {
+                Authenticator.Authenticate();
+                using (var connection = new MySqlConnection(ConnectionString.Get()))
+                    result = new ServiceOrderRepository(connection).GetOrdersFlow();
+            }
+            catch (Exception ex)
+            {
+                throw ex.InnerException;
+            }
 
-            if (result == null)
-                return NotFound();
-
-            return Ok(result);
+            return result == null ? NotFound() : Ok(result);
         }
 
 
-        // GET: api/ServiceOrder/OrderedCities
-        [HttpGet("OrderedCities")]
+        [HttpGet("OrderedCities")] // GET:api/ServiceOrder/OrderedCities
         public IActionResult GetOrderedCities()
         {
-            Authenticator.Authenticate();
+            IEnumerable result;
 
-            var result = new ServiceOrderRepository().GetOrderedCities();
+            try
+            {
+                Authenticator.Authenticate();
+                using (var connection = new MySqlConnection(ConnectionString.Get()))
+                    result = new ServiceOrderRepository(connection).GetOrderedCities();
+            }
+            catch (Exception ex)
+            {
+                throw ex.InnerException;
+            }
 
-            if (result == null)
-                return NotFound();
-
-            return Ok(result);
+            return result == null ? NotFound() : Ok(result);
         }
 
 
-        // GET: api/ServiceOrder/DoneToInvoice
-        [HttpGet("DoneToInvoice")]
-        public IActionResult GetDoneToInvoice()
+        [HttpGet("DoneToInvoice")]// GET:api/ServiceOrder/DoneToInvoice
+        public IActionResult GetDoneToInvoice() 
         {
-            Authenticator.Authenticate();
+            IEnumerable result;
 
-            var result = new ServiceOrderRepository().GetDoneToInvoice();
+            try
+            {
+                Authenticator.Authenticate();
+                using (var connection = new MySqlConnection(ConnectionString.Get()))
+                    result = new ServiceOrderRepository(connection).GetDoneToInvoice();
+            }
+            catch (Exception ex)
+            {
+                throw ex.InnerException;
+            }
 
-            if (result == null)
-                return NotFound();
-
-            return Ok(result);
+            return result == null ? NotFound() : Ok(result);
         }
 
 
-        // GET: api/ServiceOrder/Filtered/<filter><
-        [HttpGet("Filtered/{filter}")]
+        [HttpGet("Filtered/{filter}")] // GET:api/ServiceOrder/Filtered/<filter>
         public IActionResult GetFiltered(string filter)
         {
-            Authenticator.Authenticate();
+            IEnumerable result;
 
-            var result = new ServiceOrderRepository().GetFiltered(filter);
+            try
+            {
+                Authenticator.Authenticate();
+                using (var connection = new MySqlConnection(ConnectionString.Get()))
+                    result = new ServiceOrderRepository(connection).GetFiltered(filter);
+            }
+            catch (Exception ex)
+            {
+                throw ex.InnerException;
+            }
 
-            if (result == null)
-                return NotFound();
-
-            return Ok(result);
+            return result == null ? NotFound() : Ok(result);
         }
 
 
-        // GET api/ServiceOrder/Invoiced/<invoiceId>
-        [HttpGet("Invoiced/{invoiceId}")]
+        [HttpGet("Invoiced/{invoiceId}")] // GET:api/ServiceOrder/Invoiced/<invoiceId>
         public IActionResult GetInvoiced(int invoiceId)
         {
-            Authenticator.Authenticate();
+            IEnumerable result;
 
-            var result = new ServiceOrderRepository().GetInvoiced(invoiceId);
+            try
+            {
+                Authenticator.Authenticate();
+                using (var connection = new MySqlConnection(ConnectionString.Get()))
+                    result = new ServiceOrderRepository(connection).GetInvoiced(invoiceId);
+            }
+            catch (Exception ex)
+            {
+                throw ex.InnerException;
+            }
 
-            if (result == null)
-                return NotFound();
-
-            return Ok(result);
+            return result == null ? NotFound() : Ok(result);
         }
 
 
-        // GET api/ServiceOrder/Professionals/<invoiceId>
-        [HttpGet("Professionals/{invoiceId}")]
+        [HttpGet("Professionals/{invoiceId}")] // GET:api/ServiceOrder/Professionals/<invoiceId>
         public IActionResult GetProfessionals(int invoiceId)
         {
-            Authenticator.Authenticate();
+            IEnumerable result;
 
-            var result = new ServiceOrderRepository().GetProfessional(invoiceId);
+            try
+            {
+                Authenticator.Authenticate();
+                using (var connection = new MySqlConnection(ConnectionString.Get()))
+                    result = new ServiceOrderRepository(connection).GetProfessional(invoiceId);
+            }
+            catch (Exception ex)
+            {
+                throw ex.InnerException;
+            }
 
-            if (result == null)
-                return NotFound();
-
-            return Ok(result);
+            return result == null ? NotFound() : Ok(result);
         }
 
 
-        // GET api/ServiceOrder/<id>
-        [HttpGet("{id}")]
+        [HttpGet("{id}")] // GET:api/ServiceOrder/<id>
         public IActionResult Get(int id)
         {
-            Authenticator.Authenticate();
+            ServiceOrder result;
 
-            var result = new ServiceOrderRepository().Get(id);
+            try
+            {
+                Authenticator.Authenticate();
+                using (var connection = new MySqlConnection(ConnectionString.Get()))
+                    result = new ServiceOrderRepository(connection).Get(id);
+            }
+            catch (Exception ex)
+            {
+                throw ex.InnerException;
+            }
 
-            if (result == null)
-                return NotFound();
-
-            return Ok(result);
+            return result == null ? NotFound() : Ok(result);
         }
 
 
-        // POST api/ServiceOrder
-        [HttpPost]
+        [HttpPost] // POST:api/ServiceOrder
         public IActionResult Post([FromBody] ServiceOrder serviceOrder)
         {
-            Authenticator.Authenticate();
-
-            new ServiceOrderRepository().Insert(serviceOrder);
+            try
+            {
+                Authenticator.Authenticate();
+                using (var connection = new MySqlConnection(ConnectionString.Get()))
+                    new ServiceOrderRepository(connection).Insert(serviceOrder);
+            }
+            catch (Exception ex)
+            {
+                throw ex.InnerException;
+            }
 
             return Ok();
         }
 
 
-        // PUT api/ServiceOrder/
-        [HttpPut]
+        [HttpPut] // PUT:api/ServiceOrder/
         public IActionResult Put([FromBody] ServiceOrder serviceOrder)
         {
-            Authenticator.Authenticate();
-
-            new ServiceOrderRepository().Update(serviceOrder);
+            try
+            {
+                Authenticator.Authenticate();
+                using (var connection = new MySqlConnection(ConnectionString.Get()))
+                    new ServiceOrderRepository(connection).Update(serviceOrder);
+            }
+            catch (Exception ex)
+            {
+                throw ex.InnerException;
+            }
 
             return Ok();
         }
 
 
-        // PUT api/ServiceOrder/UpdateInvoiceId/<id>,<invoice_id>
-        [HttpPut("UpdateInvoiceId/{id},{invoiceId}")]
+        [HttpPut("UpdateInvoiceId/{id},{invoiceId}")] // PUT:api/ServiceOrder/UpdateInvoiceId/<id>,<invoice_id>
         public IActionResult UpdateInvoiceId(int id, int invoiceId)
         {
-            Authenticator.Authenticate();
-
-            new ServiceOrderRepository().UpdateInvoiceId(id, invoiceId);
+            try
+            {
+                Authenticator.Authenticate();
+                using (var connection = new MySqlConnection(ConnectionString.Get()))
+                    new ServiceOrderRepository(connection).UpdateInvoiceId(id, invoiceId);
+            }
+            catch (Exception ex)
+            {
+                throw ex.InnerException;
+            }
 
             return Ok();
         }
 
 
-        // PUT api/ServiceOrder/UpdateStatus/<id>,<status>
-        [HttpPut("UpdateStatus/{id},{status}")]
+        [HttpPut("UpdateStatus/{id},{status}")] // PUT:api/ServiceOrder/UpdateStatus/<id>,<status>
         public IActionResult UpdateStatus(int id, EnumStatus status)
         {
-            Authenticator.Authenticate();
-
-            new ServiceOrderRepository().UpdateStatus(id, status);
+            try
+            {
+                Authenticator.Authenticate();
+                using (var connection = new MySqlConnection(ConnectionString.Get()))
+                    new ServiceOrderRepository(connection).UpdateStatus(id, status);
+            }
+            catch (Exception ex)
+            {
+                throw ex.InnerException;
+            }
 
             return Ok();
         }
 
 
-        // DELETE api/ServiceOrder/<id>
-        [HttpDelete("{id}")]
+        [HttpDelete("{id}")] // DELETE:api/ServiceOrder/<id>
         public IActionResult Delete(int id)
         {
-            Authenticator.Authenticate();
-
-            var serviceOrder = new ServiceOrderRepository().Get(id);
             bool deleted = false;
 
-            if (serviceOrder.Id != 0)
-                deleted = new ServiceOrderRepository().Delete(serviceOrder);
+            try
+            {
+                Authenticator.Authenticate();
+                using (var connection = new MySqlConnection(ConnectionString.Get()))
+                {
+                    var serviceOrder = new ServiceOrderRepository(connection).Get(id);
 
-            if (deleted)
-                return Ok();
-            else
-                return NotFound();
+                    if (serviceOrder.Id != 0)
+                        deleted = new ServiceOrderRepository(connection).Delete(serviceOrder);
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex.InnerException;
+            }
+
+            return deleted == false ? NotFound() : Ok();
         }
     }
 }

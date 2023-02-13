@@ -9,8 +9,9 @@ namespace FluxusApi.Repositories
 {
     public class BankBranchRepository : Repository<BankBranch>
     {
+        public BankBranchRepository(MySqlConnection connection) : base(connection) { }
 
-        public override IEnumerable GetAll()
+        public IEnumerable GetIndex()
         {
             string query = @"
                 SELECT 
@@ -25,14 +26,7 @@ namespace FluxusApi.Repositories
                 ORDER BY 
                     BranchNumber";
 
-            try
-            {
-                return Connection.Query(query);
-            }
-            catch (Exception ex)
-            {
-                throw ex.InnerException;
-            }
+            return _connection.Query(query);
         }
 
 
@@ -49,14 +43,7 @@ namespace FluxusApi.Repositories
                 WHERE 
                     BranchNumber = @branchNumber";
 
-            try
-            {
-                return Connection.Query(query, new { branchNumber });
-            }
-            catch (Exception ex)
-            {
-                throw ex.InnerException;
-            }
+                return _connection.Query(query, new { branchNumber });
         }
     }
 }

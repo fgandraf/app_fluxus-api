@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using FluxusApi.Entities;
 using FluxusApi.Repositories;
 using Microsoft.AspNetCore.Http;
+using MySql.Data.MySqlClient;
 
 namespace FluxusApi.Controllers
 {
@@ -15,81 +16,107 @@ namespace FluxusApi.Controllers
         Autentication Authenticator;
 
         public ServiceController(IHttpContextAccessor context)
-        {
-            Authenticator = new Autentication(context);
-        }
+            => Authenticator = new Autentication(context);
 
 
-        // GET: api/Service
-        [HttpGet]
+        [HttpGet] // GET:api/Service
         public IActionResult GetAll()
         {
-            Authenticator.Authenticate();
+            IEnumerable result;
 
-            var result = new ServiceRepository().GetAll();
+            try
+            {
+                Authenticator.Authenticate();
+                using (var connection = new MySqlConnection(ConnectionString.Get()))
+                    result = new ServiceRepository(connection).GetAll();
+            }
+            catch (Exception ex)
+            {
+                throw ex.InnerException;
+            }
 
-            if (result == null)
-                return NotFound();
-
-            return Ok(result);
+            return result == null ? NotFound() : Ok(result);
         }
 
 
-        // GET api/Service/<id>
-        [HttpGet("{id}")]
+        [HttpGet("{id}")] // GET:api/Service/<id>
         public IActionResult Get(int id)
         {
-            Authenticator.Authenticate();
+            Service result;
 
-            var result = new ServiceRepository().Get(id);
+            try
+            {
+                Authenticator.Authenticate();
+                using (var connection = new MySqlConnection(ConnectionString.Get()))
+                    result = new ServiceRepository(connection).Get(id);
+            }
+            catch (Exception ex)
+            {
+                throw ex.InnerException;
+            }
 
-            if (result == null)
-                return NotFound();
-
-            return Ok(result);
+            return result == null ? NotFound() : Ok(result);
         }
 
 
-        // POST api/Service
-        [HttpPost]
+        [HttpPost] // POST:api/Service
         public IActionResult Post([FromBody] Service service)
         {
-            Authenticator.Authenticate();
-
-            new ServiceRepository().Insert(service);
+            try
+            {
+                Authenticator.Authenticate();
+                using (var connection = new MySqlConnection(ConnectionString.Get()))
+                    new ServiceRepository(connection).Insert(service);
+            }
+            catch (Exception ex)
+            {
+                throw ex.InnerException;
+            }
 
             return Ok();
         }
 
 
-        // PUT api/Service/<id>
-        [HttpPut]
+        [HttpPut] // PUT:api/Service/<id>
         public IActionResult Put([FromBody] Service service)
         {
-            Authenticator.Authenticate();
-
-            new ServiceRepository().Update(service);
+            try
+            {
+                Authenticator.Authenticate();
+                using (var connection = new MySqlConnection(ConnectionString.Get()))
+                    new ServiceRepository(connection).Update(service);
+            }
+            catch (Exception ex)
+            {
+                throw ex.InnerException;
+            }
 
             return Ok();
         }
 
 
-        // DELETE api/Service/<id>
-        [HttpDelete("{id}")]
+        [HttpDelete("{id}")] // DELETE:api/Service/<id>
         public IActionResult Delete(int id)
         {
-            Authenticator.Authenticate();
-
-            var service = new ServiceRepository().Get(id);
             bool deleted = false;
 
-            if (service.Id != 0)
-                deleted = new ServiceRepository().Delete(service);
+            try
+            {
+                Authenticator.Authenticate();
+                using (var connection = new MySqlConnection(ConnectionString.Get()))
+                {
+                    var service = new ServiceRepository(connection).Get(id);
 
-            if (deleted)
-                return Ok();
-            else
-                return NotFound();
+                    if (service.Id != 0)
+                        deleted = new ServiceRepository(connection).Delete(service);
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex.InnerException;
+            }
+
+            return deleted == false ? NotFound() : Ok();
         }
     }
 }

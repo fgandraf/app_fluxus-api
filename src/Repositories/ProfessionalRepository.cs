@@ -8,7 +8,9 @@ namespace FluxusApi.Repositories
 {
     public class ProfessionalRepository : Repository<Professional>
     {
-        public override IEnumerable GetAll()
+        public ProfessionalRepository(MySqlConnection connection) : base(connection) { }
+
+        public IEnumerable GetIndex()
         {
             string query = @"
                 SELECT 
@@ -23,14 +25,7 @@ namespace FluxusApi.Repositories
                 ORDER BY 
                     Tag";
 
-            try
-            {
-                return Connection.Query(query);
-            }
-            catch (Exception ex)
-            {
-                throw ex.InnerException;
-            }
+            return _connection.Query(query);
         }
 
 
@@ -46,14 +41,7 @@ namespace FluxusApi.Repositories
                 ORDER BY 
                     Tag";
 
-            try
-            {
-                return Connection.Query(query);
-            }
-            catch (Exception ex)
-            {
-                throw ex.InnerException;
-            }
+            return _connection.Query(query);
         }
 
 
@@ -72,14 +60,7 @@ namespace FluxusApi.Repositories
                 WHERE 
                     UserName = @userName";
 
-            try
-            {
-                return Connection.Query(query, new { userName });
-            }
-            catch (Exception ex)
-            {
-                throw ex.InnerException;
-            }
+            return _connection.Query(query, new { userName });
         }
     }
 

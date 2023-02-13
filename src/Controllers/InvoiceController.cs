@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using FluxusApi.Repositories;
 using FluxusApi.Entities;
+using MySql.Data.MySqlClient;
 
 namespace FluxusApi.Controllers
 {
@@ -12,81 +13,107 @@ namespace FluxusApi.Controllers
         Autentication Authenticator;
 
         public InvoiceController(IHttpContextAccessor context)
-        {
-            Authenticator = new Autentication(context);
-        }
+            => Authenticator = new Autentication(context);
 
 
-        // GET: api/Invoice
-        [HttpGet]
+        [HttpGet] // GET:api/Invoice
         public IActionResult GetAll()
         {
-            Authenticator.Authenticate();
+            List<Invoice> result;
 
-            var result = (List<Invoice>)new InvoiceRepository().GetAll();
+            try
+            {
+                Authenticator.Authenticate();
+                using (var connection = new MySqlConnection(ConnectionString.Get()))
+                    result = (List<Invoice>)new InvoiceRepository(connection).GetAll();
+            }
+            catch (Exception ex)
+            {
+                throw ex.InnerException;
+            }
 
-            if (result == null)
-                return NotFound();
-
-            return Ok(result.OrderBy(x => x.IssueDate));
+            return result == null ? NotFound() : Ok(result.OrderBy(x => x.IssueDate));
         }
 
 
-        // GET api/Invoice/Description/<id>
-        [HttpGet("Description/{id}")]
+        [HttpGet("Description/{id}")] // GET:api/Invoice/Description/<id>
         public IActionResult GetDescription(int id)
         {
-            Authenticator.Authenticate();
+            string result;
 
-            var result = new InvoiceRepository().GetDescription(id);
+            try
+            {
+                Authenticator.Authenticate();
+                using (var connection = new MySqlConnection(ConnectionString.Get()))
+                    result = new InvoiceRepository(connection).GetDescription(id);
+            }
+            catch (Exception ex)
+            {
+                throw ex.InnerException;
+            }
 
-            if (result == null)
-                return NotFound();
-
-            return Ok(result);
+            return result == null ? NotFound() : Ok(result);
         }
 
 
-        // POST api/Invoice
-        [HttpPost]
+        [HttpPost] // POST:api/Invoice
         public IActionResult Post([FromBody] Invoice invoice)
         {
-            Authenticator.Authenticate();
-
-            new InvoiceRepository().Insert(invoice);
+            try
+            {
+                Authenticator.Authenticate();
+                using (var connection = new MySqlConnection(ConnectionString.Get()))
+                    new InvoiceRepository(connection).Insert(invoice);
+            }
+            catch (Exception ex)
+            {
+                throw ex.InnerException;
+            }
 
             return Ok();
         }
 
 
-        // PUT api/Invoice/Totals/
-        [HttpPut("Totals")]
+        [HttpPut("Totals")] // PUT:api/Invoice/Totals/
         public IActionResult PutTotals([FromBody] Invoice invoice)
         {
-            Authenticator.Authenticate();
-
-            new InvoiceRepository().UpdateTotals(invoice);
+            try
+            {
+                Authenticator.Authenticate();
+                using (var connection = new MySqlConnection(ConnectionString.Get()))
+                    new InvoiceRepository(connection).UpdateTotals(invoice);
+            }
+            catch (Exception ex)
+            {
+                throw ex.InnerException;
+            }
 
             return Ok();
         }
 
 
-        // DELETE api/Invoice/<id>
-        [HttpDelete("{id}")]
+        [HttpDelete("{id}")] // DELETE:api/Invoice/<id>
         public IActionResult Delete(int id)
         {
-            Authenticator.Authenticate();
-
-            var invoice = new InvoiceRepository().Get(id);
             bool deleted = false;
 
-            if (invoice.Id != 0)
-                deleted = new InvoiceRepository().Delete(invoice);
+            try
+            {
+                Authenticator.Authenticate();
+                using (var connection = new MySqlConnection(ConnectionString.Get()))
+                {
+                    var invoice = new InvoiceRepository(connection).Get(id);
 
-            if (deleted)
-                return Ok(); 
-            else
-                return NotFound();
+                    if (invoice.Id != 0)
+                        deleted = new InvoiceRepository(connection).Delete(invoice);
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex.InnerException;
+            }
+
+            return deleted == false ? NotFound() : Ok();
         }
     }
 }

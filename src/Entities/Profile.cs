@@ -1,4 +1,5 @@
 ﻿using Dapper.Contrib.Extensions;
+using System.Text.Json.Nodes;
 
 namespace FluxusApi.Entities
 {
@@ -32,6 +33,6 @@ namespace FluxusApi.Entities
         public string ContractEstablished { get; set; }
         public string ContractStart { get; set; }
         public string ContractEnd { get; set; }
-        public string Logo { get; set; }
+        public byte[] Logo { get; set; }
     }
 }

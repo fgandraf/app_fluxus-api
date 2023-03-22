@@ -20,7 +20,7 @@ namespace FluxusApi.Repositories
             => _connection.Insert<T>(model);
 
 
-        public void Update(T model)
+        public virtual void Update(T model)
             => _connection.Update<T>(model);
 
 

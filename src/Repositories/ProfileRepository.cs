@@ -2,7 +2,6 @@
 using FluxusApi.Entities;
 using System.Collections;
 using Dapper;
-using Dapper.Contrib.Extensions;
 
 namespace FluxusApi.Repositories
 {

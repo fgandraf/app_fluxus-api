@@ -25,15 +25,16 @@ namespace FluxusApi.Controllers
             try
             {
                 Authenticator.Authenticate();
+                
                 using (var connection = new MySqlConnection(ConnectionString.Get()))
                     result = new ProfileRepository(connection).Get(1);
+
+                return result == null ? NotFound() : Ok(result);
             }
             catch (Exception ex)
             {
-                throw ex.InnerException;
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
             }
-
-            return result == null ? NotFound() : Ok(result);
         }
 
 
@@ -45,15 +46,16 @@ namespace FluxusApi.Controllers
             try
             {
                 Authenticator.Authenticate();
+                
                 using (var connection = new MySqlConnection(ConnectionString.Get()))
                     result = new ProfileRepository(connection).GetLogo();
+
+                return result == null ? NotFound() : Ok(result);
             }
             catch (Exception ex)
             {
-                throw ex.InnerException;
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
             }
-
-            return result == null ? NotFound() : Ok(result);
         }
 
 
@@ -65,15 +67,16 @@ namespace FluxusApi.Controllers
             try
             {
                 Authenticator.Authenticate();
+
                 using (var connection = new MySqlConnection(ConnectionString.Get()))
                     result = new ProfileRepository(connection).GetToPrint();
+
+                return result == null ? NotFound() : Ok(result);
             }
             catch (Exception ex)
             {
-                throw ex.InnerException;
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
             }
-
-            return result == null ? NotFound() : Ok(result);
         }
 
 
@@ -85,15 +88,16 @@ namespace FluxusApi.Controllers
             try
             {
                 Authenticator.Authenticate();
+                
                 using (var connection = new MySqlConnection(ConnectionString.Get()))
                     result = new ProfileRepository(connection).GetTradingName();
+                
+                return result == null ? NotFound() : Ok(result);
             }
             catch (Exception ex)
             {
-                throw ex.InnerException;
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
             }
-
-            return result == null ? NotFound() : Ok(result);
         }
 
 
@@ -103,15 +107,16 @@ namespace FluxusApi.Controllers
             try
             {
                 Authenticator.Authenticate();
+                
                 using (var connection = new MySqlConnection(ConnectionString.Get()))
                     new ProfileRepository(connection).Insert(profile);
+                
+                return Ok();
             }
             catch (Exception ex)
             {
-                throw ex.InnerException;
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
             }
-
-            return Ok();
         }
 
 
@@ -121,15 +126,18 @@ namespace FluxusApi.Controllers
             try
             {
                 Authenticator.Authenticate();
+                
                 using (var connection = new MySqlConnection(ConnectionString.Get()))
                     new ProfileRepository(connection).Update(profile);
+                
+                return Ok();
             }
             catch (Exception ex)
             {
-                throw ex.InnerException;
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
             }
-
-            return Ok();
         }
+
     }
+
 }

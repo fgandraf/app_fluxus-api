@@ -24,15 +24,16 @@ namespace FluxusApi.Controllers
             try
             {
                 Authenticator.Authenticate();
+                
                 using (var connection = new MySqlConnection(ConnectionString.Get()))
                     result = (List<Invoice>)new InvoiceRepository(connection).GetAll();
+
+                return result == null ? NotFound() : Ok(result.OrderBy(x => x.IssueDate));
             }
             catch (Exception ex)
             {
-                throw ex.InnerException;
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
             }
-
-            return result == null ? NotFound() : Ok(result.OrderBy(x => x.IssueDate));
         }
 
 
@@ -44,15 +45,16 @@ namespace FluxusApi.Controllers
             try
             {
                 Authenticator.Authenticate();
+                
                 using (var connection = new MySqlConnection(ConnectionString.Get()))
                     result = new InvoiceRepository(connection).GetDescription(id);
+
+                return result == null ? NotFound() : Ok(result);
             }
             catch (Exception ex)
             {
-                throw ex.InnerException;
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
             }
-
-            return result == null ? NotFound() : Ok(result);
         }
 
 
@@ -62,15 +64,16 @@ namespace FluxusApi.Controllers
             try
             {
                 Authenticator.Authenticate();
+                
                 using (var connection = new MySqlConnection(ConnectionString.Get()))
                     new InvoiceRepository(connection).Insert(invoice);
+
+                return Ok();
             }
             catch (Exception ex)
             {
-                throw ex.InnerException;
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
             }
-
-            return Ok();
         }
 
 
@@ -80,15 +83,16 @@ namespace FluxusApi.Controllers
             try
             {
                 Authenticator.Authenticate();
+                
                 using (var connection = new MySqlConnection(ConnectionString.Get()))
                     new InvoiceRepository(connection).UpdateTotals(invoice);
+
+                return Ok();
             }
             catch (Exception ex)
             {
-                throw ex.InnerException;
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
             }
-
-            return Ok();
         }
 
 
@@ -100,6 +104,7 @@ namespace FluxusApi.Controllers
             try
             {
                 Authenticator.Authenticate();
+                
                 using (var connection = new MySqlConnection(ConnectionString.Get()))
                 {
                     var invoice = new InvoiceRepository(connection).Get(id);
@@ -107,13 +112,15 @@ namespace FluxusApi.Controllers
                     if (invoice.Id != 0)
                         deleted = new InvoiceRepository(connection).Delete(invoice);
                 }
+
+                return deleted == false ? NotFound() : Ok();
             }
             catch (Exception ex)
             {
-                throw ex.InnerException;
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
             }
-
-            return deleted == false ? NotFound() : Ok();
         }
+
     }
+
 }

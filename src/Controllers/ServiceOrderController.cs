@@ -1,9 +1,7 @@
-﻿using System;
-using System.Collections;
+﻿using System.Collections;
 using Microsoft.AspNetCore.Mvc;
 using FluxusApi.Entities;
 using FluxusApi.Repositories;
-using Microsoft.AspNetCore.Http;
 using MySql.Data.MySqlClient;
 
 namespace FluxusApi.Controllers
@@ -27,15 +25,16 @@ namespace FluxusApi.Controllers
             try
             {
                 Authenticator.Authenticate();
+
                 using (var connection = new MySqlConnection(ConnectionString.Get()))
                     result = new ServiceOrderRepository(connection).GetOrdersFlow();
+
+                return result == null ? NotFound() : Ok(result);
             }
             catch (Exception ex)
             {
-                throw ex.InnerException;
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
             }
-
-            return result == null ? NotFound() : Ok(result);
         }
 
 
@@ -47,15 +46,16 @@ namespace FluxusApi.Controllers
             try
             {
                 Authenticator.Authenticate();
+
                 using (var connection = new MySqlConnection(ConnectionString.Get()))
                     result = new ServiceOrderRepository(connection).GetOrderedCities();
+
+                return result == null ? NotFound() : Ok(result);
             }
             catch (Exception ex)
             {
-                throw ex.InnerException;
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
             }
-
-            return result == null ? NotFound() : Ok(result);
         }
 
 
@@ -67,15 +67,16 @@ namespace FluxusApi.Controllers
             try
             {
                 Authenticator.Authenticate();
+
                 using (var connection = new MySqlConnection(ConnectionString.Get()))
                     result = new ServiceOrderRepository(connection).GetDoneToInvoice();
+
+                return result == null ? NotFound() : Ok(result);
             }
             catch (Exception ex)
             {
-                throw ex.InnerException;
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
             }
-
-            return result == null ? NotFound() : Ok(result);
         }
 
 
@@ -87,15 +88,16 @@ namespace FluxusApi.Controllers
             try
             {
                 Authenticator.Authenticate();
+
                 using (var connection = new MySqlConnection(ConnectionString.Get()))
                     result = new ServiceOrderRepository(connection).GetFiltered(filter);
+
+                return result == null ? NotFound() : Ok(result);
             }
             catch (Exception ex)
             {
-                throw ex.InnerException;
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
             }
-
-            return result == null ? NotFound() : Ok(result);
         }
 
 
@@ -107,15 +109,16 @@ namespace FluxusApi.Controllers
             try
             {
                 Authenticator.Authenticate();
+
                 using (var connection = new MySqlConnection(ConnectionString.Get()))
                     result = new ServiceOrderRepository(connection).GetInvoiced(invoiceId);
+
+                return result == null ? NotFound() : Ok(result);
             }
             catch (Exception ex)
             {
-                throw ex.InnerException;
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
             }
-
-            return result == null ? NotFound() : Ok(result);
         }
 
 
@@ -127,15 +130,16 @@ namespace FluxusApi.Controllers
             try
             {
                 Authenticator.Authenticate();
+
                 using (var connection = new MySqlConnection(ConnectionString.Get()))
                     result = new ServiceOrderRepository(connection).GetProfessional(invoiceId);
+
+                return result == null ? NotFound() : Ok(result);
             }
             catch (Exception ex)
             {
-                throw ex.InnerException;
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
             }
-
-            return result == null ? NotFound() : Ok(result);
         }
 
 
@@ -147,15 +151,16 @@ namespace FluxusApi.Controllers
             try
             {
                 Authenticator.Authenticate();
+
                 using (var connection = new MySqlConnection(ConnectionString.Get()))
                     result = new ServiceOrderRepository(connection).Get(id);
+
+                return result == null ? NotFound() : Ok(result);
             }
             catch (Exception ex)
             {
-                throw ex.InnerException;
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
             }
-
-            return result == null ? NotFound() : Ok(result);
         }
 
 
@@ -165,15 +170,16 @@ namespace FluxusApi.Controllers
             try
             {
                 Authenticator.Authenticate();
+
                 using (var connection = new MySqlConnection(ConnectionString.Get()))
                     new ServiceOrderRepository(connection).Insert(serviceOrder);
+
+                return Ok();
             }
             catch (Exception ex)
             {
-                throw ex.InnerException;
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
             }
-
-            return Ok();
         }
 
 
@@ -183,15 +189,16 @@ namespace FluxusApi.Controllers
             try
             {
                 Authenticator.Authenticate();
+
                 using (var connection = new MySqlConnection(ConnectionString.Get()))
                     new ServiceOrderRepository(connection).Update(serviceOrder);
+
+                return Ok();
             }
             catch (Exception ex)
             {
-                throw ex.InnerException;
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
             }
-
-            return Ok();
         }
 
 
@@ -201,15 +208,16 @@ namespace FluxusApi.Controllers
             try
             {
                 Authenticator.Authenticate();
+                
                 using (var connection = new MySqlConnection(ConnectionString.Get()))
                     new ServiceOrderRepository(connection).UpdateInvoiceId(id, invoiceId);
+
+                return Ok();
             }
             catch (Exception ex)
             {
-                throw ex.InnerException;
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
             }
-
-            return Ok();
         }
 
 
@@ -219,15 +227,16 @@ namespace FluxusApi.Controllers
             try
             {
                 Authenticator.Authenticate();
+                
                 using (var connection = new MySqlConnection(ConnectionString.Get()))
                     new ServiceOrderRepository(connection).UpdateStatus(id, status);
+
+                return Ok();
             }
             catch (Exception ex)
             {
-                throw ex.InnerException;
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
             }
-
-            return Ok();
         }
 
 
@@ -239,20 +248,23 @@ namespace FluxusApi.Controllers
             try
             {
                 Authenticator.Authenticate();
+                
                 using (var connection = new MySqlConnection(ConnectionString.Get()))
                 {
                     var serviceOrder = new ServiceOrderRepository(connection).Get(id);
 
                     if (serviceOrder.Id != 0)
                         deleted = new ServiceOrderRepository(connection).Delete(serviceOrder);
+
+                    return deleted == false ? NotFound() : Ok();
                 }
             }
             catch (Exception ex)
             {
-                throw ex.InnerException;
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
             }
-
-            return deleted == false ? NotFound() : Ok();
         }
+
     }
+
 }

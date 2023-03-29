@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using FluxusApi.Entities;
 using FluxusApi.Repositories;
 using MySql.Data.MySqlClient;
+using System.Collections.Generic;
 
 namespace FluxusApi.Controllers
 {

@@ -120,6 +120,25 @@ namespace FluxusApi.Controllers
         }
 
 
+        [HttpPut("Logo")] // PUT:api/Profile/Logo
+        public IActionResult Put([FromBody] byte[] logo)
+        {
+            try
+            {
+                Authenticator.Authenticate();
+                
+                using (var connection = new MySqlConnection(ConnectionString.Get()))
+                    new ProfileRepository(connection).UpdateLogo(logo);
+                
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+            }
+        }
+
+
         [HttpPut] // PUT:api/Profile
         public IActionResult Put([FromBody] Profile profile)
         {

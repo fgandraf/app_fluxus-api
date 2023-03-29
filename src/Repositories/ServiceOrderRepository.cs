@@ -146,7 +146,7 @@ namespace FluxusApi.Repositories
                 ORDER BY 
                     t2.Nameid";
 
-            return _connection.QueryFirst(query, new { invoiceId });
+            return _connection.Query(query, new { invoiceId });
         }
 
 

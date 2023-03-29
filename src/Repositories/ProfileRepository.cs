@@ -17,6 +17,17 @@ namespace FluxusApi.Repositories
             return (byte[])(profile.Logo);
         }
 
+        public string UpdateLogo(byte[] logoByte)
+        {
+            _connection.Open();
+            MySqlCommand cmd = new MySqlCommand("UPDATE Profile SET Logo = @logo WHERE Id = @id", _connection);
+            cmd.Parameters.Add("@id", MySqlDbType.Int32).Value = 1;
+            cmd.Parameters.Add("@logo", MySqlDbType.Binary).Value = logoByte;
+            cmd.ExecuteNonQuery();
+            _connection.Close();
+            return string.Empty;
+        }
+
 
         public IEnumerable GetToPrint()
         {

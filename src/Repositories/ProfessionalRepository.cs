@@ -50,6 +50,7 @@ namespace FluxusApi.Repositories
             string query = @"
                 SELECT 
                     Id, 
+                    Tag,
                     TechnicianResponsible, 
                     LegalResponsible, 
                     UserName, 

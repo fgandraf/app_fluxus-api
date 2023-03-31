@@ -26,6 +26,7 @@ namespace FluxusApi.Entities
         public string SurveyDate { get; set; }
         public string DoneDate { get; set; }
         public string Comments { get; set; }
+        public bool Invoiced { get; set; }
         public long InvoiceId { get; set; } 
     }
 }

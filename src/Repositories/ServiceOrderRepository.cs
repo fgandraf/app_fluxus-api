@@ -165,18 +165,23 @@ namespace FluxusApi.Repositories
 
         public int UpdateInvoiceId(int id, int invoiceId)
         {
+            bool invoiced = false;
+            if (invoiceId > 0)
+                invoiced = true;
+
             string updateSQL = @"
                 UPDATE
                     ServiceOrder
                 SET
-                    InvoiceId = @InvoiceId,
-                    Invoiced = 1
+                    InvoiceId = @invoiceId,
+                    Invoiced = @invoiced
                 WHERE
                     Id = @Id";
 
             var invoice = new
             {
                 InvoiceId = invoiceId,
+                Invoiced = invoiced,
                 Id = id
             };
 

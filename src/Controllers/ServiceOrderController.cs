@@ -3,7 +3,6 @@ using Microsoft.AspNetCore.Mvc;
 using FluxusApi.Entities;
 using FluxusApi.Repositories;
 using MySql.Data.MySqlClient;
-using System.Collections.Generic;
 
 namespace FluxusApi.Controllers
 {
@@ -27,7 +26,7 @@ namespace FluxusApi.Controllers
             {
                 Authenticator.Authenticate();
 
-                using (var connection = new MySqlConnection(ConnectionString.Get()))
+                using (var connection = new MySqlConnection(Authenticator.ConnectionString))
                     result = new ServiceOrderRepository(connection).GetOrdersFlow();
 
                 return result == null ? NotFound() : Ok(result);
@@ -48,7 +47,7 @@ namespace FluxusApi.Controllers
             {
                 Authenticator.Authenticate();
 
-                using (var connection = new MySqlConnection(ConnectionString.Get()))
+                using (var connection = new MySqlConnection(Authenticator.ConnectionString))
                     result = new ServiceOrderRepository(connection).GetOrderedCities();
 
                 return result == null ? NotFound() : Ok(result);
@@ -69,7 +68,7 @@ namespace FluxusApi.Controllers
             {
                 Authenticator.Authenticate();
 
-                using (var connection = new MySqlConnection(ConnectionString.Get()))
+                using (var connection = new MySqlConnection(Authenticator.ConnectionString))
                     result = new ServiceOrderRepository(connection).GetDoneToInvoice();
 
                 return result == null ? NotFound() : Ok(result);
@@ -90,7 +89,7 @@ namespace FluxusApi.Controllers
             {
                 Authenticator.Authenticate();
 
-                using (var connection = new MySqlConnection(ConnectionString.Get()))
+                using (var connection = new MySqlConnection(Authenticator.ConnectionString))
                     result = new ServiceOrderRepository(connection).GetFiltered(filter);
 
                 return result == null ? NotFound() : Ok(result);
@@ -111,7 +110,7 @@ namespace FluxusApi.Controllers
             {
                 Authenticator.Authenticate();
 
-                using (var connection = new MySqlConnection(ConnectionString.Get()))
+                using (var connection = new MySqlConnection(Authenticator.ConnectionString))
                     result = new ServiceOrderRepository(connection).GetInvoiced(invoiceId);
 
                 return result == null ? NotFound() : Ok(result);
@@ -132,7 +131,7 @@ namespace FluxusApi.Controllers
             {
                 Authenticator.Authenticate();
 
-                using (var connection = new MySqlConnection(ConnectionString.Get()))
+                using (var connection = new MySqlConnection(Authenticator.ConnectionString))
                     result = new ServiceOrderRepository(connection).GetProfessional(invoiceId);
 
                 return result == null ? NotFound() : Ok(result);
@@ -153,7 +152,7 @@ namespace FluxusApi.Controllers
             {
                 Authenticator.Authenticate();
 
-                using (var connection = new MySqlConnection(ConnectionString.Get()))
+                using (var connection = new MySqlConnection(Authenticator.ConnectionString))
                     result = new ServiceOrderRepository(connection).Get(id);
 
                 return result == null ? NotFound() : Ok(result);
@@ -172,7 +171,7 @@ namespace FluxusApi.Controllers
             {
                 Authenticator.Authenticate();
 
-                using (var connection = new MySqlConnection(ConnectionString.Get()))
+                using (var connection = new MySqlConnection(Authenticator.ConnectionString))
                     new ServiceOrderRepository(connection).Insert(serviceOrder);
 
                 return Ok();
@@ -191,7 +190,7 @@ namespace FluxusApi.Controllers
             {
                 Authenticator.Authenticate();
 
-                using (var connection = new MySqlConnection(ConnectionString.Get()))
+                using (var connection = new MySqlConnection(Authenticator.ConnectionString))
                     new ServiceOrderRepository(connection).Update(serviceOrder);
 
                 return Ok();
@@ -210,7 +209,7 @@ namespace FluxusApi.Controllers
             {
                 Authenticator.Authenticate();
                 
-                using (var connection = new MySqlConnection(ConnectionString.Get()))
+                using (var connection = new MySqlConnection(Authenticator.ConnectionString))
                     new ServiceOrderRepository(connection).UpdateInvoiceId(id, invoiceId);
 
                 return Ok();
@@ -229,7 +228,7 @@ namespace FluxusApi.Controllers
             {
                 Authenticator.Authenticate();
                 
-                using (var connection = new MySqlConnection(ConnectionString.Get()))
+                using (var connection = new MySqlConnection(Authenticator.ConnectionString))
                     new ServiceOrderRepository(connection).UpdateStatus(id, status);
 
                 return Ok();
@@ -250,7 +249,7 @@ namespace FluxusApi.Controllers
             {
                 Authenticator.Authenticate();
                 
-                using (var connection = new MySqlConnection(ConnectionString.Get()))
+                using (var connection = new MySqlConnection(Authenticator.ConnectionString))
                 {
                     var serviceOrder = new ServiceOrderRepository(connection).Get(id);
 

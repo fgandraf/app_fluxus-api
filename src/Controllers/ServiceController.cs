@@ -26,7 +26,7 @@ namespace FluxusApi.Controllers
             {
                 Authenticator.Authenticate();
 
-                using (var connection = new MySqlConnection(ConnectionString.Get()))
+                using (var connection = new MySqlConnection(Authenticator.ConnectionString))
                     result = new ServiceRepository(connection).GetAll();
 
                 return result == null ? NotFound() : Ok(result);
@@ -47,7 +47,7 @@ namespace FluxusApi.Controllers
             {
                 Authenticator.Authenticate();
                 
-                using (var connection = new MySqlConnection(ConnectionString.Get()))
+                using (var connection = new MySqlConnection(Authenticator.ConnectionString))
                     result = new ServiceRepository(connection).Get(id);
 
                 return result == null ? NotFound() : Ok(result);
@@ -66,7 +66,7 @@ namespace FluxusApi.Controllers
             {
                 Authenticator.Authenticate();
                 
-                using (var connection = new MySqlConnection(ConnectionString.Get()))
+                using (var connection = new MySqlConnection(Authenticator.ConnectionString))
                     new ServiceRepository(connection).Insert(service);
 
                 return Ok();
@@ -85,7 +85,7 @@ namespace FluxusApi.Controllers
             {
                 Authenticator.Authenticate();
                 
-                using (var connection = new MySqlConnection(ConnectionString.Get()))
+                using (var connection = new MySqlConnection(Authenticator.ConnectionString))
                     new ServiceRepository(connection).Update(service);
 
                 return Ok();
@@ -106,7 +106,7 @@ namespace FluxusApi.Controllers
             {
                 Authenticator.Authenticate();
                 
-                using (var connection = new MySqlConnection(ConnectionString.Get()))
+                using (var connection = new MySqlConnection(Authenticator.ConnectionString))
                 {
                     var service = new ServiceRepository(connection).Get(id);
 

@@ -25,7 +25,7 @@ namespace FluxusApi.Controllers
             {
                 Authenticator.Authenticate();
                 
-                using (var connection = new MySqlConnection(ConnectionString.Get()))
+                using (var connection = new MySqlConnection(Authenticator.ConnectionString))
                     result = (List<Invoice>)new InvoiceRepository(connection).GetAll();
 
                 return result == null ? NotFound() : Ok(result.OrderBy(x => x.IssueDate));
@@ -46,7 +46,7 @@ namespace FluxusApi.Controllers
             {
                 Authenticator.Authenticate();
                 
-                using (var connection = new MySqlConnection(ConnectionString.Get()))
+                using (var connection = new MySqlConnection(Authenticator.ConnectionString))
                     result = new InvoiceRepository(connection).GetDescription(id);
 
                 return result == null ? NotFound() : Ok(result);
@@ -65,7 +65,7 @@ namespace FluxusApi.Controllers
             {
                 Authenticator.Authenticate();
                 
-                using (var connection = new MySqlConnection(ConnectionString.Get()))
+                using (var connection = new MySqlConnection(Authenticator.ConnectionString))
                     new InvoiceRepository(connection).Insert(invoice);
 
                 return Ok();
@@ -84,7 +84,7 @@ namespace FluxusApi.Controllers
             {
                 Authenticator.Authenticate();
                 
-                using (var connection = new MySqlConnection(ConnectionString.Get()))
+                using (var connection = new MySqlConnection(Authenticator.ConnectionString))
                     new InvoiceRepository(connection).UpdateTotals(invoice);
 
                 return Ok();
@@ -105,7 +105,7 @@ namespace FluxusApi.Controllers
             {
                 Authenticator.Authenticate();
                 
-                using (var connection = new MySqlConnection(ConnectionString.Get()))
+                using (var connection = new MySqlConnection(Authenticator.ConnectionString))
                 {
                     var invoice = new InvoiceRepository(connection).Get(id);
 

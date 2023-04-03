@@ -2,8 +2,6 @@
 using FluxusApi.Entities;
 using System.Collections;
 using Dapper;
-using Dapper.Contrib;
-using Dapper.Contrib.Extensions;
 
 namespace FluxusApi.Repositories
 {
@@ -43,7 +41,7 @@ namespace FluxusApi.Repositories
                 WHERE 
                     BranchNumber = @branchNumber";
 
-                return _connection.Query(query, new { branchNumber });
+                return _connection.QueryFirst(query, new { branchNumber });
         }
     }
 }

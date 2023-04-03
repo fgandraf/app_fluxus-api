@@ -5,14 +5,10 @@ public class AddCustomHeader : IOperationFilter
 {
     public void Apply(OpenApiOperation operation, OperationFilterContext context)
     {
-
-
         if (operation.Parameters is null)
         {
             operation.Parameters = new List<OpenApiParameter>();
         }
-
-
 
         operation.Parameters.Add(new OpenApiParameter
         {
@@ -21,7 +17,5 @@ public class AddCustomHeader : IOperationFilter
             Description = "Token",
             Required = true,
         });
-    
-    
     }
 }

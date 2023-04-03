@@ -2,7 +2,6 @@
 using FluxusApi.Entities;
 using System.Collections;
 using Dapper;
-using Dapper.Contrib.Extensions;
 
 namespace FluxusApi.Repositories
 {
@@ -15,7 +14,6 @@ namespace FluxusApi.Repositories
             string query = @"
                 SELECT 
                     Id, 
-                    ReferenceCode, 
                     Title, 
                     Status, 
                     ProfessionalId 
@@ -82,7 +80,7 @@ namespace FluxusApi.Repositories
                 ORDER BY 
                     DoneDate";
 
-            return _connection.Query(query, new { invoiced = false, status = EnumStatus.DONE });
+            return _connection.Query(query, new { invoiced = false, status = EnumStatus.CONCLUIDA });
         }
 
         public IEnumerable GetFiltered(string filter)
@@ -194,10 +192,10 @@ namespace FluxusApi.Repositories
             string changeDate = "";
             switch (status)
             {
-                case EnumStatus.RECEIVED: break;
-                case EnumStatus.PENDING: changeDate = ", PendingDate = @ActualDate "; break;
-                case EnumStatus.SURVEYED: changeDate = ", SurveyDate = @ActualDate "; break;
-                case EnumStatus.DONE: changeDate = ", DoneDate = @ActualDate "; break;
+                case EnumStatus.RECEBIDA: break;
+                case EnumStatus.PENDENTE: changeDate = ", PendingDate = @ActualDate "; break;
+                case EnumStatus.VISTORIADA: changeDate = ", SurveyDate = @ActualDate "; break;
+                case EnumStatus.CONCLUIDA: changeDate = ", DoneDate = @ActualDate "; break;
             }
 
             string updateSQL = @$"

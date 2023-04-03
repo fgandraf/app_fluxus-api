@@ -26,7 +26,7 @@ namespace FluxusApi.Controllers
             {
                 Authenticator.Authenticate();
                 
-                using (var connection = new MySqlConnection(ConnectionString.Get()))
+                using (var connection = new MySqlConnection(Authenticator.ConnectionString))
                     result = new BankBranchRepository(connection).GetIndex();
 
                 return result == null ? NotFound() : Ok(result);
@@ -47,7 +47,7 @@ namespace FluxusApi.Controllers
             {
                 Authenticator.Authenticate();
                 
-                using (var connection = new MySqlConnection(ConnectionString.Get()))
+                using (var connection = new MySqlConnection(Authenticator.ConnectionString))
                     result = new BankBranchRepository(connection).Get(id);
 
                 return result == null ? NotFound() : Ok(result);
@@ -68,7 +68,7 @@ namespace FluxusApi.Controllers
             {
                 Authenticator.Authenticate();
                 
-                using (var connection = new MySqlConnection(ConnectionString.Get()))
+                using (var connection = new MySqlConnection(Authenticator.ConnectionString))
                     result = new BankBranchRepository(connection).GetContacts(branch_number);
 
                 return result == null ? NotFound() : Ok(result);
@@ -87,7 +87,7 @@ namespace FluxusApi.Controllers
             {
                 Authenticator.Authenticate();
                 
-                using (var connection = new MySqlConnection(ConnectionString.Get()))
+                using (var connection = new MySqlConnection(Authenticator.ConnectionString))
                     new BankBranchRepository(connection).Insert(bankBranch);
 
                 return Ok();
@@ -106,7 +106,7 @@ namespace FluxusApi.Controllers
             {
                 Authenticator.Authenticate();
                 
-                using (var connection = new MySqlConnection(ConnectionString.Get()))
+                using (var connection = new MySqlConnection(Authenticator.ConnectionString))
                     new BankBranchRepository(connection).Update(bankBranch);
 
                 return Ok();
@@ -127,7 +127,7 @@ namespace FluxusApi.Controllers
             {
                 Authenticator.Authenticate();
                 
-                using (var connection = new MySqlConnection(ConnectionString.Get()))
+                using (var connection = new MySqlConnection(Authenticator.ConnectionString))
                 {
                     var bankBranch = new BankBranchRepository(connection).Get(id);
 

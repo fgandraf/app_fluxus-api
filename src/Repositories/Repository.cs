@@ -1,7 +1,5 @@
-﻿using System;
-using System.Collections;
+﻿using System.Collections;
 using Dapper.Contrib.Extensions;
-using FluxusApi.Entities;
 using MySql.Data.MySqlClient;
 
 namespace FluxusApi.Repositories

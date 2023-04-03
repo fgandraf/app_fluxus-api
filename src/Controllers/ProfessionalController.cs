@@ -26,7 +26,7 @@ namespace FluxusApi.Controllers
             {
                 Authenticator.Authenticate();
                 
-                using (var connection = new MySqlConnection(ConnectionString.Get()))
+                using (var connection = new MySqlConnection(Authenticator.ConnectionString))
                     result = new ProfessionalRepository(connection).GetIndex();
 
                 return result == null ? NotFound() : Ok(result);
@@ -47,7 +47,7 @@ namespace FluxusApi.Controllers
             {
                 Authenticator.Authenticate();
                 
-                using (var connection = new MySqlConnection(ConnectionString.Get()))
+                using (var connection = new MySqlConnection(Authenticator.ConnectionString))
                     result = new ProfessionalRepository(connection).GetTagNameid();
 
                 return result == null ? NotFound() : Ok(result);
@@ -68,7 +68,7 @@ namespace FluxusApi.Controllers
             {
                 Authenticator.Authenticate();
                 
-                using (var connection = new MySqlConnection(ConnectionString.Get()))
+                using (var connection = new MySqlConnection(Authenticator.ConnectionString))
                     result = new ProfessionalRepository(connection).GetUserInfoBy(userName);
 
                 return result == null ? NotFound() : Ok(result);
@@ -89,7 +89,7 @@ namespace FluxusApi.Controllers
             {
                 Authenticator.Authenticate();
                 
-                using (var connection = new MySqlConnection(ConnectionString.Get()))
+                using (var connection = new MySqlConnection(Authenticator.ConnectionString))
                     result = new ProfessionalRepository(connection).Get(id);
 
                 return result == null ? NotFound() : Ok(result);
@@ -108,7 +108,7 @@ namespace FluxusApi.Controllers
             {
                 Authenticator.Authenticate();
 
-                using (var connection = new MySqlConnection(ConnectionString.Get()))
+                using (var connection = new MySqlConnection(Authenticator.ConnectionString))
                     new ProfessionalRepository(connection).Insert(professional);
 
                 return Ok();
@@ -127,7 +127,7 @@ namespace FluxusApi.Controllers
             {
                 Authenticator.Authenticate();
                 
-                using (var connection = new MySqlConnection(ConnectionString.Get()))
+                using (var connection = new MySqlConnection(Authenticator.ConnectionString))
                     new ProfessionalRepository(connection).Update(professional);
 
                 return Ok();
@@ -148,7 +148,7 @@ namespace FluxusApi.Controllers
             {
                 Authenticator.Authenticate();
                 
-                using (var connection = new MySqlConnection(ConnectionString.Get()))
+                using (var connection = new MySqlConnection(Authenticator.ConnectionString))
                 {
                     var professional = new ProfessionalRepository(connection).Get(id);
 

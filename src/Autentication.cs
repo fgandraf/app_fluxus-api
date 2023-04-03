@@ -1,12 +1,15 @@
 ﻿using Microsoft.AspNetCore.Http;
 using System;
+using System.Data.Common;
 
 namespace FluxusApi
 {
     public class Autentication
     {
-        public const string TOKEN = "xz8wM6zr2RfF18GBM0B5yrkoo";
-        IHttpContextAccessor _context;
+        private const string TOKEN = "xz8wM6zr2RfF18GBM0B5yrkoo";
+        private IHttpContextAccessor _context;
+        public string ConnectionString { get; private set; }
+
 
         public Autentication(IHttpContextAccessor context)
         {
@@ -22,6 +25,9 @@ namespace FluxusApi
 
                 if (String.Equals(TOKEN, TokenRecebido) == false)
                     throw new Exception("Invalid token");
+
+                IConfiguration configuration = new ConfigurationBuilder().AddJsonFile("appsettings.json", optional: false, reloadOnChange: true).Build();
+                ConnectionString = configuration.GetConnectionString("Default");
             }
             catch
             {

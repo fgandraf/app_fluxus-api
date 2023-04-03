@@ -5,9 +5,9 @@ namespace FluxusApi.Entities
     [JsonConverter(typeof(JsonStringEnumConverter))]
     public enum EnumStatus
     {
-        RECEIVED = 1,
-        PENDING = 2,
-        SURVEYED = 3,
-        DONE = 4
+        RECEBIDA = 1,
+        PENDENTE = 2,
+        VISTORIADA = 3,
+        CONCLUIDA = 4
     }
 }

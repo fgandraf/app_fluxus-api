@@ -60,7 +60,7 @@ namespace FluxusApi.Repositories
                 WHERE 
                     UserName = @userName";
 
-            return _connection.Query(query, new { userName });
+            return _connection.QueryFirst(query, new { userName });
         }
     }
 

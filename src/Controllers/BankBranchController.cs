@@ -86,11 +86,12 @@ namespace FluxusApi.Controllers
             try
             {
                 Authenticator.Authenticate();
-                
-                using (var connection = new MySqlConnection(Authenticator.ConnectionString))
-                    new BankBranchRepository(connection).Insert(bankBranch);
 
-                return Ok();
+                long id;
+                using (var connection = new MySqlConnection(Authenticator.ConnectionString))
+                    id = new BankBranchRepository(connection).Insert(bankBranch);
+
+                return Ok(id);
             }
             catch (Exception ex)
             {

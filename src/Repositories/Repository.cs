@@ -14,7 +14,7 @@ namespace FluxusApi.Repositories
             => _connection = connection;
 
 
-        public void Insert(T model)
+        public long Insert(T model)
             => _connection.Insert<T>(model);
 
 

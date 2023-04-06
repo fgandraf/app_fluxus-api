@@ -171,10 +171,11 @@ namespace FluxusApi.Controllers
             {
                 Authenticator.Authenticate();
 
+                long id;
                 using (var connection = new MySqlConnection(Authenticator.ConnectionString))
-                    new ServiceOrderRepository(connection).Insert(serviceOrder);
+                    id = new ServiceOrderRepository(connection).Insert(serviceOrder);
 
-                return Ok();
+                return Ok(id);
             }
             catch (Exception ex)
             {

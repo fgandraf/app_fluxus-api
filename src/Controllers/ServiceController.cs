@@ -65,11 +65,12 @@ namespace FluxusApi.Controllers
             try
             {
                 Authenticator.Authenticate();
-                
-                using (var connection = new MySqlConnection(Authenticator.ConnectionString))
-                    new ServiceRepository(connection).Insert(service);
 
-                return Ok();
+                long id;
+                using (var connection = new MySqlConnection(Authenticator.ConnectionString))
+                    id = new ServiceRepository(connection).Insert(service);
+
+                return Ok(id);
             }
             catch (Exception ex)
             {

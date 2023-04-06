@@ -64,11 +64,11 @@ namespace FluxusApi.Controllers
             try
             {
                 Authenticator.Authenticate();
-                
+                long id;
                 using (var connection = new MySqlConnection(Authenticator.ConnectionString))
-                    new InvoiceRepository(connection).Insert(invoice);
+                    id = new InvoiceRepository(connection).Insert(invoice);
 
-                return Ok();
+                return Ok(id);
             }
             catch (Exception ex)
             {

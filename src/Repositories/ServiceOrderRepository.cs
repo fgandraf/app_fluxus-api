@@ -69,18 +69,35 @@ namespace FluxusApi.Repositories
         {
             string query = @"
                 SELECT 
-                    Id, OrderDate, ReferenceCode, ProfessionalId, ServiceId, City, 
-                    CustomerName, SurveyDate, DoneDate, ServiceAmount, MileageAllowance
+                    os.Id, 
+                    os.OrderDate, 
+                    os.ReferenceCode, 
+                    pr.Tag Professional,
+                    sr.Tag Service,
+                    os.City, 
+                    os.CustomerName, 
+                    os.SurveyDate,
+                    os.DoneDate, 
+                    os.ServiceAmount, 
+                    os.MileageAllowance
                 FROM 
-                    ServiceOrder 
+                    ServiceOrder os
+                INNER JOIN
+                    Service sr
+                ON
+                    os.ServiceId = sr.Id
+                INNER JOIN
+                    Professional pr
+                ON
+                    os.ProfessionalId = pr.Id
                 WHERE 
-                    Invoiced = @invoiced 
+                    Invoiced = 0
                 AND 
-                    Status = @status
+                    Status = 4
                 ORDER BY 
                     DoneDate";
 
-            return _connection.Query(query, new { invoiced = false, status = EnumStatus.CONCLUIDA });
+            return _connection.Query(query);
         }
 
         public IEnumerable GetFiltered(string filter)

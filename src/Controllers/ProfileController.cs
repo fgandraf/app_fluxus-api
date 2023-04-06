@@ -107,11 +107,12 @@ namespace FluxusApi.Controllers
             try
             {
                 Authenticator.Authenticate();
-                
+
+                long id;
                 using (var connection = new MySqlConnection(Authenticator.ConnectionString))
-                    new ProfileRepository(connection).Insert(profile);
+                    id = new ProfileRepository(connection).Insert(profile);
                 
-                return Ok();
+                return Ok(id);
             }
             catch (Exception ex)
             {

@@ -1,21 +1,28 @@
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
+//---Configurar Kestrel para ouvir em todas as interfaces
+builder.WebHost.UseKestrel(serverOptions =>
+    {
+        // Listen on port 5001 on all network interfaces.
+        serverOptions.ListenAnyIP(5001);
+    })
+    .UseIISIntegration();
 
+
+// Add services to the container.
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-//Add custom header parameter
+//---Adicionar parâmetro de cabeçalho no Swagger
 builder.Services.AddSwaggerGen(c =>
 {
     c.OperationFilter<AddCustomHeader>();
 });
 
-//Adicionar Singleton
+//---Adicionar Singleton
 builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>(); 
-
 
 var app = builder.Build();
 

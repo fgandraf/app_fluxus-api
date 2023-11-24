@@ -13,12 +13,22 @@ namespace FluxusApi.Repositories
         {
             string query = @"
                 SELECT 
-                    Id, 
-                    Title, 
-                    Status, 
-                    ProfessionalId 
+                    A.Id,
+                    CONCAT(
+                        B.Tag, '-', A.City, '-', 
+                        CAST(SUBSTRING_INDEX(SUBSTRING_INDEX(A.ReferenceCode, '/', 1), '.', -1) AS UNSIGNED),
+                        '\n\n',
+                        REPLACE(A.CustomerName, ' ', ' '),
+                        '\n- Prazo: ', DATE_FORMAT(A.Deadline, '%d/%m/%Y')
+                    ) AS Title,
+                    A.Status, 
+                    A.ProfessionalId 
                 FROM 
-                    ServiceOrder 
+                    ServiceOrder as A 
+                INNER JOIN
+                    Service as B
+                ON
+                    B.Id = A.ServiceId
                 WHERE 
                     InvoiceId = 0 
                 ORDER BY 
@@ -26,7 +36,7 @@ namespace FluxusApi.Repositories
 
             return _connection.Query(query);
         }
-
+        
 
         public IEnumerable GetInvoiced(int invoiceId)
         {

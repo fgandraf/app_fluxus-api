@@ -20,6 +20,20 @@
 
   <ItemGroup>
     <None Remove="Properties\launchSettingsCOPIA.json" />
+    <None Remove="Entities\Records\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Remove="Entities\Records\ServiceOrderOpen.cs" />
+    <Compile Remove="Entities\Records\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Remove="Entities\Records\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Remove="Entities\Records\**" />
   </ItemGroup>
 
 </Project>

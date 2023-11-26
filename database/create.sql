@@ -114,7 +114,6 @@ CREATE TABLE `ServiceOrder` (
 	`Id` INT NOT NULL AUTO_INCREMENT,
 	`ReferenceCode` VARCHAR(33) NOT NULL,
 	`Branch` VARCHAR(4),
-	`Title` VARCHAR(150),
 	`OrderDate` DATE,
 	`Deadline` DATE,
 	`ProfessionalId` INT,

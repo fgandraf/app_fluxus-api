@@ -34,7 +34,14 @@ namespace FluxusApi.Repositories
                 SELECT 
                     Id,
                     Tag, 
-                    Nameid 
+                    CONCAT(
+                        IFNULL(LEFT(Profession, 3), ''), 
+                        '. ', 
+                        SUBSTRING_INDEX(Name, ' ', 1),
+                        ' ',
+                        SUBSTRING_INDEX(SUBSTRING_INDEX(Name, ' ', -1), ' ', 1)
+                        ) 
+                        AS Nameid 
                 FROM 
                     Professional 
                 ORDER BY 

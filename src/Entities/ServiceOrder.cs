@@ -13,8 +13,8 @@ namespace FluxusApi.Entities
         public DateTime Deadline { get; set; }
         public string ProfessionalId { get; set; }
         public string ServiceId { get; set; }
-        public string ServiceAmount { get; set; }
-        public string MileageAllowance { get; set; }
+        public decimal ServiceAmount { get; set; }
+        public decimal MileageAllowance { get; set; }
         public bool Siopi { get; set; }
         public string CustomerName { get; set; }
         public string City { get; set; }

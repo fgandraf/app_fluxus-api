@@ -8,8 +8,8 @@ namespace FluxusApi.Entities
         public long Id { get; set; }
         public string Description { get; set; }
         public DateTime IssueDate { get; set; }
-        public double SubtotalService { get; set; }
-        public double SubtotalMileageAllowance { get; set; }
-        public double Total { get; set; }
+        public decimal SubtotalService { get; set; }
+        public decimal SubtotalMileageAllowance { get; set; }
+        public decimal Total { get; set; }
     }
 }

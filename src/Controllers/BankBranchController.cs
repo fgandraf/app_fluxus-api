@@ -39,7 +39,7 @@ namespace FluxusApi.Controllers
 
 
         [HttpGet("{id}")] // GET:api/BankBranch/<id>
-        public IActionResult Get(int id)
+        public IActionResult Get(string id)
         {
             BankBranch result;
 
@@ -59,8 +59,8 @@ namespace FluxusApi.Controllers
         }
 
 
-        [HttpGet("Contacts/{branch_number}")] // GET:api/BankBranch/Contacts/<branch_number>
-        public IActionResult GetContacts(string branch_number)
+        [HttpGet("Contacts/{id}")] // GET:api/BankBranch/Contacts/<branch_number>
+        public IActionResult GetContacts(string id)
         {
             IEnumerable result;
 
@@ -69,7 +69,7 @@ namespace FluxusApi.Controllers
                 Authenticator.Authenticate();
                 
                 using (var connection = new MySqlConnection(Authenticator.ConnectionString))
-                    result = new BankBranchRepository(connection).GetContacts(branch_number);
+                    result = new BankBranchRepository(connection).GetContacts(id);
 
                 return result == null ? NotFound() : Ok(result);
             }
@@ -120,7 +120,7 @@ namespace FluxusApi.Controllers
 
 
         [HttpDelete("{id}")] // DELETE:api/BankBranch/<id>
-        public IActionResult Delete(int id)
+        public IActionResult Delete(string id)
         {
             bool deleted = false;
 
@@ -132,7 +132,7 @@ namespace FluxusApi.Controllers
                 {
                     var bankBranch = new BankBranchRepository(connection).Get(id);
 
-                    if (bankBranch.Id != 0)
+                    if (bankBranch.Id != null)
                         deleted = new BankBranchRepository(connection).Delete(bankBranch);
                 }
 

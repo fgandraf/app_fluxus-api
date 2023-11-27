@@ -9,12 +9,24 @@ namespace FluxusApi.Repositories
     {
         public BankBranchRepository(MySqlConnection connection) : base(connection) { }
 
-        public IEnumerable GetIndex()
+        public BankBranch Get(string id)
         {
             string query = @"
                 SELECT 
+                    *
+                FROM 
+                    BankBranch 
+                WHERE 
+                    Id = @id";
+
+            return _connection.QueryFirst<BankBranch>(query, new { id = id });
+        }
+        
+        public IEnumerable GetIndex()
+        {
+            string query = @"
+                SELECT
                     Id, 
-                    BranchNumber, 
                     Name, 
                     City , 
                     Phone1, 
@@ -22,26 +34,26 @@ namespace FluxusApi.Repositories
                 FROM 
                     BankBranch 
                 ORDER BY 
-                    BranchNumber";
+                    Id";
 
             return _connection.Query(query);
         }
 
 
-        public IEnumerable GetContacts(string branchNumber)
+        public IEnumerable GetContacts(string id)
         {
             string query = @"
                 SELECT 
-                    BranchNumber, 
+                    Id, 
                     Name, 
                     Phone1, 
                     Email 
                 FROM 
                     BankBranch 
                 WHERE 
-                    BranchNumber = @branchNumber";
+                    Id = @id";
 
-                return _connection.QueryFirst(query, new { branchNumber });
+                return _connection.QueryFirst(query, new { id = id });
         }
     }
 }

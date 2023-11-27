@@ -5,8 +5,7 @@ namespace FluxusApi.Entities
     [Table("BankBranch")]
     public class BankBranch
     {
-        public long Id { get; set; }
-        public string BranchNumber { get; set; }
+        public string Id { get; set; }
         public string Name { get; set; }
         public string Address { get; set; }
         public string Complement { get; set; }

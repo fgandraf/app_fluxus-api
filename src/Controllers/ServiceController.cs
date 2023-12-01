@@ -7,26 +7,24 @@ using MySql.Data.MySqlClient;
 namespace FluxusApi.Controllers
 {
 
-    [Route("api/[controller]")]
-
+    [ApiController]
     public class ServiceController : ControllerBase
     {
-        Autentication Authenticator;
+        private readonly Authentication _authenticator;
 
         public ServiceController(IHttpContextAccessor context)
-            => Authenticator = new Autentication(context);
+            => _authenticator = new Authentication(context);
 
 
-        [HttpGet] // GET:api/Service
+        [HttpGet("v1/services")]
         public IActionResult GetAll()
         {
-            IEnumerable result;
-
             try
             {
-                Authenticator.Authenticate();
+                IEnumerable result;
+                _authenticator.Authenticate();
 
-                using (var connection = new MySqlConnection(Authenticator.ConnectionString))
+                using (var connection = new MySqlConnection(_authenticator.ConnectionString))
                     result = new ServiceRepository(connection).GetAll();
 
                 return result == null ? NotFound() : Ok(result);
@@ -38,16 +36,15 @@ namespace FluxusApi.Controllers
         }
 
 
-        [HttpGet("{id}")] // GET:api/Service/<id>
+        [HttpGet("v1/service/{id}")]
         public IActionResult Get(int id)
         {
-            Service result;
-
             try
             {
-                Authenticator.Authenticate();
+                Service result;
+                _authenticator.Authenticate();
                 
-                using (var connection = new MySqlConnection(Authenticator.ConnectionString))
+                using (var connection = new MySqlConnection(_authenticator.ConnectionString))
                     result = new ServiceRepository(connection).Get(id);
 
                 return result == null ? NotFound() : Ok(result);
@@ -59,15 +56,15 @@ namespace FluxusApi.Controllers
         }
 
 
-        [HttpPost] // POST:api/Service
+        [HttpPost("v1/service")]
         public IActionResult Post([FromBody] Service service)
         {
             try
             {
-                Authenticator.Authenticate();
+                _authenticator.Authenticate();
 
                 long id;
-                using (var connection = new MySqlConnection(Authenticator.ConnectionString))
+                using (var connection = new MySqlConnection(_authenticator.ConnectionString))
                     id = new ServiceRepository(connection).Insert(service);
 
                 return Ok(id);
@@ -79,14 +76,14 @@ namespace FluxusApi.Controllers
         }
 
 
-        [HttpPut] // PUT:api/Service/<id>
+        [HttpPut("v1/service/{id}")]
         public IActionResult Put([FromBody] Service service)
         {
             try
             {
-                Authenticator.Authenticate();
+                _authenticator.Authenticate();
                 
-                using (var connection = new MySqlConnection(Authenticator.ConnectionString))
+                using (var connection = new MySqlConnection(_authenticator.ConnectionString))
                     new ServiceRepository(connection).Update(service);
 
                 return Ok();
@@ -98,16 +95,15 @@ namespace FluxusApi.Controllers
         }
 
 
-        [HttpDelete("{id}")] // DELETE:api/Service/<id>
+        [HttpDelete("v1/service/{id}")]
         public IActionResult Delete(int id)
         {
-            bool deleted = false;
-
             try
             {
-                Authenticator.Authenticate();
+                bool deleted = false;
+                _authenticator.Authenticate();
                 
-                using (var connection = new MySqlConnection(Authenticator.ConnectionString))
+                using (var connection = new MySqlConnection(_authenticator.ConnectionString))
                 {
                     var service = new ServiceRepository(connection).Get(id);
 

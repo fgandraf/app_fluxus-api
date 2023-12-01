@@ -7,26 +7,24 @@ using MySql.Data.MySqlClient;
 namespace FluxusApi.Controllers
 {
 
-    [Route("api/[controller]")]
-
+    [ApiController]
     public class BankBranchController : ControllerBase
     {
-        Autentication Authenticator;
+        private readonly Authentication _authenticator;
 
         public BankBranchController(IHttpContextAccessor context)
-            => Authenticator = new Autentication(context);
+            => _authenticator = new Authentication(context);
 
 
-        [HttpGet] // GET:api/BankBranch
+        [HttpGet("v1/bank-branches")]
         public IActionResult GetAll()
         {
-            IEnumerable result;
-
             try
             {
-                Authenticator.Authenticate();
+                IEnumerable result;
+                _authenticator.Authenticate();
                 
-                using (var connection = new MySqlConnection(Authenticator.ConnectionString))
+                using (var connection = new MySqlConnection(_authenticator.ConnectionString))
                     result = new BankBranchRepository(connection).GetIndex();
 
                 return result == null ? NotFound() : Ok(result);
@@ -38,16 +36,15 @@ namespace FluxusApi.Controllers
         }
 
 
-        [HttpGet("{id}")] // GET:api/BankBranch/<id>
+        [HttpGet("v1/bank-branch/{id}")]
         public IActionResult Get(string id)
         {
-            BankBranch result;
-
             try
             {
-                Authenticator.Authenticate();
+                BankBranch result;
+                _authenticator.Authenticate();
                 
-                using (var connection = new MySqlConnection(Authenticator.ConnectionString))
+                using (var connection = new MySqlConnection(_authenticator.ConnectionString))
                     result = new BankBranchRepository(connection).Get(id);
 
                 return result == null ? NotFound() : Ok(result);
@@ -59,16 +56,15 @@ namespace FluxusApi.Controllers
         }
 
 
-        [HttpGet("Contacts/{id}")] // GET:api/BankBranch/Contacts/<branch_number>
+        [HttpGet("v1/bank-branch/contacts/{id}")]
         public IActionResult GetContacts(string id)
         {
-            IEnumerable result;
-
             try
             {
-                Authenticator.Authenticate();
+                IEnumerable result;
+                _authenticator.Authenticate();
                 
-                using (var connection = new MySqlConnection(Authenticator.ConnectionString))
+                using (var connection = new MySqlConnection(_authenticator.ConnectionString))
                     result = new BankBranchRepository(connection).GetContacts(id);
 
                 return result == null ? NotFound() : Ok(result);
@@ -80,15 +76,15 @@ namespace FluxusApi.Controllers
         }
 
 
-        [HttpPost] // POST:api/BankBranch
+        [HttpPost("v1/bank-branch")]
         public IActionResult Post([FromBody] BankBranch bankBranch)
         {
             try
             {
-                Authenticator.Authenticate();
+                _authenticator.Authenticate();
 
                 long id;
-                using (var connection = new MySqlConnection(Authenticator.ConnectionString))
+                using (var connection = new MySqlConnection(_authenticator.ConnectionString))
                     id = new BankBranchRepository(connection).Insert(bankBranch);
 
                 return Ok(id);
@@ -100,14 +96,14 @@ namespace FluxusApi.Controllers
         }
 
 
-        [HttpPut] // PUT:api/BankBranch/
+        [HttpPut("v1/bank-branch")]
         public IActionResult Put([FromBody] BankBranch bankBranch)
         {
             try
             {
-                Authenticator.Authenticate();
+                _authenticator.Authenticate();
                 
-                using (var connection = new MySqlConnection(Authenticator.ConnectionString))
+                using (var connection = new MySqlConnection(_authenticator.ConnectionString))
                     new BankBranchRepository(connection).Update(bankBranch);
 
                 return Ok();
@@ -119,16 +115,16 @@ namespace FluxusApi.Controllers
         }
 
 
-        [HttpDelete("{id}")] // DELETE:api/BankBranch/<id>
+        [HttpDelete("v1/bank-branch/{id}")]
         public IActionResult Delete(string id)
         {
             bool deleted = false;
 
             try
             {
-                Authenticator.Authenticate();
+                _authenticator.Authenticate();
                 
-                using (var connection = new MySqlConnection(Authenticator.ConnectionString))
+                using (var connection = new MySqlConnection(_authenticator.ConnectionString))
                 {
                     var bankBranch = new BankBranchRepository(connection).Get(id);
 

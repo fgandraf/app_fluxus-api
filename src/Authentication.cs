@@ -1,17 +1,13 @@
-﻿using Microsoft.AspNetCore.Http;
-using System;
-using System.Data.Common;
-
-namespace FluxusApi
+﻿namespace FluxusApi
 {
-    public class Autentication
+    public class Authentication
     {
         private const string TOKEN = "xz8wM6zr2RfF18GBM0B5yrkoo";
         private IHttpContextAccessor _context;
         public string ConnectionString { get; private set; }
 
 
-        public Autentication(IHttpContextAccessor context)
+        public Authentication(IHttpContextAccessor context)
         {
             _context = context;
         }

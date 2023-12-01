@@ -6,26 +6,24 @@ using MySql.Data.MySqlClient;
 namespace FluxusApi.Controllers
 {
 
-    [Route("api/[controller]")]
-
+    [ApiController]
     public class InvoiceController : ControllerBase
     {
-        Autentication Authenticator;
+        private readonly Authentication _authenticator;
 
         public InvoiceController(IHttpContextAccessor context)
-            => Authenticator = new Autentication(context);
+            => _authenticator = new Authentication(context);
 
 
-        [HttpGet] // GET:api/Invoice
+        [HttpGet("v1/invoices")]
         public IActionResult GetAll()
         {
-            List<Invoice> result;
-
             try
             {
-                Authenticator.Authenticate();
+                List<Invoice> result;
+                _authenticator.Authenticate();
                 
-                using (var connection = new MySqlConnection(Authenticator.ConnectionString))
+                using (var connection = new MySqlConnection(_authenticator.ConnectionString))
                     result = (List<Invoice>)new InvoiceRepository(connection).GetAll();
 
                 return result == null ? NotFound() : Ok(result.OrderBy(x => x.IssueDate));
@@ -37,16 +35,15 @@ namespace FluxusApi.Controllers
         }
 
 
-        [HttpGet("Description/{id}")] // GET:api/Invoice/Description/<id>
+        [HttpGet("v1/invoice/description/{id}")]
         public IActionResult GetDescription(int id)
         {
-            string result;
-
             try
             {
-                Authenticator.Authenticate();
+                string result;
+                _authenticator.Authenticate();
                 
-                using (var connection = new MySqlConnection(Authenticator.ConnectionString))
+                using (var connection = new MySqlConnection(_authenticator.ConnectionString))
                     result = new InvoiceRepository(connection).GetDescription(id);
 
                 return result == null ? NotFound() : Ok(result);
@@ -58,14 +55,14 @@ namespace FluxusApi.Controllers
         }
 
 
-        [HttpPost] // POST:api/Invoice
+        [HttpPost("v1/invoice")]
         public IActionResult Post([FromBody] Invoice invoice)
         {
             try
             {
-                Authenticator.Authenticate();
+                _authenticator.Authenticate();
                 long id;
-                using (var connection = new MySqlConnection(Authenticator.ConnectionString))
+                using (var connection = new MySqlConnection(_authenticator.ConnectionString))
                     id = new InvoiceRepository(connection).Insert(invoice);
 
                 return Ok(id);
@@ -77,14 +74,14 @@ namespace FluxusApi.Controllers
         }
 
 
-        [HttpPut("Totals")] // PUT:api/Invoice/Totals/
+        [HttpPut("v1/invoice/totals")]
         public IActionResult PutTotals([FromBody] Invoice invoice)
         {
             try
             {
-                Authenticator.Authenticate();
+                _authenticator.Authenticate();
                 
-                using (var connection = new MySqlConnection(Authenticator.ConnectionString))
+                using (var connection = new MySqlConnection(_authenticator.ConnectionString))
                     new InvoiceRepository(connection).UpdateTotals(invoice);
 
                 return Ok();
@@ -96,16 +93,15 @@ namespace FluxusApi.Controllers
         }
 
 
-        [HttpDelete("{id}")] // DELETE:api/Invoice/<id>
+        [HttpDelete("v1/invoice/{id}")]
         public IActionResult Delete(int id)
         {
-            bool deleted = false;
-
             try
             {
-                Authenticator.Authenticate();
+                bool deleted = false;
+                _authenticator.Authenticate();
                 
-                using (var connection = new MySqlConnection(Authenticator.ConnectionString))
+                using (var connection = new MySqlConnection(_authenticator.ConnectionString))
                 {
                     var invoice = new InvoiceRepository(connection).Get(id);
 

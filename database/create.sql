@@ -5,8 +5,7 @@ USE `fluxus`;
 
 DROP TABLE IF EXISTS BankBranch;
 CREATE TABLE BankBranch (
-	`Id` INT NOT NULL AUTO_INCREMENT,
-	`BranchNumber` VARCHAR(4) NOT NULL,
+	`Id` VARCHAR(4) NOT NULL,
 	`Name` VARCHAR(100) NOT NULL,
 	`Address` VARCHAR(100) DEFAULT NULL,
 	`Complement` VARCHAR(100) DEFAULT NULL,
@@ -19,8 +18,7 @@ CREATE TABLE BankBranch (
 	`Phone2` VARCHAR(15) DEFAULT NULL,
 	`Email` VARCHAR(50) DEFAULT NULL,
 	
-	PRIMARY KEY (`Id`),
-	UNIQUE KEY `UQ_BankBranch_BranchNumber` (`BranchNumber`)
+	PRIMARY KEY (`Id`)
 );
 
 

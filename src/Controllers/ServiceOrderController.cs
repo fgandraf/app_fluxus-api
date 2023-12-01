@@ -7,26 +7,24 @@ using MySql.Data.MySqlClient;
 namespace FluxusApi.Controllers
 {
 
-    [Route("api/[controller]")]
-
+    [ApiController]
     public class ServiceOrderController : ControllerBase
     {
-        Autentication Authenticator;
+        private readonly Authentication _authenticator;
 
         public ServiceOrderController(IHttpContextAccessor context)
-            => Authenticator = new Autentication(context);
+            => _authenticator = new Authentication(context);
 
 
-        [HttpGet("OrdersFlow")] // GET:api/ServiceOrder/OrdersFlow
+        [HttpGet("v1/services-orders/flow")]
         public IActionResult GetOrdersFlow()
         {
-            IEnumerable result;
-
             try
             {
-                Authenticator.Authenticate();
+                IEnumerable result;
+                _authenticator.Authenticate();
 
-                using (var connection = new MySqlConnection(Authenticator.ConnectionString))
+                using (var connection = new MySqlConnection(_authenticator.ConnectionString))
                     result = new ServiceOrderRepository(connection).GetOrdersFlow();
 
                 return result == null ? NotFound() : Ok(result);
@@ -38,16 +36,15 @@ namespace FluxusApi.Controllers
         }
 
 
-        [HttpGet("OrderedCities")] // GET:api/ServiceOrder/OrderedCities
+        [HttpGet("v1/services-orders/cities")]
         public IActionResult GetOrderedCities()
         {
-            IEnumerable result;
-
             try
             {
-                Authenticator.Authenticate();
+                IEnumerable result;
+                _authenticator.Authenticate();
 
-                using (var connection = new MySqlConnection(Authenticator.ConnectionString))
+                using (var connection = new MySqlConnection(_authenticator.ConnectionString))
                     result = new ServiceOrderRepository(connection).GetOrderedCities();
 
                 return result == null ? NotFound() : Ok(result);
@@ -59,16 +56,15 @@ namespace FluxusApi.Controllers
         }
 
 
-        [HttpGet("DoneToInvoice")]// GET:api/ServiceOrder/DoneToInvoice
+        [HttpGet("v1/services-orders/done-to-invoice")]
         public IActionResult GetDoneToInvoice() 
         {
-            IEnumerable result;
-
             try
             {
-                Authenticator.Authenticate();
+                IEnumerable result;
+                _authenticator.Authenticate();
 
-                using (var connection = new MySqlConnection(Authenticator.ConnectionString))
+                using (var connection = new MySqlConnection(_authenticator.ConnectionString))
                     result = new ServiceOrderRepository(connection).GetDoneToInvoice();
 
                 return result == null ? NotFound() : Ok(result);
@@ -80,16 +76,15 @@ namespace FluxusApi.Controllers
         }
 
 
-        [HttpGet("Filtered/{filter}")] // GET:api/ServiceOrder/Filtered/<filter>
+        [HttpGet("v1/services-orders/filtered/{filter}")]
         public IActionResult GetFiltered(string filter)
         {
-            IEnumerable result;
-
             try
             {
-                Authenticator.Authenticate();
+                IEnumerable result;
+                _authenticator.Authenticate();
 
-                using (var connection = new MySqlConnection(Authenticator.ConnectionString))
+                using (var connection = new MySqlConnection(_authenticator.ConnectionString))
                     result = new ServiceOrderRepository(connection).GetFiltered(filter);
 
                 return result == null ? NotFound() : Ok(result);
@@ -101,16 +96,15 @@ namespace FluxusApi.Controllers
         }
 
 
-        [HttpGet("Invoiced/{invoiceId}")] // GET:api/ServiceOrder/Invoiced/<invoiceId>
+        [HttpGet("v1/services-orders/invoiced/{invoiceId}")]
         public IActionResult GetInvoiced(int invoiceId)
         {
-            IEnumerable result;
-
             try
             {
-                Authenticator.Authenticate();
+                IEnumerable result;
+                _authenticator.Authenticate();
 
-                using (var connection = new MySqlConnection(Authenticator.ConnectionString))
+                using (var connection = new MySqlConnection(_authenticator.ConnectionString))
                     result = new ServiceOrderRepository(connection).GetInvoiced(invoiceId);
 
                 return result == null ? NotFound() : Ok(result);
@@ -122,16 +116,15 @@ namespace FluxusApi.Controllers
         }
 
 
-        [HttpGet("Professionals/{invoiceId}")] // GET:api/ServiceOrder/Professionals/<invoiceId>
+        [HttpGet("v1/services-orders/professionals/{invoiceId}")]
         public IActionResult GetProfessionals(int invoiceId)
         {
-            IEnumerable result;
-
             try
             {
-                Authenticator.Authenticate();
+                IEnumerable result;
+                _authenticator.Authenticate();
 
-                using (var connection = new MySqlConnection(Authenticator.ConnectionString))
+                using (var connection = new MySqlConnection(_authenticator.ConnectionString))
                     result = new ServiceOrderRepository(connection).GetProfessional(invoiceId);
 
                 return result == null ? NotFound() : Ok(result);
@@ -143,16 +136,15 @@ namespace FluxusApi.Controllers
         }
 
 
-        [HttpGet("{id}")] // GET:api/ServiceOrder/<id>
+        [HttpGet("v1/service-order/{id}")]
         public IActionResult Get(int id)
         {
-            ServiceOrder result;
-
             try
             {
-                Authenticator.Authenticate();
+                ServiceOrder result;
+                _authenticator.Authenticate();
 
-                using (var connection = new MySqlConnection(Authenticator.ConnectionString))
+                using (var connection = new MySqlConnection(_authenticator.ConnectionString))
                     result = new ServiceOrderRepository(connection).Get(id);
 
                 return result == null ? NotFound() : Ok(result);
@@ -164,15 +156,15 @@ namespace FluxusApi.Controllers
         }
 
 
-        [HttpPost] // POST:api/ServiceOrder
+        [HttpPost("v1/service-order")]
         public IActionResult Post([FromBody] ServiceOrder serviceOrder)
         {
             try
             {
-                Authenticator.Authenticate();
+                _authenticator.Authenticate();
 
                 long id;
-                using (var connection = new MySqlConnection(Authenticator.ConnectionString))
+                using (var connection = new MySqlConnection(_authenticator.ConnectionString))
                     id = new ServiceOrderRepository(connection).Insert(serviceOrder);
 
                 return Ok(id);
@@ -184,14 +176,14 @@ namespace FluxusApi.Controllers
         }
 
 
-        [HttpPut] // PUT:api/ServiceOrder/
+        [HttpPut("v1/service-order")]
         public IActionResult Put([FromBody] ServiceOrder serviceOrder)
         {
             try
             {
-                Authenticator.Authenticate();
+                _authenticator.Authenticate();
 
-                using (var connection = new MySqlConnection(Authenticator.ConnectionString))
+                using (var connection = new MySqlConnection(_authenticator.ConnectionString))
                     new ServiceOrderRepository(connection).Update(serviceOrder);
 
                 return Ok();
@@ -203,14 +195,14 @@ namespace FluxusApi.Controllers
         }
 
 
-        [HttpPut("UpdateInvoiceId/{id},{invoiceId}")] // PUT:api/ServiceOrder/UpdateInvoiceId/<id>,<invoice_id>
+        [HttpPut("v1/service-order/update-invoice/{id},{invoice_id}")]
         public IActionResult UpdateInvoiceId(int id, int invoiceId)
         {
             try
             {
-                Authenticator.Authenticate();
+                _authenticator.Authenticate();
                 
-                using (var connection = new MySqlConnection(Authenticator.ConnectionString))
+                using (var connection = new MySqlConnection(_authenticator.ConnectionString))
                     new ServiceOrderRepository(connection).UpdateInvoiceId(id, invoiceId);
 
                 return Ok();
@@ -222,14 +214,14 @@ namespace FluxusApi.Controllers
         }
 
 
-        [HttpPut("UpdateStatus/{id},{status}")] // PUT:api/ServiceOrder/UpdateStatus/<id>,<status>
+        [HttpPut("v1/service-order/update-status/{id},{status}")]
         public IActionResult UpdateStatus(int id, EnumStatus status)
         {
             try
             {
-                Authenticator.Authenticate();
+                _authenticator.Authenticate();
                 
-                using (var connection = new MySqlConnection(Authenticator.ConnectionString))
+                using (var connection = new MySqlConnection(_authenticator.ConnectionString))
                     new ServiceOrderRepository(connection).UpdateStatus(id, status);
 
                 return Ok();
@@ -241,16 +233,15 @@ namespace FluxusApi.Controllers
         }
 
 
-        [HttpDelete("{id}")] // DELETE:api/ServiceOrder/<id>
+        [HttpDelete("v1/service-order/{id}")]
         public IActionResult Delete(int id)
         {
-            bool deleted = false;
-
             try
             {
-                Authenticator.Authenticate();
+                bool deleted = false;
+                _authenticator.Authenticate();
                 
-                using (var connection = new MySqlConnection(Authenticator.ConnectionString))
+                using (var connection = new MySqlConnection(_authenticator.ConnectionString))
                 {
                     var serviceOrder = new ServiceOrderRepository(connection).Get(id);
 

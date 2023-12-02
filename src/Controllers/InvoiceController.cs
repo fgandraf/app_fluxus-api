@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using System.Collections;
+using Microsoft.AspNetCore.Mvc;
 using FluxusApi.Repositories;
 using FluxusApi.Entities;
 using MySql.Data.MySqlClient;
@@ -16,17 +17,17 @@ namespace FluxusApi.Controllers
 
 
         [HttpGet("v1/invoices")]
-        public IActionResult GetAll()
+        public async Task<IActionResult> GetAll()
         {
             try
             {
-                List<Invoice> result;
+                IEnumerable result;
                 _authenticator.Authenticate();
-                
-                using (var connection = new MySqlConnection(_authenticator.ConnectionString))
-                    result = (List<Invoice>)new InvoiceRepository(connection).GetAll();
 
-                return result == null ? NotFound() : Ok(result.OrderBy(x => x.IssueDate));
+                using (var connection = new MySqlConnection(_authenticator.ConnectionString))
+                    result = await new InvoiceRepository(connection).GetAllAsync();
+                
+                return result == null ? NotFound() : Ok(((List<Invoice>)result).OrderBy(x => x.IssueDate));
             }
             catch (Exception ex)
             {
@@ -35,8 +36,8 @@ namespace FluxusApi.Controllers
         }
 
 
-        [HttpGet("v1/invoice/description/{id}")]
-        public IActionResult GetDescription(int id)
+        [HttpGet("v1/invoices/description/{id}")]
+        public async Task<IActionResult> GetDescription(int id)
         {
             try
             {
@@ -44,7 +45,7 @@ namespace FluxusApi.Controllers
                 _authenticator.Authenticate();
                 
                 using (var connection = new MySqlConnection(_authenticator.ConnectionString))
-                    result = new InvoiceRepository(connection).GetDescription(id);
+                    result = await new InvoiceRepository(connection).GetDescriptionAsync(id);
 
                 return result == null ? NotFound() : Ok(result);
             }
@@ -55,15 +56,15 @@ namespace FluxusApi.Controllers
         }
 
 
-        [HttpPost("v1/invoice")]
-        public IActionResult Post([FromBody] Invoice invoice)
+        [HttpPost("v1/invoices")]
+        public async Task<IActionResult> Post([FromBody] Invoice invoice)
         {
             try
             {
                 _authenticator.Authenticate();
                 long id;
                 using (var connection = new MySqlConnection(_authenticator.ConnectionString))
-                    id = new InvoiceRepository(connection).Insert(invoice);
+                    id = await new InvoiceRepository(connection).InsertAsync(invoice);
 
                 return Ok(id);
             }
@@ -74,15 +75,15 @@ namespace FluxusApi.Controllers
         }
 
 
-        [HttpPut("v1/invoice/totals")]
-        public IActionResult PutTotals([FromBody] Invoice invoice)
+        [HttpPut("v1/invoices/totals")]
+        public async Task<IActionResult> PutTotals([FromBody] Invoice invoice)
         {
             try
             {
                 _authenticator.Authenticate();
                 
                 using (var connection = new MySqlConnection(_authenticator.ConnectionString))
-                    new InvoiceRepository(connection).UpdateTotals(invoice);
+                    await new InvoiceRepository(connection).UpdateTotalsAsync(invoice);
 
                 return Ok();
             }
@@ -93,8 +94,8 @@ namespace FluxusApi.Controllers
         }
 
 
-        [HttpDelete("v1/invoice/{id}")]
-        public IActionResult Delete(int id)
+        [HttpDelete("v1/invoices/{id}")]
+        public async Task<IActionResult> Delete(int id)
         {
             try
             {
@@ -106,7 +107,7 @@ namespace FluxusApi.Controllers
                     var invoice = new InvoiceRepository(connection).Get(id);
 
                     if (invoice.Id != 0)
-                        deleted = new InvoiceRepository(connection).Delete(invoice);
+                        deleted = await new InvoiceRepository(connection).DeleteAsync(invoice);
                 }
 
                 return deleted == false ? NotFound() : Ok();

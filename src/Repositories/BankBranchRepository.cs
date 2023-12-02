@@ -19,7 +19,7 @@ namespace FluxusApi.Repositories
                 WHERE 
                     Id = @id";
 
-            return _connection.QueryFirst<BankBranch>(query, new { id = id });
+            return Connection.QueryFirst<BankBranch>(query, new { id = id });
         }
         
         public IEnumerable GetIndex()
@@ -36,7 +36,24 @@ namespace FluxusApi.Repositories
                 ORDER BY 
                     Id";
 
-            return _connection.Query(query);
+            return Connection.Query(query);
+        }
+        
+        public async Task<IEnumerable> GetIndexAsync()
+        {
+            string query = @"
+                SELECT
+                    Id, 
+                    Name, 
+                    City , 
+                    Phone1, 
+                    Email
+                FROM 
+                    BankBranch 
+                ORDER BY 
+                    Id";
+
+            return await Connection.QueryAsync(query);
         }
 
 
@@ -53,7 +70,24 @@ namespace FluxusApi.Repositories
                 WHERE 
                     Id = @id";
 
-                return _connection.QueryFirst(query, new { id = id });
+                return Connection.QueryFirst(query, new { id = id });
         }
+        
+        public async Task<IEnumerable> GetContactsAsync(string id)
+        {
+            string query = @"
+                SELECT 
+                    Id, 
+                    Name, 
+                    Phone1, 
+                    Email 
+                FROM 
+                    BankBranch 
+                WHERE 
+                    Id = @id";
+
+            return await Connection.QueryFirstAsync(query, new { id = id });
+        }
+             
     }
 }

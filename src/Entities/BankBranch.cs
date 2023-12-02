@@ -5,6 +5,7 @@ namespace FluxusApi.Entities
     [Table("BankBranch")]
     public class BankBranch
     {
+        [ExplicitKey] 
         public string Id { get; set; }
         public string Name { get; set; }
         public string Address { get; set; }

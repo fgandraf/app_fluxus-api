@@ -24,7 +24,7 @@ namespace FluxusApi.Repositories
                 ORDER BY 
                     Tag";
 
-            return _connection.Query(query);
+            return Connection.Query(query);
         }
 
 
@@ -47,7 +47,7 @@ namespace FluxusApi.Repositories
                 ORDER BY 
                     Tag";
 
-            return _connection.Query(query);
+            return Connection.Query(query);
         }
 
 
@@ -67,7 +67,7 @@ namespace FluxusApi.Repositories
                 WHERE 
                     UserName = @userName";
 
-            return _connection.QueryFirst(query, new { userName });
+            return Connection.QueryFirst(query, new { userName });
         }
     }
 

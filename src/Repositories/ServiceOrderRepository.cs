@@ -34,7 +34,7 @@ namespace FluxusApi.Repositories
                 ORDER BY 
                     OrderDate";
 
-            return _connection.Query(query);
+            return Connection.Query(query);
         }
         
 
@@ -71,7 +71,7 @@ namespace FluxusApi.Repositories
                 ORDER BY 
                     DoneDate";
 
-            return _connection.Query(query, new { invoiceId });
+            return Connection.Query(query, new { invoiceId });
         }
 
 
@@ -107,7 +107,7 @@ namespace FluxusApi.Repositories
                 ORDER BY 
                     DoneDate";
 
-            return _connection.Query(query);
+            return Connection.Query(query);
         }
 
         public IEnumerable GetFiltered(string filter)
@@ -150,7 +150,7 @@ namespace FluxusApi.Repositories
                 invoiced = filters[4]
             };
 
-            return _connection.Query(query, param);
+            return Connection.Query(query, param);
         }
 
 
@@ -171,7 +171,7 @@ namespace FluxusApi.Repositories
                 ORDER BY 
                     t2.Nameid";
 
-            return _connection.Query(query, new { invoiceId });
+            return Connection.Query(query, new { invoiceId });
         }
 
 
@@ -185,7 +185,7 @@ namespace FluxusApi.Repositories
                 ORDER BY 
                     City";
 
-            return _connection.Query(query);
+            return Connection.Query(query);
         }
 
         public int UpdateInvoiceId(int id, int invoiceId)
@@ -210,7 +210,7 @@ namespace FluxusApi.Repositories
                 Id = id
             };
 
-            return _connection.Execute(updateSQL, invoice);
+            return Connection.Execute(updateSQL, invoice);
         }
 
 
@@ -241,7 +241,7 @@ namespace FluxusApi.Repositories
                 Id = id
             };
 
-            return _connection.Execute(updateSQL, orderObj);
+            return Connection.Execute(updateSQL, orderObj);
         }
     }
 }

@@ -13,18 +13,18 @@ namespace FluxusApi.Repositories
         {
             string query = @"SELECT Logo FROM Profile WHERE Id = 1";
 
-            var profile = _connection.QueryFirst(query);
+            var profile = Connection.QueryFirst(query);
             return (byte[])(profile.Logo);
         }
 
         public string UpdateLogo(byte[] logoByte)
         {
-            _connection.Open();
-            MySqlCommand cmd = new MySqlCommand("UPDATE Profile SET Logo = @logo WHERE Id = @id", _connection);
+            Connection.Open();
+            MySqlCommand cmd = new MySqlCommand("UPDATE Profile SET Logo = @logo WHERE Id = @id", Connection);
             cmd.Parameters.Add("@id", MySqlDbType.Int32).Value = 1;
             cmd.Parameters.Add("@logo", MySqlDbType.Binary).Value = logoByte;
             cmd.ExecuteNonQuery();
-            _connection.Close();
+            Connection.Close();
             return string.Empty;
         }
 
@@ -43,7 +43,7 @@ namespace FluxusApi.Repositories
                 WHERE 
                     Id = 1";
 
-            return _connection.QueryFirst(query);
+            return Connection.QueryFirst(query);
         }
 
 
@@ -57,7 +57,7 @@ namespace FluxusApi.Repositories
                 WHERE 
                     Id = 1";
 
-            var profile = _connection.QueryFirst(query);
+            var profile = Connection.QueryFirst(query);
             return profile.TradingName;
         }
     }

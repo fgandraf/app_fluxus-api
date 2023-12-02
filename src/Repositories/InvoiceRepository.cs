@@ -12,7 +12,7 @@ namespace FluxusApi.Repositories
         {
             string query = @"SELECT Description FROM Invoice WHERE Id = @id";
 
-            return _connection.QueryFirst<string>(query, new { id = id });
+            return Connection.QueryFirst<string>(query, new { id = id });
         }
 
         public int UpdateTotals(Invoice invoice)
@@ -27,7 +27,7 @@ namespace FluxusApi.Repositories
                 WHERE
                     Id = @Id";
 
-            return _connection.Execute(updateSQL, invoice);
+            return Connection.Execute(updateSQL, invoice);
         }
     }
 }

@@ -17,7 +17,7 @@ namespace FluxusApi.Controllers
 
 
         [HttpGet("v1/professionals")]
-        public IActionResult GetAll()
+        public async Task<IActionResult> GetAll()
         {
             try
             {
@@ -25,7 +25,7 @@ namespace FluxusApi.Controllers
                 _authenticator.Authenticate();
                 
                 using (var connection = new MySqlConnection(_authenticator.ConnectionString))
-                    result = new ProfessionalRepository(connection).GetIndex();
+                    result = await new ProfessionalRepository(connection).GetIndexAsync();
 
                 return result == null ? NotFound() : Ok(result);
             }
@@ -37,7 +37,7 @@ namespace FluxusApi.Controllers
 
 
         [HttpGet("v1/professionals/tag-name-id")]
-        public IActionResult GetTagNameid()
+        public async Task<IActionResult> GetTagNameid()
         {
             try
             {
@@ -45,7 +45,7 @@ namespace FluxusApi.Controllers
                 _authenticator.Authenticate();
                 
                 using (var connection = new MySqlConnection(_authenticator.ConnectionString))
-                    result = new ProfessionalRepository(connection).GetTagNameid();
+                    result = await new ProfessionalRepository(connection).GetTagNameidAsync();
 
                 return result == null ? NotFound() : Ok(result);
             }
@@ -56,8 +56,8 @@ namespace FluxusApi.Controllers
         }
 
 
-        [HttpGet("v1/professional/user-info/{userName}")]
-        public IActionResult GetUserInfo(string userName)
+        [HttpGet("v1/professionals/user-info/{userName}")]
+        public async Task<IActionResult> GetUserInfo(string userName)
         {
             try
             {
@@ -65,7 +65,7 @@ namespace FluxusApi.Controllers
                 _authenticator.Authenticate();
                 
                 using (var connection = new MySqlConnection(_authenticator.ConnectionString))
-                    result = new ProfessionalRepository(connection).GetUserInfoBy(userName);
+                    result = await new ProfessionalRepository(connection).GetUserInfoByAsync(userName);
 
                 return result == null ? NotFound() : Ok(result);
             }
@@ -76,8 +76,8 @@ namespace FluxusApi.Controllers
         }
 
 
-        [HttpGet("v1/professional/{id}")]
-        public IActionResult Get(int id)
+        [HttpGet("v1/professionals/{id}")]
+        public async Task<IActionResult> Get(int id)
         {
             try
             {
@@ -85,7 +85,7 @@ namespace FluxusApi.Controllers
                 _authenticator.Authenticate();
                 
                 using (var connection = new MySqlConnection(_authenticator.ConnectionString))
-                    result = new ProfessionalRepository(connection).Get(id);
+                    result = await new ProfessionalRepository(connection).GetAsync(id);
 
                 return result == null ? NotFound() : Ok(result);
             }
@@ -96,16 +96,16 @@ namespace FluxusApi.Controllers
         }
 
 
-        [HttpPost("v1/professional")]
-        public IActionResult Post([FromBody] Professional professional)
+        [HttpPost("v1/professionals")]
+        public async Task<IActionResult> Post([FromBody] Professional professional)
         {
             try
             {
                 _authenticator.Authenticate();
 
                 long id;
-                using (var connection = new MySqlConnection(_authenticator.ConnectionString))
-                    id = new ProfessionalRepository(connection).Insert(professional);
+                await using (var connection = new MySqlConnection(_authenticator.ConnectionString))
+                    id = await new ProfessionalRepository(connection).InsertAsync(professional);
 
                 return Ok(id);
             }
@@ -116,15 +116,15 @@ namespace FluxusApi.Controllers
         }
 
 
-        [HttpPut("v1/professional")]
-        public IActionResult Put([FromBody] Professional professional)
+        [HttpPut("v1/professionals")]
+        public async Task<IActionResult> Put([FromBody] Professional professional)
         {
             try
             {
                 _authenticator.Authenticate();
                 
                 using (var connection = new MySqlConnection(_authenticator.ConnectionString))
-                    new ProfessionalRepository(connection).Update(professional);
+                    await new ProfessionalRepository(connection).UpdateAsync(professional);
 
                 return Ok();
             }
@@ -135,8 +135,8 @@ namespace FluxusApi.Controllers
         }
 
 
-        [HttpDelete("v1/professional/{id}")]
-        public IActionResult Delete(int id)
+        [HttpDelete("v1/professionals/{id}")]
+        public async Task<IActionResult> Delete(int id)
         {
             try
             {
@@ -145,10 +145,10 @@ namespace FluxusApi.Controllers
                 
                 using (var connection = new MySqlConnection(_authenticator.ConnectionString))
                 {
-                    var professional = new ProfessionalRepository(connection).Get(id);
+                    var professional = await new ProfessionalRepository(connection).GetAsync(id);
 
                     if (professional.Id != 0)
-                        deleted = new ProfessionalRepository(connection).Delete(professional);
+                        deleted = await new ProfessionalRepository(connection).DeleteAsync(professional);
                 }
 
                 return deleted == false ? NotFound() : Ok();

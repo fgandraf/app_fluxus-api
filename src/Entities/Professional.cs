@@ -8,7 +8,6 @@ namespace FluxusApi.Entities
         public long Id { get; set; }
         public string Tag { get; set; }
         public string Name { get; set; }
-        public string NameId { get; set; }
         public string Cpf { get; set; }
         public string Birthday { get; set; }
         public string Profession { get; set; }

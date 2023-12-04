@@ -17,7 +17,7 @@ namespace FluxusApi.Controllers
 
 
         [HttpGet("v1/profile")]
-        public IActionResult GetAll()
+        public async Task<IActionResult> GetAll()
         {
             try
             {
@@ -25,7 +25,7 @@ namespace FluxusApi.Controllers
                 _authenticator.Authenticate();
                 
                 using (var connection = new MySqlConnection(_authenticator.ConnectionString))
-                    result = new ProfileRepository(connection).Get(1);
+                    result = await new ProfileRepository(connection).GetAsync(1);
 
                 return result == null ? NotFound() : Ok(result);
             }
@@ -37,7 +37,7 @@ namespace FluxusApi.Controllers
 
 
         [HttpGet("v1/profile/logo")]
-        public IActionResult GetLogo()
+        public async Task<IActionResult> GetLogo()
         {
             try
             {
@@ -45,7 +45,7 @@ namespace FluxusApi.Controllers
                 _authenticator.Authenticate();
                 
                 using (var connection = new MySqlConnection(_authenticator.ConnectionString))
-                    result = new ProfileRepository(connection).GetLogo();
+                    result = await new ProfileRepository(connection).GetLogoAsync();
 
                 return result == null ? NotFound() : Ok(result);
             }
@@ -57,7 +57,7 @@ namespace FluxusApi.Controllers
 
 
         [HttpGet("v1/profile/to-print")]
-        public IActionResult GetToPrint()
+        public async Task<IActionResult> GetToPrint()
         {
             try
             {
@@ -65,7 +65,7 @@ namespace FluxusApi.Controllers
                 _authenticator.Authenticate();
 
                 using (var connection = new MySqlConnection(_authenticator.ConnectionString))
-                    result = new ProfileRepository(connection).GetToPrint();
+                    result = await new ProfileRepository(connection).GetToPrintAsync();
 
                 return result == null ? NotFound() : Ok(result);
             }
@@ -77,7 +77,7 @@ namespace FluxusApi.Controllers
 
 
         [HttpGet("v1/profile/trading-name")]
-        public IActionResult GetTradingName()
+        public async Task<IActionResult> GetTradingName()
         {
             try
             {
@@ -85,7 +85,7 @@ namespace FluxusApi.Controllers
                 _authenticator.Authenticate();
                 
                 using (var connection = new MySqlConnection(_authenticator.ConnectionString))
-                    result = new ProfileRepository(connection).GetTradingName();
+                    result = await new ProfileRepository(connection).GetTradingNameAsync();
                 
                 return result == null ? NotFound() : Ok(result);
             }
@@ -97,7 +97,7 @@ namespace FluxusApi.Controllers
 
 
         [HttpPost("v1/profile")]
-        public IActionResult Post([FromBody] Profile profile)
+        public async Task<IActionResult> Post([FromBody] Profile profile)
         {
             try
             {
@@ -105,7 +105,7 @@ namespace FluxusApi.Controllers
 
                 long id;
                 using (var connection = new MySqlConnection(_authenticator.ConnectionString))
-                    id = new ProfileRepository(connection).Insert(profile);
+                    id = await new ProfileRepository(connection).InsertAsync(profile);
                 
                 return Ok(id);
             }
@@ -117,14 +117,14 @@ namespace FluxusApi.Controllers
 
 
         [HttpPut("v1/profile/logo")]
-        public IActionResult Put([FromBody] byte[] logo)
+        public async Task<IActionResult> Put([FromBody] byte[] logo)
         {
             try
             {
                 _authenticator.Authenticate();
                 
                 using (var connection = new MySqlConnection(_authenticator.ConnectionString))
-                    new ProfileRepository(connection).UpdateLogo(logo);
+                    await new ProfileRepository(connection).UpdateLogoAsync(logo);
                 
                 return Ok();
             }
@@ -136,14 +136,14 @@ namespace FluxusApi.Controllers
 
 
         [HttpPut("v1/profile")]
-        public IActionResult Put([FromBody] Profile profile)
+        public async Task<IActionResult> Put([FromBody] Profile profile)
         {
             try
             {
                 _authenticator.Authenticate();
                 
                 using (var connection = new MySqlConnection(_authenticator.ConnectionString))
-                    new ProfileRepository(connection).Update(profile);
+                    await new ProfileRepository(connection).UpdateAsync(profile);
                 
                 return Ok();
             }

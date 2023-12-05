@@ -36,8 +36,8 @@ namespace FluxusApi.Controllers
         }
 
 
-        [HttpGet("v1/bank-branch/{id}")]
-        public async Task<IActionResult> Get(string id)
+        [HttpGet("v1/bank-branches/{id}")]
+        public async Task<IActionResult> GetById(string id)
         {
             try
             {
@@ -56,8 +56,8 @@ namespace FluxusApi.Controllers
         }
 
 
-        [HttpGet("v1/bank-branch/contacts/{id}")]
-        public async Task<IActionResult> GetContacts(string id)
+        [HttpGet("v1/bank-branches/contacts/{id}")]
+        public async Task<IActionResult> GetContactsById(string id)
         {
             try
             {
@@ -76,7 +76,7 @@ namespace FluxusApi.Controllers
         }
 
 
-        [HttpPost("v1/bank-branch")]
+        [HttpPost("v1/bank-branches")]
         public async Task<IActionResult> Post([FromBody] BankBranch bankBranch)
         {
             try
@@ -95,7 +95,7 @@ namespace FluxusApi.Controllers
         }
 
 
-        [HttpPut("v1/bank-branch")]
+        [HttpPut("v1/bank-branches")]
         public async Task<IActionResult> Put([FromBody] BankBranch bankBranch)
         {
             try
@@ -114,7 +114,7 @@ namespace FluxusApi.Controllers
         }
 
 
-        [HttpDelete("v1/bank-branch/{id}")]
+        [HttpDelete("v1/bank-branches/{id}")]
         public async Task<IActionResult> Delete(string id)
         {
             bool deleted = false;

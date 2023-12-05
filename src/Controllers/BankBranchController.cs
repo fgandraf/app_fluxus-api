@@ -21,11 +21,10 @@ namespace FluxusApi.Controllers
         {
             try
             {
-                IEnumerable result;
                 _authenticator.Authenticate();
                 
-                using (var connection = new MySqlConnection(_authenticator.ConnectionString))
-                    result = await new BankBranchRepository(connection).GetIndexAsync();
+                await using var connection = new MySqlConnection(_authenticator.ConnectionString);
+                IEnumerable result = await new BankBranchRepository(connection).GetIndexAsync();
 
                 return result == null ? NotFound() : Ok(result);
             }
@@ -41,11 +40,10 @@ namespace FluxusApi.Controllers
         {
             try
             {
-                BankBranch result;
                 _authenticator.Authenticate();
                 
-                using (var connection = new MySqlConnection(_authenticator.ConnectionString))
-                    result = await new BankBranchRepository(connection).GetAsync(id);
+                await using var connection = new MySqlConnection(_authenticator.ConnectionString);
+                BankBranch result = await new BankBranchRepository(connection).GetAsync(id);
 
                 return result == null ? NotFound() : Ok(result);
             }
@@ -61,11 +59,10 @@ namespace FluxusApi.Controllers
         {
             try
             {
-                IEnumerable result;
                 _authenticator.Authenticate();
                 
-                using (var connection = new MySqlConnection(_authenticator.ConnectionString))
-                    result = await new BankBranchRepository(connection).GetContactsAsync(id);
+                await using var connection = new MySqlConnection(_authenticator.ConnectionString);
+                IEnumerable result = await new BankBranchRepository(connection).GetContactsAsync(id);
 
                 return result == null ? NotFound() : Ok(result);
             }
@@ -83,8 +80,8 @@ namespace FluxusApi.Controllers
             {
                 _authenticator.Authenticate();
                 
-                using (var connection = new MySqlConnection(_authenticator.ConnectionString))
-                    await new BankBranchRepository(connection).InsertAsync(bankBranch);
+                await using var connection = new MySqlConnection(_authenticator.ConnectionString);
+                await new BankBranchRepository(connection).InsertAsync(bankBranch);
                 
                 return Ok(bankBranch.Id);
             }
@@ -102,8 +99,8 @@ namespace FluxusApi.Controllers
             {
                 _authenticator.Authenticate();
                 
-                using (var connection = new MySqlConnection(_authenticator.ConnectionString))
-                    await new BankBranchRepository(connection).UpdateAsync(bankBranch);
+                await using var connection = new MySqlConnection(_authenticator.ConnectionString);
+                await new BankBranchRepository(connection).UpdateAsync(bankBranch);
 
                 return Ok();
             }
@@ -117,19 +114,16 @@ namespace FluxusApi.Controllers
         [HttpDelete("v1/bank-branches/{id}")]
         public async Task<IActionResult> Delete(string id)
         {
-            bool deleted = false;
-
             try
             {
                 _authenticator.Authenticate();
                 
-                using (var connection = new MySqlConnection(_authenticator.ConnectionString))
-                {
-                    var bankBranch = await new BankBranchRepository(connection).GetAsync(id);
+                bool deleted = false;
+                await using var connection = new MySqlConnection(_authenticator.ConnectionString);
+                var bankBranch = await new BankBranchRepository(connection).GetAsync(id);
 
-                    if (bankBranch.Id != null)
-                        deleted = await new BankBranchRepository(connection).DeleteAsync(bankBranch);
-                }
+                if (bankBranch.Id != null)
+                    deleted = await new BankBranchRepository(connection).DeleteAsync(bankBranch);
 
                 return deleted == false ? NotFound() : Ok();
             }

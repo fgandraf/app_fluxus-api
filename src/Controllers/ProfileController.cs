@@ -21,11 +21,10 @@ namespace FluxusApi.Controllers
         {
             try
             {
-                Profile result;
                 _authenticator.Authenticate();
                 
-                using (var connection = new MySqlConnection(_authenticator.ConnectionString))
-                    result = await new ProfileRepository(connection).GetAsync(1);
+                await using var connection = new MySqlConnection(_authenticator.ConnectionString);
+                Profile result = await new ProfileRepository(connection).GetAsync(1);
 
                 return result == null ? NotFound() : Ok(result);
             }
@@ -41,11 +40,10 @@ namespace FluxusApi.Controllers
         {
             try
             {
-                byte[] result;
                 _authenticator.Authenticate();
                 
-                using (var connection = new MySqlConnection(_authenticator.ConnectionString))
-                    result = await new ProfileRepository(connection).GetLogoAsync();
+                await using var connection = new MySqlConnection(_authenticator.ConnectionString);
+                byte[] result = await new ProfileRepository(connection).GetLogoAsync();
 
                 return result == null ? NotFound() : Ok(result);
             }
@@ -61,11 +59,10 @@ namespace FluxusApi.Controllers
         {
             try
             {
-                IEnumerable result;
                 _authenticator.Authenticate();
 
-                using (var connection = new MySqlConnection(_authenticator.ConnectionString))
-                    result = await new ProfileRepository(connection).GetToPrintAsync();
+                await using var connection = new MySqlConnection(_authenticator.ConnectionString);
+                IEnumerable result = await new ProfileRepository(connection).GetToPrintAsync();
 
                 return result == null ? NotFound() : Ok(result);
             }
@@ -81,11 +78,10 @@ namespace FluxusApi.Controllers
         {
             try
             {
-                string result;
                 _authenticator.Authenticate();
                 
-                using (var connection = new MySqlConnection(_authenticator.ConnectionString))
-                    result = await new ProfileRepository(connection).GetTradingNameAsync();
+                await using var connection = new MySqlConnection(_authenticator.ConnectionString);
+                string result = await new ProfileRepository(connection).GetTradingNameAsync();
                 
                 return result == null ? NotFound() : Ok(result);
             }
@@ -102,10 +98,9 @@ namespace FluxusApi.Controllers
             try
             {
                 _authenticator.Authenticate();
-
-                long id;
-                using (var connection = new MySqlConnection(_authenticator.ConnectionString))
-                    id = await new ProfileRepository(connection).InsertAsync(profile);
+                
+                await using var connection = new MySqlConnection(_authenticator.ConnectionString);
+                long id = await new ProfileRepository(connection).InsertAsync(profile);
                 
                 return Ok(id);
             }
@@ -123,8 +118,8 @@ namespace FluxusApi.Controllers
             {
                 _authenticator.Authenticate();
                 
-                using (var connection = new MySqlConnection(_authenticator.ConnectionString))
-                    await new ProfileRepository(connection).UpdateLogoAsync(logo);
+                await using var connection = new MySqlConnection(_authenticator.ConnectionString);
+                await new ProfileRepository(connection).UpdateLogoAsync(logo);
                 
                 return Ok();
             }
@@ -142,8 +137,8 @@ namespace FluxusApi.Controllers
             {
                 _authenticator.Authenticate();
                 
-                using (var connection = new MySqlConnection(_authenticator.ConnectionString))
-                    await new ProfileRepository(connection).UpdateAsync(profile);
+                await using var connection = new MySqlConnection(_authenticator.ConnectionString);
+                await new ProfileRepository(connection).UpdateAsync(profile);
                 
                 return Ok();
             }

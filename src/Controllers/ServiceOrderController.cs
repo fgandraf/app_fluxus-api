@@ -21,11 +21,10 @@ namespace FluxusApi.Controllers
         {
             try
             {
-                IEnumerable result;
                 _authenticator.Authenticate();
-
-                using (var connection = new MySqlConnection(_authenticator.ConnectionString))
-                    result = await new ServiceOrderRepository(connection).GetOrdersFlowAsync();
+                
+                await using var connection = new MySqlConnection(_authenticator.ConnectionString);
+                IEnumerable result = await new ServiceOrderRepository(connection).GetOrdersFlowAsync();
 
                 return result == null ? NotFound() : Ok(result);
             }
@@ -41,11 +40,10 @@ namespace FluxusApi.Controllers
         {
             try
             {
-                IEnumerable result;
                 _authenticator.Authenticate();
 
-                using (var connection = new MySqlConnection(_authenticator.ConnectionString))
-                    result = await new ServiceOrderRepository(connection).GetOrderedCitiesAsync();
+                await using var connection = new MySqlConnection(_authenticator.ConnectionString);
+                IEnumerable result = await new ServiceOrderRepository(connection).GetOrderedCitiesAsync();
 
                 return result == null ? NotFound() : Ok(result);
             }
@@ -61,11 +59,10 @@ namespace FluxusApi.Controllers
         {
             try
             {
-                IEnumerable result;
                 _authenticator.Authenticate();
 
-                using (var connection = new MySqlConnection(_authenticator.ConnectionString))
-                    result = await new ServiceOrderRepository(connection).GetDoneToInvoiceAsync();
+                await using var connection = new MySqlConnection(_authenticator.ConnectionString);
+                IEnumerable result = await new ServiceOrderRepository(connection).GetDoneToInvoiceAsync();
 
                 return result == null ? NotFound() : Ok(result);
             }
@@ -81,11 +78,10 @@ namespace FluxusApi.Controllers
         {
             try
             {
-                IEnumerable result;
                 _authenticator.Authenticate();
 
-                using (var connection = new MySqlConnection(_authenticator.ConnectionString))
-                    result = await new ServiceOrderRepository(connection).GetFilteredAsync(filter);
+                await using var connection = new MySqlConnection(_authenticator.ConnectionString);
+                IEnumerable result = await new ServiceOrderRepository(connection).GetFilteredAsync(filter);
 
                 return result == null ? NotFound() : Ok(result);
             }
@@ -101,11 +97,10 @@ namespace FluxusApi.Controllers
         {
             try
             {
-                IEnumerable result;
                 _authenticator.Authenticate();
 
-                using (var connection = new MySqlConnection(_authenticator.ConnectionString))
-                    result = await new ServiceOrderRepository(connection).GetInvoicedAsync(invoiceId);
+                await using var connection = new MySqlConnection(_authenticator.ConnectionString);
+                IEnumerable result = await new ServiceOrderRepository(connection).GetInvoicedAsync(invoiceId);
 
                 return result == null ? NotFound() : Ok(result);
             }
@@ -121,11 +116,10 @@ namespace FluxusApi.Controllers
         {
             try
             {
-                IEnumerable result;
                 _authenticator.Authenticate();
 
-                using (var connection = new MySqlConnection(_authenticator.ConnectionString))
-                    result = await new ServiceOrderRepository(connection).GetProfessionalAsync(invoiceId);
+                await using var connection = new MySqlConnection(_authenticator.ConnectionString);
+                IEnumerable result = await new ServiceOrderRepository(connection).GetProfessionalAsync(invoiceId);
 
                 return result == null ? NotFound() : Ok(result);
             }
@@ -141,11 +135,10 @@ namespace FluxusApi.Controllers
         {
             try
             {
-                ServiceOrder result;
                 _authenticator.Authenticate();
 
-                using (var connection = new MySqlConnection(_authenticator.ConnectionString))
-                    result = await new ServiceOrderRepository(connection).GetAsync(id);
+                await using var connection = new MySqlConnection(_authenticator.ConnectionString);
+                ServiceOrder result = await new ServiceOrderRepository(connection).GetAsync(id);
 
                 return result == null ? NotFound() : Ok(result);
             }
@@ -162,10 +155,9 @@ namespace FluxusApi.Controllers
             try
             {
                 _authenticator.Authenticate();
-
-                long id;
-                using (var connection = new MySqlConnection(_authenticator.ConnectionString))
-                    id = await new ServiceOrderRepository(connection).InsertAsync(serviceOrder);
+                
+                await using var connection = new MySqlConnection(_authenticator.ConnectionString);
+                long id = await new ServiceOrderRepository(connection).InsertAsync(serviceOrder);
 
                 return Ok(id);
             }
@@ -183,8 +175,8 @@ namespace FluxusApi.Controllers
             {
                 _authenticator.Authenticate();
 
-                using (var connection = new MySqlConnection(_authenticator.ConnectionString))
-                    await new ServiceOrderRepository(connection).UpdateAsync(serviceOrder);
+                await using var connection = new MySqlConnection(_authenticator.ConnectionString);
+                await new ServiceOrderRepository(connection).UpdateAsync(serviceOrder);
 
                 return Ok();
             }
@@ -201,9 +193,9 @@ namespace FluxusApi.Controllers
             try
             {
                 _authenticator.Authenticate();
-                
-                using (var connection = new MySqlConnection(_authenticator.ConnectionString))
-                    await new ServiceOrderRepository(connection).UpdateInvoiceIdAsync(id, invoiceId);
+
+                await using var connection = new MySqlConnection(_authenticator.ConnectionString);
+                await new ServiceOrderRepository(connection).UpdateInvoiceIdAsync(id, invoiceId);
 
                 return Ok();
             }
@@ -220,9 +212,9 @@ namespace FluxusApi.Controllers
             try
             {
                 _authenticator.Authenticate();
-                
-                using (var connection = new MySqlConnection(_authenticator.ConnectionString))
-                    await new ServiceOrderRepository(connection).UpdateStatusAsync(id, status);
+
+                await using var connection = new MySqlConnection(_authenticator.ConnectionString);
+                await new ServiceOrderRepository(connection).UpdateStatusAsync(id, status);
 
                 return Ok();
             }
@@ -240,16 +232,14 @@ namespace FluxusApi.Controllers
             {
                 bool deleted = false;
                 _authenticator.Authenticate();
-                
-                using (var connection = new MySqlConnection(_authenticator.ConnectionString))
-                {
-                    var serviceOrder = await new ServiceOrderRepository(connection).GetAsync(id);
 
-                    if (serviceOrder.Id != 0)
-                        deleted = await new ServiceOrderRepository(connection).DeleteAsync(serviceOrder);
+                await using var connection = new MySqlConnection(_authenticator.ConnectionString);
+                var serviceOrder = await new ServiceOrderRepository(connection).GetAsync(id);
 
-                    return deleted == false ? NotFound() : Ok();
-                }
+                if (serviceOrder.Id != 0)
+                    deleted = await new ServiceOrderRepository(connection).DeleteAsync(serviceOrder);
+
+                return deleted == false ? NotFound() : Ok();
             }
             catch (Exception ex)
             {

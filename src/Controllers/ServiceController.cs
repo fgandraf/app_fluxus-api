@@ -21,11 +21,10 @@ namespace FluxusApi.Controllers
         {
             try
             {
-                IEnumerable result;
                 _authenticator.Authenticate();
 
-                using (var connection = new MySqlConnection(_authenticator.ConnectionString))
-                    result = await new ServiceRepository(connection).GetAllAsync();
+                await using var connection = new MySqlConnection(_authenticator.ConnectionString);
+                IEnumerable result = await new ServiceRepository(connection).GetAllAsync();
 
                 return result == null ? NotFound() : Ok(result);
             }
@@ -41,11 +40,10 @@ namespace FluxusApi.Controllers
         {
             try
             {
-                Service result;
                 _authenticator.Authenticate();
                 
-                using (var connection = new MySqlConnection(_authenticator.ConnectionString))
-                    result = await new ServiceRepository(connection).GetAsync(id);
+                await using var connection = new MySqlConnection(_authenticator.ConnectionString);
+                Service result = await new ServiceRepository(connection).GetAsync(id);
 
                 return result == null ? NotFound() : Ok(result);
             }
@@ -62,10 +60,9 @@ namespace FluxusApi.Controllers
             try
             {
                 _authenticator.Authenticate();
-
-                long id;
-                using (var connection = new MySqlConnection(_authenticator.ConnectionString))
-                    id = await new ServiceRepository(connection).InsertAsync(service);
+                
+                await using var connection = new MySqlConnection(_authenticator.ConnectionString);
+                long id = await new ServiceRepository(connection).InsertAsync(service);
 
                 return Ok(id);
             }
@@ -83,8 +80,8 @@ namespace FluxusApi.Controllers
             {
                 _authenticator.Authenticate();
                 
-                using (var connection = new MySqlConnection(_authenticator.ConnectionString))
-                    await new ServiceRepository(connection).UpdateAsync(service);
+                await using var connection = new MySqlConnection(_authenticator.ConnectionString);
+                await new ServiceRepository(connection).UpdateAsync(service);
 
                 return Ok();
             }
@@ -102,14 +99,12 @@ namespace FluxusApi.Controllers
             {
                 bool deleted = false;
                 _authenticator.Authenticate();
-                
-                using (var connection = new MySqlConnection(_authenticator.ConnectionString))
-                {
-                    var service = await new ServiceRepository(connection).GetAsync(id);
 
-                    if (service.Id != 0)
-                        deleted = await new ServiceRepository(connection).DeleteAsync(service);
-                }
+                await using var connection = new MySqlConnection(_authenticator.ConnectionString);
+                var service = await new ServiceRepository(connection).GetAsync(id);
+                
+                if (service.Id != 0)
+                    deleted = await new ServiceRepository(connection).DeleteAsync(service);
 
                 return deleted == false ? NotFound() : Ok();
             }

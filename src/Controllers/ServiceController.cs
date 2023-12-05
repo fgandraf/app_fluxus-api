@@ -17,7 +17,7 @@ namespace FluxusApi.Controllers
 
 
         [HttpGet("v1/services")]
-        public IActionResult GetAll()
+        public async Task<IActionResult> GetAll()
         {
             try
             {
@@ -25,7 +25,7 @@ namespace FluxusApi.Controllers
                 _authenticator.Authenticate();
 
                 using (var connection = new MySqlConnection(_authenticator.ConnectionString))
-                    result = new ServiceRepository(connection).GetAll();
+                    result = await new ServiceRepository(connection).GetAllAsync();
 
                 return result == null ? NotFound() : Ok(result);
             }
@@ -36,8 +36,8 @@ namespace FluxusApi.Controllers
         }
 
 
-        [HttpGet("v1/service/{id}")]
-        public IActionResult Get(int id)
+        [HttpGet("v1/services/{id}")]
+        public async Task<IActionResult> GetById(int id)
         {
             try
             {
@@ -45,7 +45,7 @@ namespace FluxusApi.Controllers
                 _authenticator.Authenticate();
                 
                 using (var connection = new MySqlConnection(_authenticator.ConnectionString))
-                    result = new ServiceRepository(connection).Get(id);
+                    result = await new ServiceRepository(connection).GetAsync(id);
 
                 return result == null ? NotFound() : Ok(result);
             }
@@ -56,8 +56,8 @@ namespace FluxusApi.Controllers
         }
 
 
-        [HttpPost("v1/service")]
-        public IActionResult Post([FromBody] Service service)
+        [HttpPost("v1/services")]
+        public async Task<IActionResult> Post([FromBody] Service service)
         {
             try
             {
@@ -65,7 +65,7 @@ namespace FluxusApi.Controllers
 
                 long id;
                 using (var connection = new MySqlConnection(_authenticator.ConnectionString))
-                    id = new ServiceRepository(connection).Insert(service);
+                    id = await new ServiceRepository(connection).InsertAsync(service);
 
                 return Ok(id);
             }
@@ -76,15 +76,15 @@ namespace FluxusApi.Controllers
         }
 
 
-        [HttpPut("v1/service/{id}")]
-        public IActionResult Put([FromBody] Service service)
+        [HttpPut("v1/services")]
+        public async Task<IActionResult> Put([FromBody] Service service)
         {
             try
             {
                 _authenticator.Authenticate();
                 
                 using (var connection = new MySqlConnection(_authenticator.ConnectionString))
-                    new ServiceRepository(connection).Update(service);
+                    await new ServiceRepository(connection).UpdateAsync(service);
 
                 return Ok();
             }
@@ -95,8 +95,8 @@ namespace FluxusApi.Controllers
         }
 
 
-        [HttpDelete("v1/service/{id}")]
-        public IActionResult Delete(int id)
+        [HttpDelete("v1/services/{id}")]
+        public async Task<IActionResult> Delete(int id)
         {
             try
             {
@@ -105,10 +105,10 @@ namespace FluxusApi.Controllers
                 
                 using (var connection = new MySqlConnection(_authenticator.ConnectionString))
                 {
-                    var service = new ServiceRepository(connection).Get(id);
+                    var service = await new ServiceRepository(connection).GetAsync(id);
 
                     if (service.Id != 0)
-                        deleted = new ServiceRepository(connection).Delete(service);
+                        deleted = await new ServiceRepository(connection).DeleteAsync(service);
                 }
 
                 return deleted == false ? NotFound() : Ok();

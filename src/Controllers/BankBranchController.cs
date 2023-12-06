@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using FluxusApi.Repositories;
 using FluxusApi.Entities;
-using System.Collections;
 using MySql.Data.MySqlClient;
 
 namespace FluxusApi.Controllers
@@ -24,7 +23,7 @@ namespace FluxusApi.Controllers
                 _authenticator.Authenticate();
                 
                 await using var connection = new MySqlConnection(_authenticator.ConnectionString);
-                IEnumerable result = await new BankBranchRepository(connection).GetIndexAsync();
+                var result = await new BankBranchRepository(connection).GetIndexAsync();
 
                 return result == null ? NotFound() : Ok(result);
             }
@@ -43,7 +42,7 @@ namespace FluxusApi.Controllers
                 _authenticator.Authenticate();
                 
                 await using var connection = new MySqlConnection(_authenticator.ConnectionString);
-                BankBranch result = await new BankBranchRepository(connection).GetAsync(id);
+                var result = await new BankBranchRepository(connection).GetAsync(id);
 
                 return result == null ? NotFound() : Ok(result);
             }
@@ -62,7 +61,7 @@ namespace FluxusApi.Controllers
                 _authenticator.Authenticate();
                 
                 await using var connection = new MySqlConnection(_authenticator.ConnectionString);
-                IEnumerable result = await new BankBranchRepository(connection).GetContactsAsync(id);
+                var result = await new BankBranchRepository(connection).GetContactsAsync(id);
 
                 return result == null ? NotFound() : Ok(result);
             }
@@ -118,7 +117,7 @@ namespace FluxusApi.Controllers
             {
                 _authenticator.Authenticate();
                 
-                bool deleted = false;
+                var deleted = false;
                 await using var connection = new MySqlConnection(_authenticator.ConnectionString);
                 var bankBranch = await new BankBranchRepository(connection).GetAsync(id);
 

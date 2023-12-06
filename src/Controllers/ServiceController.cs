@@ -1,5 +1,4 @@
-﻿using System.Collections;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using FluxusApi.Entities;
 using FluxusApi.Repositories;
 using MySql.Data.MySqlClient;
@@ -24,7 +23,7 @@ namespace FluxusApi.Controllers
                 _authenticator.Authenticate();
 
                 await using var connection = new MySqlConnection(_authenticator.ConnectionString);
-                IEnumerable result = await new ServiceRepository(connection).GetAllAsync();
+                var result = await new ServiceRepository(connection).GetAllAsync();
 
                 return result == null ? NotFound() : Ok(result);
             }
@@ -43,7 +42,7 @@ namespace FluxusApi.Controllers
                 _authenticator.Authenticate();
                 
                 await using var connection = new MySqlConnection(_authenticator.ConnectionString);
-                Service result = await new ServiceRepository(connection).GetAsync(id);
+                var result = await new ServiceRepository(connection).GetAsync(id);
 
                 return result == null ? NotFound() : Ok(result);
             }
@@ -62,7 +61,7 @@ namespace FluxusApi.Controllers
                 _authenticator.Authenticate();
                 
                 await using var connection = new MySqlConnection(_authenticator.ConnectionString);
-                long id = await new ServiceRepository(connection).InsertAsync(service);
+                var id = await new ServiceRepository(connection).InsertAsync(service);
 
                 return Ok(id);
             }
@@ -97,7 +96,7 @@ namespace FluxusApi.Controllers
         {
             try
             {
-                bool deleted = false;
+                var deleted = false;
                 _authenticator.Authenticate();
 
                 await using var connection = new MySqlConnection(_authenticator.ConnectionString);

@@ -186,7 +186,7 @@ namespace FluxusApi.Controllers
         }
 
 
-        [HttpPut("v1/service-orders/update-invoice/{id},{invoiceId}")]
+        [HttpPut("v1/service-orders/update-invoice/{id},{invoice_id}")]
         public async Task<IActionResult> UpdateInvoiceId(int id, int invoiceId)
         {
             try

@@ -1,5 +1,4 @@
-﻿using System.Collections;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using FluxusApi.Repositories;
 using FluxusApi.Entities;
 using MySql.Data.MySqlClient;
@@ -24,7 +23,7 @@ namespace FluxusApi.Controllers
                 _authenticator.Authenticate();
 
                 await using var connection = new MySqlConnection(_authenticator.ConnectionString);
-                IEnumerable result = await new InvoiceRepository(connection).GetAllAsync();
+                var result = await new InvoiceRepository(connection).GetAllAsync();
                 
                 return result == null ? NotFound() : Ok(((List<Invoice>)result).OrderBy(x => x.IssueDate));
             }
@@ -43,7 +42,7 @@ namespace FluxusApi.Controllers
                 _authenticator.Authenticate();
                 
                 await using var connection = new MySqlConnection(_authenticator.ConnectionString);
-                string result = await new InvoiceRepository(connection).GetDescriptionAsync(id);
+                var result = await new InvoiceRepository(connection).GetDescriptionAsync(id);
 
                 return result == null ? NotFound() : Ok(result);
             }
@@ -62,7 +61,7 @@ namespace FluxusApi.Controllers
                 _authenticator.Authenticate();
 
                 await using var connection = new MySqlConnection(_authenticator.ConnectionString);
-                long id = await new InvoiceRepository(connection).InsertAsync(invoice);
+                var id = await new InvoiceRepository(connection).InsertAsync(invoice);
 
                 return Ok(id);
             }
@@ -97,11 +96,11 @@ namespace FluxusApi.Controllers
         {
             try
             {
-                bool deleted = false;
+                var deleted = false;
                 _authenticator.Authenticate();
                 
                 await using var connection = new MySqlConnection(_authenticator.ConnectionString);
-                var invoice = new InvoiceRepository(connection).Get(id);
+                var invoice = await new InvoiceRepository(connection).GetAsync(id);
 
                 if (invoice.Id != 0)
                     deleted = await new InvoiceRepository(connection).DeleteAsync(invoice);

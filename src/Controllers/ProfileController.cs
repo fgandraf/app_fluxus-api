@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using FluxusApi.Entities;
 using FluxusApi.Repositories;
-using System.Collections;
 using MySql.Data.MySqlClient;
 
 namespace FluxusApi.Controllers
@@ -24,7 +23,7 @@ namespace FluxusApi.Controllers
                 _authenticator.Authenticate();
                 
                 await using var connection = new MySqlConnection(_authenticator.ConnectionString);
-                Profile result = await new ProfileRepository(connection).GetAsync(1);
+                var result = await new ProfileRepository(connection).GetAsync(1);
 
                 return result == null ? NotFound() : Ok(result);
             }
@@ -43,7 +42,7 @@ namespace FluxusApi.Controllers
                 _authenticator.Authenticate();
                 
                 await using var connection = new MySqlConnection(_authenticator.ConnectionString);
-                byte[] result = await new ProfileRepository(connection).GetLogoAsync();
+                var result = await new ProfileRepository(connection).GetLogoAsync();
 
                 return result == null ? NotFound() : Ok(result);
             }
@@ -62,7 +61,7 @@ namespace FluxusApi.Controllers
                 _authenticator.Authenticate();
 
                 await using var connection = new MySqlConnection(_authenticator.ConnectionString);
-                IEnumerable result = await new ProfileRepository(connection).GetToPrintAsync();
+                var result = await new ProfileRepository(connection).GetToPrintAsync();
 
                 return result == null ? NotFound() : Ok(result);
             }
@@ -81,7 +80,7 @@ namespace FluxusApi.Controllers
                 _authenticator.Authenticate();
                 
                 await using var connection = new MySqlConnection(_authenticator.ConnectionString);
-                string result = await new ProfileRepository(connection).GetTradingNameAsync();
+                var result = await new ProfileRepository(connection).GetTradingNameAsync();
                 
                 return result == null ? NotFound() : Ok(result);
             }
@@ -100,7 +99,7 @@ namespace FluxusApi.Controllers
                 _authenticator.Authenticate();
                 
                 await using var connection = new MySqlConnection(_authenticator.ConnectionString);
-                long id = await new ProfileRepository(connection).InsertAsync(profile);
+                var id = await new ProfileRepository(connection).InsertAsync(profile);
                 
                 return Ok(id);
             }

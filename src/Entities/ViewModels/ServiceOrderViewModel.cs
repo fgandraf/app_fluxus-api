@@ -1,13 +1,14 @@
 ﻿using Dapper.Contrib.Extensions;
 
-namespace FluxusApi.Entities
+namespace FluxusApi.Entities.ViewModels
 {
     [Table("ServiceOrder")]
-    public class ServiceOrder
+    public abstract class ServiceOrderViewModel
     {
         public long Id { get; set; }
         public string ReferenceCode { get; set; }
         public string Branch { get; set; }
+        public string Title { get; set; }
         public string OrderDate { get; set; }
         public DateTime Deadline { get; set; }
         public string ProfessionalId { get; set; }

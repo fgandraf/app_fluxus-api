@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using FluxusApi.Entities;
 using FluxusApi.Repositories;
-using System.Collections;
 using MySql.Data.MySqlClient;
 
 namespace FluxusApi.Controllers
@@ -24,7 +23,7 @@ namespace FluxusApi.Controllers
                 _authenticator.Authenticate();
                 
                 await using var connection = new MySqlConnection(_authenticator.ConnectionString);
-                IEnumerable result = await new ProfessionalRepository(connection).GetIndexAsync();
+                var result = await new ProfessionalRepository(connection).GetIndexAsync();
 
                 return result == null ? NotFound() : Ok(result);
             }
@@ -43,7 +42,7 @@ namespace FluxusApi.Controllers
                 _authenticator.Authenticate();
                 
                 await using var connection = new MySqlConnection(_authenticator.ConnectionString);
-                IEnumerable result = await new ProfessionalRepository(connection).GetTagNameidAsync();
+                var result = await new ProfessionalRepository(connection).GetTagNameidAsync();
 
                 return result == null ? NotFound() : Ok(result);
             }
@@ -62,7 +61,7 @@ namespace FluxusApi.Controllers
                 _authenticator.Authenticate();
                 
                 await using var connection = new MySqlConnection(_authenticator.ConnectionString);
-                IEnumerable result = await new ProfessionalRepository(connection).GetUserInfoByAsync(userName);
+                var result = await new ProfessionalRepository(connection).GetUserInfoByAsync(userName);
 
                 return result == null ? NotFound() : Ok(result);
             }
@@ -81,7 +80,7 @@ namespace FluxusApi.Controllers
                 _authenticator.Authenticate();
                 
                 await using var connection = new MySqlConnection(_authenticator.ConnectionString);
-                Professional result = await new ProfessionalRepository(connection).GetAsync(id);
+                var result = await new ProfessionalRepository(connection).GetAsync(id);
 
                 return result == null ? NotFound() : Ok(result);
             }
@@ -100,7 +99,7 @@ namespace FluxusApi.Controllers
                 _authenticator.Authenticate();
                 
                 await using var connection = new MySqlConnection(_authenticator.ConnectionString);
-                long id = await new ProfessionalRepository(connection).InsertAsync(professional);
+                var id = await new ProfessionalRepository(connection).InsertAsync(professional);
 
                 return Ok(id);
             }
@@ -135,7 +134,7 @@ namespace FluxusApi.Controllers
         {
             try
             {
-                bool deleted = false;
+                var deleted = false;
                 _authenticator.Authenticate();
                 
                 await using var connection = new MySqlConnection(_authenticator.ConnectionString);

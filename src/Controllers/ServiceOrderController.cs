@@ -184,17 +184,17 @@ namespace FluxusApi.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
             }
         }
-
-
-        [HttpPut("v1/service-orders/update-invoice/{id},{invoiceId}")]
-        public async Task<IActionResult> UpdateInvoiceId(int id, int invoiceId)
+        
+        
+        [HttpPut("v1/service-orders/update-invoice/{invoiceId}")]
+        public async Task<IActionResult> UpdateInvoiceId(int invoiceId, [FromBody]List<int> orders)
         {
             try
             {
                 _authenticator.Authenticate();
 
                 await using var connection = new MySqlConnection(_authenticator.ConnectionString);
-                await new ServiceOrderRepository(connection).UpdateInvoiceIdAsync(id, invoiceId);
+                await new ServiceOrderRepository(connection).UpdateInvoiceIdAsync(invoiceId, orders);
 
                 return Ok();
             }

@@ -185,29 +185,28 @@ namespace FluxusApi.Repositories
             return await Connection.QueryAsync(query);
         }
         
-        public async Task<int> UpdateInvoiceIdAsync(int id, int invoiceId)
+        public async Task<int> UpdateInvoiceIdAsync(int invoiceId, List<int> orders)
         {
             bool invoiced = invoiceId > 0;
-
-            string updateSql = @"
-                UPDATE
-                    ServiceOrder
-                SET
-                    InvoiceId = @invoiceId,
-                    Invoiced = @invoiced
-                WHERE
-                    Id = @id";
-
-            var invoice = new
+            if (invoiceId <= 0)
+                return 0;
+            
+            foreach (var item in orders)
             {
-                InvoiceId = invoiceId,
-                Invoiced = invoiced,
-                Id = id
-            };
+                string updateSql = @"
+                    UPDATE
+                        ServiceOrder
+                    SET
+                        InvoiceId = @invoiceId,
+                        Invoiced = @invoiced
+                    WHERE
+                        Id = @item";
+                
+                await Connection.ExecuteAsync(updateSql, new { invoiceId, invoiced, item });
+            }
 
-            return await Connection.ExecuteAsync(updateSql, invoice);
+            return 1;
         }
-
 
         public async Task<int> UpdateStatusAsync(int id, EnumStatus status)
         {

@@ -188,8 +188,6 @@ namespace FluxusApi.Repositories
         public async Task<int> UpdateInvoiceIdAsync(int invoiceId, List<int> orders)
         {
             bool invoiced = invoiceId > 0;
-            if (invoiceId <= 0)
-                return 0;
             
             foreach (var item in orders)
             {

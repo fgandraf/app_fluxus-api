@@ -1,30 +1,33 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using FluxusApi.Entities;
-using FluxusApi.Repositories;
-using MySql.Data.MySqlClient;
+using FluxusApi.Models;
+using FluxusApi.Repositories.Contracts;
 
 namespace FluxusApi.Controllers
 {
 
     [ApiController]
+    [Route("v1/services")]
     public class ServiceController : ControllerBase
     {
-        private readonly Authentication _authenticator;
+        private readonly IServiceRepository _serviceRepository;
+        private readonly bool _authenticated;
 
-        public ServiceController(IHttpContextAccessor context)
-            => _authenticator = new Authentication(context);
+        public ServiceController(IHttpContextAccessor context, IServiceRepository serviceRepository)
+        {
+            _authenticated = new Authenticator(context).Authenticate();
+            _serviceRepository = serviceRepository;
+        }
 
 
-        [HttpGet("v1/services")]
+        [HttpGet]
         public async Task<IActionResult> GetAll()
         {
             try
             {
-                _authenticator.Authenticate();
-
-                await using var connection = new MySqlConnection(_authenticator.ConnectionString);
-                var result = await new ServiceRepository(connection).GetAllAsync();
-
+                if (!_authenticated)
+                    return BadRequest();
+                
+                var result = await _serviceRepository.GetAllAsync();
                 return result == null ? NotFound() : Ok(result);
             }
             catch (Exception ex)
@@ -34,16 +37,15 @@ namespace FluxusApi.Controllers
         }
 
 
-        [HttpGet("v1/services/{id}")]
+        [HttpGet("{id}")]
         public async Task<IActionResult> GetById(int id)
         {
             try
             {
-                _authenticator.Authenticate();
+                if (!_authenticated)
+                    return BadRequest();
                 
-                await using var connection = new MySqlConnection(_authenticator.ConnectionString);
-                var result = await new ServiceRepository(connection).GetAsync(id);
-
+                var result = await _serviceRepository.GetAsync(id);
                 return result == null ? NotFound() : Ok(result);
             }
             catch (Exception ex)
@@ -53,16 +55,15 @@ namespace FluxusApi.Controllers
         }
 
 
-        [HttpPost("v1/services")]
+        [HttpPost]
         public async Task<IActionResult> Post([FromBody] Service service)
         {
             try
             {
-                _authenticator.Authenticate();
+                if (!_authenticated)
+                    return BadRequest();
                 
-                await using var connection = new MySqlConnection(_authenticator.ConnectionString);
-                var id = await new ServiceRepository(connection).InsertAsync(service);
-
+                var id = await _serviceRepository.InsertAsync(service);
                 return Ok(id);
             }
             catch (Exception ex)
@@ -72,16 +73,15 @@ namespace FluxusApi.Controllers
         }
 
 
-        [HttpPut("v1/services")]
+        [HttpPut]
         public async Task<IActionResult> Put([FromBody] Service service)
         {
             try
             {
-                _authenticator.Authenticate();
+                if (!_authenticated)
+                    return BadRequest();
                 
-                await using var connection = new MySqlConnection(_authenticator.ConnectionString);
-                await new ServiceRepository(connection).UpdateAsync(service);
-
+                await _serviceRepository.UpdateAsync(service);
                 return Ok();
             }
             catch (Exception ex)
@@ -91,21 +91,21 @@ namespace FluxusApi.Controllers
         }
 
 
-        [HttpDelete("v1/services/{id}")]
+        [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {
             try
             {
-                var deleted = false;
-                _authenticator.Authenticate();
-
-                await using var connection = new MySqlConnection(_authenticator.ConnectionString);
-                var service = await new ServiceRepository(connection).GetAsync(id);
+                if (!_authenticated)
+                    return BadRequest();
                 
-                if (service.Id != 0)
-                    deleted = await new ServiceRepository(connection).DeleteAsync(service);
+                var service = await _serviceRepository.GetAsync(id);
 
-                return deleted == false ? NotFound() : Ok();
+                if (service.Id == 0)
+                    return NotFound();
+                
+                await _serviceRepository.DeleteAsync(service);
+                return Ok();
             }
             catch (Exception ex)
             {

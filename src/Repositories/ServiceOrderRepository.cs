@@ -1,17 +1,19 @@
 ﻿using MySql.Data.MySqlClient;
-using FluxusApi.Entities;
+using FluxusApi.Models;
+using FluxusApi.Models.Enums;
 using System.Collections;
 using Dapper;
+using FluxusApi.Repositories.Contracts;
 
 namespace FluxusApi.Repositories
 {
-    public class ServiceOrderRepository : Repository<ServiceOrder>
+    public class ServiceOrderRepository : Repository<ServiceOrder>, IServiceOrderRepository
     {
         public ServiceOrderRepository(MySqlConnection connection) : base(connection) { }
         
         public async Task<IEnumerable> GetOrdersFlowAsync()
         {
-            string query = @"
+            const string query = @"
                 SELECT 
                     A.Id,
                     CONCAT(
@@ -39,7 +41,7 @@ namespace FluxusApi.Repositories
         
         public async Task<IEnumerable> GetInvoicedAsync(int invoiceId)
         {
-            string query = @"
+            const string query = @"
                 SELECT 
                     os.Id, 
                     os.OrderDate, 
@@ -75,7 +77,7 @@ namespace FluxusApi.Repositories
         
         public async Task<IEnumerable>GetDoneToInvoiceAsync()
         {
-            string query = @"
+            const string query = @"
                 SELECT 
                     os.Id, 
                     os.OrderDate, 
@@ -110,7 +112,7 @@ namespace FluxusApi.Repositories
         
         public async Task<IEnumerable>GetFilteredAsync(string filter)
         {
-            string query = @"
+            const string query = @"
                 SELECT 
                     os.Id,
                     os.Status,
@@ -138,7 +140,7 @@ namespace FluxusApi.Repositories
                 ORDER BY 
                     OrderDate";
 
-            string[] filters = filter.Split(',');
+            var filters = filter.Split(',');
             var param = new
             {
                 professional = filters[0],
@@ -154,7 +156,7 @@ namespace FluxusApi.Repositories
 
         public async Task<IEnumerable> GetProfessionalAsync(int invoiceId)
         {
-            string query = @"
+            const string query = @"
                 SELECT DISTINCT 
                     t1.ProfessionalId, 
                     t2.Nameid 
@@ -174,7 +176,7 @@ namespace FluxusApi.Repositories
         
         public async Task<IEnumerable> GetOrderedCitiesAsync()
         {
-            string query = @"
+            const string query = @"
                 SELECT DISTINCT 
                     City 
                 FROM 
@@ -191,7 +193,7 @@ namespace FluxusApi.Repositories
             
             foreach (var item in orders)
             {
-                string updateSql = @"
+                const string query = @"
                     UPDATE
                         ServiceOrder
                     SET
@@ -200,7 +202,7 @@ namespace FluxusApi.Repositories
                     WHERE
                         Id = @item";
                 
-                await Connection.ExecuteAsync(updateSql, new { invoiceId, invoiced, item });
+                await Connection.ExecuteAsync(query, new { invoiceId, invoiced, item });
             }
 
             return 1;
@@ -208,16 +210,18 @@ namespace FluxusApi.Repositories
 
         public async Task<int> UpdateStatusAsync(int id, EnumStatus status)
         {
-            string changeDate = "";
+            var changeDate = "";
             switch (status)
             {
                 case EnumStatus.RECEBIDA: break;
                 case EnumStatus.PENDENTE: changeDate = ", PendingDate = @ActualDate "; break;
                 case EnumStatus.VISTORIADA: changeDate = ", SurveyDate = @ActualDate "; break;
                 case EnumStatus.CONCLUIDA: changeDate = ", DoneDate = @ActualDate "; break;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(status), status, null);
             }
 
-            string updateSQL = @$"
+            var query = @$"
                 UPDATE
                     ServiceOrder
                 SET
@@ -233,7 +237,7 @@ namespace FluxusApi.Repositories
                 Id = id
             };
 
-            return await Connection.ExecuteAsync(updateSQL, orderObj);
+            return await Connection.ExecuteAsync(query, orderObj);
         }
         
     }

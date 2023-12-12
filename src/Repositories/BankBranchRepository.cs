@@ -1,17 +1,18 @@
 ﻿using MySql.Data.MySqlClient;
-using FluxusApi.Entities;
+using FluxusApi.Models;
 using System.Collections;
 using Dapper;
+using FluxusApi.Repositories.Contracts;
 
 namespace FluxusApi.Repositories
 {
-    public class BankBranchRepository : Repository<BankBranch>
+    public class BankBranchRepository : Repository<BankBranch>, IBankBranchRepository
     {
         public BankBranchRepository(MySqlConnection connection) : base(connection) { }
         
         public async Task<IEnumerable> GetIndexAsync()
         {
-            string query = @"
+            const string query = @"
                 SELECT
                     Id, 
                     Name, 
@@ -28,7 +29,7 @@ namespace FluxusApi.Repositories
         
         public async Task<IEnumerable> GetContactsAsync(string id)
         {
-            string query = @"
+            const string query = @"
                 SELECT 
                     Id, 
                     Name, 

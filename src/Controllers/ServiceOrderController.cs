@@ -1,30 +1,34 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using FluxusApi.Entities;
-using FluxusApi.Repositories;
-using MySql.Data.MySqlClient;
+using FluxusApi.Models;
+using FluxusApi.Models.Enums;
+using FluxusApi.Repositories.Contracts;
 
 namespace FluxusApi.Controllers
 {
 
     [ApiController]
+    [Route("v1/service-orders")]
     public class ServiceOrderController : ControllerBase
     {
-        private readonly Authentication _authenticator;
+        private readonly IServiceOrderRepository _serviceOrderRepository;
+        private readonly bool _authenticated;
 
-        public ServiceOrderController(IHttpContextAccessor context)
-            => _authenticator = new Authentication(context);
+        public ServiceOrderController(IHttpContextAccessor context, IServiceOrderRepository serviceOrderRepository)
+        {
+            _authenticated = new Authenticator(context).Authenticate();
+            _serviceOrderRepository = serviceOrderRepository;
+        }
 
 
-        [HttpGet("v1/service-orders/flow")]
+        [HttpGet("flow")]
         public async Task<IActionResult> GetOrdersFlow()
         {
             try
             {
-                _authenticator.Authenticate();
+                if (!_authenticated)
+                    return BadRequest();
                 
-                await using var connection = new MySqlConnection(_authenticator.ConnectionString);
-                var result = await new ServiceOrderRepository(connection).GetOrdersFlowAsync();
-
+                var result = await _serviceOrderRepository.GetOrdersFlowAsync();
                 return result == null ? NotFound() : Ok(result);
             }
             catch (Exception ex)
@@ -34,16 +38,15 @@ namespace FluxusApi.Controllers
         }
 
 
-        [HttpGet("v1/service-orders/cities")]
+        [HttpGet("cities")]
         public async Task<IActionResult> GetOrderedCities()
         {
             try
             {
-                _authenticator.Authenticate();
-
-                await using var connection = new MySqlConnection(_authenticator.ConnectionString);
-                var result = await new ServiceOrderRepository(connection).GetOrderedCitiesAsync();
-
+                if (!_authenticated)
+                    return BadRequest();
+                
+                var result = await _serviceOrderRepository.GetOrderedCitiesAsync();
                 return result == null ? NotFound() : Ok(result);
             }
             catch (Exception ex)
@@ -53,16 +56,15 @@ namespace FluxusApi.Controllers
         }
 
 
-        [HttpGet("v1/service-orders/done-to-invoice")]
+        [HttpGet("done-to-invoice")]
         public async Task<IActionResult> GetDoneToInvoice() 
         {
             try
             {
-                _authenticator.Authenticate();
-
-                await using var connection = new MySqlConnection(_authenticator.ConnectionString);
-                var result = await new ServiceOrderRepository(connection).GetDoneToInvoiceAsync();
-
+                if (!_authenticated)
+                    return BadRequest();
+                
+                var result = await _serviceOrderRepository.GetDoneToInvoiceAsync();
                 return result == null ? NotFound() : Ok(result);
             }
             catch (Exception ex)
@@ -72,16 +74,15 @@ namespace FluxusApi.Controllers
         }
 
 
-        [HttpGet("v1/service-orders/filtered/{filter}")]
+        [HttpGet("filtered/{filter}")]
         public async Task<IActionResult> GetFiltered(string filter)
         {
             try
             {
-                _authenticator.Authenticate();
-
-                await using var connection = new MySqlConnection(_authenticator.ConnectionString);
-                var result = await new ServiceOrderRepository(connection).GetFilteredAsync(filter);
-
+                if (!_authenticated)
+                    return BadRequest();
+                
+                var result = await _serviceOrderRepository.GetFilteredAsync(filter);
                 return result == null ? NotFound() : Ok(result);
             }
             catch (Exception ex)
@@ -91,16 +92,15 @@ namespace FluxusApi.Controllers
         }
 
 
-        [HttpGet("v1/service-orders/invoiced/{invoiceId}")]
+        [HttpGet("invoiced/{invoiceId}")]
         public async Task<IActionResult> GetInvoiced(int invoiceId)
         {
             try
             {
-                _authenticator.Authenticate();
-
-                await using var connection = new MySqlConnection(_authenticator.ConnectionString);
-                var result = await new ServiceOrderRepository(connection).GetInvoicedAsync(invoiceId);
-
+                if (!_authenticated)
+                    return BadRequest();
+                
+                var result = await _serviceOrderRepository.GetInvoicedAsync(invoiceId);
                 return result == null ? NotFound() : Ok(result);
             }
             catch (Exception ex)
@@ -110,16 +110,15 @@ namespace FluxusApi.Controllers
         }
 
 
-        [HttpGet("v1/service-orders/professionals/{invoiceId}")]
+        [HttpGet("professionals/{invoiceId}")]
         public async Task<IActionResult> GetProfessionals(int invoiceId)
         {
             try
             {
-                _authenticator.Authenticate();
-
-                await using var connection = new MySqlConnection(_authenticator.ConnectionString);
-                var result = await new ServiceOrderRepository(connection).GetProfessionalAsync(invoiceId);
-
+                if (!_authenticated)
+                    return BadRequest();
+                
+                var result = await _serviceOrderRepository.GetProfessionalAsync(invoiceId);
                 return result == null ? NotFound() : Ok(result);
             }
             catch (Exception ex)
@@ -129,16 +128,15 @@ namespace FluxusApi.Controllers
         }
 
 
-        [HttpGet("v1/service-orders/{id}")]
+        [HttpGet("{id}")]
         public async Task<IActionResult> GetById(int id)
         {
             try
             {
-                _authenticator.Authenticate();
-
-                await using var connection = new MySqlConnection(_authenticator.ConnectionString);
-                var result = await new ServiceOrderRepository(connection).GetAsync(id);
-
+                if (!_authenticated)
+                    return BadRequest();
+                
+                var result = await _serviceOrderRepository.GetAsync(id);
                 return result == null ? NotFound() : Ok(result);
             }
             catch (Exception ex)
@@ -148,16 +146,15 @@ namespace FluxusApi.Controllers
         }
 
 
-        [HttpPost("v1/service-orders")]
+        [HttpPost]
         public async Task<IActionResult> Post([FromBody] ServiceOrder serviceOrder)
         {
             try
             {
-                _authenticator.Authenticate();
+                if (!_authenticated)
+                    return BadRequest();
                 
-                await using var connection = new MySqlConnection(_authenticator.ConnectionString);
-                var id = await new ServiceOrderRepository(connection).InsertAsync(serviceOrder);
-
+                var id = await _serviceOrderRepository.InsertAsync(serviceOrder);
                 return Ok(id);
             }
             catch (Exception ex)
@@ -167,16 +164,15 @@ namespace FluxusApi.Controllers
         }
 
 
-        [HttpPut("v1/service-orders")]
+        [HttpPut]
         public async Task<IActionResult> Put([FromBody] ServiceOrder serviceOrder)
         {
             try
             {
-                _authenticator.Authenticate();
-
-                await using var connection = new MySqlConnection(_authenticator.ConnectionString);
-                await new ServiceOrderRepository(connection).UpdateAsync(serviceOrder);
-
+                if (!_authenticated)
+                    return BadRequest();
+                
+                await _serviceOrderRepository.UpdateAsync(serviceOrder);
                 return Ok();
             }
             catch (Exception ex)
@@ -186,16 +182,15 @@ namespace FluxusApi.Controllers
         }
         
         
-        [HttpPut("v1/service-orders/update-invoice/{invoiceId}")]
+        [HttpPut("update-invoice/{invoiceId}")]
         public async Task<IActionResult> UpdateInvoiceId(int invoiceId, [FromBody]List<int> orders)
         {
             try
             {
-                _authenticator.Authenticate();
-
-                await using var connection = new MySqlConnection(_authenticator.ConnectionString);
-                await new ServiceOrderRepository(connection).UpdateInvoiceIdAsync(invoiceId, orders);
-
+                if (!_authenticated)
+                    return BadRequest();
+                
+                await _serviceOrderRepository.UpdateInvoiceIdAsync(invoiceId, orders);
                 return Ok();
             }
             catch (Exception ex)
@@ -205,16 +200,15 @@ namespace FluxusApi.Controllers
         }
 
 
-        [HttpPut("v1/service-orders/update-status/{id},{status}")]
+        [HttpPut("update-status/{id},{status}")]
         public async Task<IActionResult> UpdateStatus(int id, EnumStatus status)
         {
             try
             {
-                _authenticator.Authenticate();
-
-                await using var connection = new MySqlConnection(_authenticator.ConnectionString);
-                await new ServiceOrderRepository(connection).UpdateStatusAsync(id, status);
-
+                if (!_authenticated)
+                    return BadRequest();
+                
+                await _serviceOrderRepository.UpdateStatusAsync(id, status);
                 return Ok();
             }
             catch (Exception ex)
@@ -224,21 +218,21 @@ namespace FluxusApi.Controllers
         }
 
 
-        [HttpDelete("v1/service-orders/{id}")]
+        [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {
             try
             {
-                var deleted = false;
-                _authenticator.Authenticate();
+                if (!_authenticated)
+                    return BadRequest();
+                
+                var serviceOrder = await _serviceOrderRepository.GetAsync(id);
 
-                await using var connection = new MySqlConnection(_authenticator.ConnectionString);
-                var serviceOrder = await new ServiceOrderRepository(connection).GetAsync(id);
-
-                if (serviceOrder.Id != 0)
-                    deleted = await new ServiceOrderRepository(connection).DeleteAsync(serviceOrder);
-
-                return deleted == false ? NotFound() : Ok();
+                if (serviceOrder.Id == 0)
+                    return NotFound();
+                
+                await _serviceOrderRepository.DeleteAsync(serviceOrder);
+                return Ok();
             }
             catch (Exception ex)
             {

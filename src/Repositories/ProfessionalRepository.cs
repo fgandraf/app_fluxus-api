@@ -1,17 +1,18 @@
 ﻿using MySql.Data.MySqlClient;
-using FluxusApi.Entities;
+using FluxusApi.Models;
 using System.Collections;
 using Dapper;
+using FluxusApi.Repositories.Contracts;
 
 namespace FluxusApi.Repositories
 {
-    public class ProfessionalRepository : Repository<Professional>
+    public class ProfessionalRepository : Repository<Professional>, IProfessionalRepository
     {
         public ProfessionalRepository(MySqlConnection connection) : base(connection) { }
         
         public async Task<IEnumerable> GetIndexAsync()
         {
-            string query = @"
+            const string query = @"
                 SELECT 
                     Id, 
                     Tag, 
@@ -29,7 +30,7 @@ namespace FluxusApi.Repositories
         
         public async Task<IEnumerable> GetTagNameidAsync()
         {
-            string query = @"
+            const string query = @"
                 SELECT 
                     Id,
                     Tag, 
@@ -51,7 +52,7 @@ namespace FluxusApi.Repositories
         
         public async Task<IEnumerable> GetUserInfoByAsync(string userName)
         {
-            string query = @"
+            const string query = @"
                 SELECT 
                     Id, 
                     Tag,

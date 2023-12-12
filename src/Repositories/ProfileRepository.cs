@@ -1,17 +1,18 @@
 ﻿using MySql.Data.MySqlClient;
-using FluxusApi.Entities;
+using FluxusApi.Models;
 using System.Collections;
 using Dapper;
+using FluxusApi.Repositories.Contracts;
 
 namespace FluxusApi.Repositories
 {
-    public class ProfileRepository : Repository<Profile>
+    public class ProfileRepository : Repository<Profile>, IProfileRepository
     {
         public ProfileRepository(MySqlConnection connection) : base(connection) { }
         
         public async Task<byte[]>  GetLogoAsync()
         {
-            string query = @"SELECT Logo FROM Profile WHERE Id = 1";
+            const string query = @"SELECT Logo FROM Profile WHERE Id = 1";
 
             var profile = await Connection.QueryFirstAsync(query);
             return (byte[])(profile.Logo);
@@ -31,7 +32,7 @@ namespace FluxusApi.Repositories
         
         public async Task<IEnumerable> GetToPrintAsync()
         {
-            string query = @"
+            const string query = @"
                 SELECT 
                     Cnpj, 
                     CompanyName, 
@@ -48,7 +49,7 @@ namespace FluxusApi.Repositories
         
         public async Task<string> GetTradingNameAsync()
         {
-            string query = @"
+            const string query = @"
                 SELECT 
                     TradingName 
                 FROM 

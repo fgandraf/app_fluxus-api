@@ -1,6 +1,6 @@
 ﻿using Dapper.Contrib.Extensions;
 
-namespace FluxusApi.Entities
+namespace FluxusApi.Models
 {
     [Table("Profile")]
     public class Profile

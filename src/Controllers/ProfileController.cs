@@ -1,30 +1,33 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using FluxusApi.Entities;
-using FluxusApi.Repositories;
-using MySql.Data.MySqlClient;
+using FluxusApi.Models;
+using FluxusApi.Repositories.Contracts;
 
 namespace FluxusApi.Controllers
 {
 
     [ApiController]
+    [Route("v1/profile")]
     public class ProfileController : ControllerBase
     {
-        private readonly Authentication _authenticator;
+        private readonly IProfileRepository _profileRepository;
+        private readonly bool _authenticated;
 
-        public ProfileController(IHttpContextAccessor context)
-            => _authenticator = new Authentication(context);
+        public ProfileController(IHttpContextAccessor context, IProfileRepository profileRepository)
+        {
+            _authenticated = new Authenticator(context).Authenticate();
+            _profileRepository = profileRepository;
+        }
 
 
-        [HttpGet("v1/profile")]
+        [HttpGet]
         public async Task<IActionResult> GetAll()
         {
             try
             {
-                _authenticator.Authenticate();
+                if (!_authenticated)
+                    return BadRequest();
                 
-                await using var connection = new MySqlConnection(_authenticator.ConnectionString);
-                var result = await new ProfileRepository(connection).GetAsync(1);
-
+                var result = await _profileRepository.GetAsync(1);
                 return result == null ? NotFound() : Ok(result);
             }
             catch (Exception ex)
@@ -34,16 +37,15 @@ namespace FluxusApi.Controllers
         }
 
 
-        [HttpGet("v1/profile/logo")]
+        [HttpGet("logo")]
         public async Task<IActionResult> GetLogo()
         {
             try
             {
-                _authenticator.Authenticate();
+                if (!_authenticated)
+                    return BadRequest();
                 
-                await using var connection = new MySqlConnection(_authenticator.ConnectionString);
-                var result = await new ProfileRepository(connection).GetLogoAsync();
-
+                var result = await _profileRepository.GetLogoAsync();
                 return result == null ? NotFound() : Ok(result);
             }
             catch (Exception ex)
@@ -53,16 +55,15 @@ namespace FluxusApi.Controllers
         }
 
 
-        [HttpGet("v1/profile/to-print")]
+        [HttpGet("to-print")]
         public async Task<IActionResult> GetToPrint()
         {
             try
             {
-                _authenticator.Authenticate();
-
-                await using var connection = new MySqlConnection(_authenticator.ConnectionString);
-                var result = await new ProfileRepository(connection).GetToPrintAsync();
-
+                if (!_authenticated)
+                    return BadRequest();
+                
+                var result = await _profileRepository.GetToPrintAsync();
                 return result == null ? NotFound() : Ok(result);
             }
             catch (Exception ex)
@@ -72,16 +73,15 @@ namespace FluxusApi.Controllers
         }
 
 
-        [HttpGet("v1/profile/trading-name")]
+        [HttpGet("trading-name")]
         public async Task<IActionResult> GetTradingName()
         {
             try
             {
-                _authenticator.Authenticate();
+                if (!_authenticated)
+                    return BadRequest();
                 
-                await using var connection = new MySqlConnection(_authenticator.ConnectionString);
-                var result = await new ProfileRepository(connection).GetTradingNameAsync();
-                
+                var result = await _profileRepository.GetTradingNameAsync();
                 return result == null ? NotFound() : Ok(result);
             }
             catch (Exception ex)
@@ -91,16 +91,15 @@ namespace FluxusApi.Controllers
         }
 
 
-        [HttpPost("v1/profile")]
+        [HttpPost]
         public async Task<IActionResult> Post([FromBody] Profile profile)
         {
             try
             {
-                _authenticator.Authenticate();
+                if (!_authenticated)
+                    return BadRequest();
                 
-                await using var connection = new MySqlConnection(_authenticator.ConnectionString);
-                var id = await new ProfileRepository(connection).InsertAsync(profile);
-                
+                var id = await _profileRepository.InsertAsync(profile);
                 return Ok(id);
             }
             catch (Exception ex)
@@ -110,16 +109,15 @@ namespace FluxusApi.Controllers
         }
 
 
-        [HttpPut("v1/profile/logo")]
+        [HttpPut("logo")]
         public async Task<IActionResult> Put([FromBody] byte[] logo)
         {
             try
             {
-                _authenticator.Authenticate();
+                if (!_authenticated)
+                    return BadRequest();
                 
-                await using var connection = new MySqlConnection(_authenticator.ConnectionString);
-                await new ProfileRepository(connection).UpdateLogoAsync(logo);
-                
+                await _profileRepository.UpdateLogoAsync(logo);
                 return Ok();
             }
             catch (Exception ex)
@@ -129,16 +127,15 @@ namespace FluxusApi.Controllers
         }
 
 
-        [HttpPut("v1/profile")]
+        [HttpPut]
         public async Task<IActionResult> Put([FromBody] Profile profile)
         {
             try
             {
-                _authenticator.Authenticate();
+                if (!_authenticated)
+                    return BadRequest();
                 
-                await using var connection = new MySqlConnection(_authenticator.ConnectionString);
-                await new ProfileRepository(connection).UpdateAsync(profile);
-                
+                await _profileRepository.UpdateAsync(profile);
                 return Ok();
             }
             catch (Exception ex)

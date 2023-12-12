@@ -1,30 +1,33 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using FluxusApi.Entities;
-using FluxusApi.Repositories;
-using MySql.Data.MySqlClient;
+using FluxusApi.Models;
+using FluxusApi.Repositories.Contracts;
 
 namespace FluxusApi.Controllers
 {
     
     [ApiController]
+    [Route("v1/professionals")]
     public class ProfessionalController : ControllerBase
     {
-        private readonly Authentication _authenticator;
+        private readonly IProfessionalRepository _professionalRepository;
+        private readonly bool _authenticated;
 
-        public ProfessionalController(IHttpContextAccessor context)
-            => _authenticator = new Authentication(context);
+        public ProfessionalController(IHttpContextAccessor context, IProfessionalRepository professionalRepository)
+        {
+            _authenticated = new Authenticator(context).Authenticate();
+            _professionalRepository = professionalRepository;
+        }
 
 
-        [HttpGet("v1/professionals")]
+        [HttpGet]
         public async Task<IActionResult> GetAll()
         {
             try
             {
-                _authenticator.Authenticate();
+                if (!_authenticated)
+                    return BadRequest();
                 
-                await using var connection = new MySqlConnection(_authenticator.ConnectionString);
-                var result = await new ProfessionalRepository(connection).GetIndexAsync();
-
+                var result = await _professionalRepository.GetIndexAsync();
                 return result == null ? NotFound() : Ok(result);
             }
             catch (Exception ex)
@@ -34,16 +37,15 @@ namespace FluxusApi.Controllers
         }
 
 
-        [HttpGet("v1/professionals/tag-name-id")]
+        [HttpGet("tag-name-id")]
         public async Task<IActionResult> GetTagNameid()
         {
             try
             {
-                _authenticator.Authenticate();
+                if (!_authenticated)
+                    return BadRequest();
                 
-                await using var connection = new MySqlConnection(_authenticator.ConnectionString);
-                var result = await new ProfessionalRepository(connection).GetTagNameidAsync();
-
+                var result = await _professionalRepository.GetTagNameidAsync();
                 return result == null ? NotFound() : Ok(result);
             }
             catch (Exception ex)
@@ -53,16 +55,15 @@ namespace FluxusApi.Controllers
         }
 
 
-        [HttpGet("v1/professionals/user-info/{userName}")]
+        [HttpGet("user-info/{userName}")]
         public async Task<IActionResult> GetUserInfo(string userName)
         {
             try
             {
-                _authenticator.Authenticate();
+                if (!_authenticated)
+                    return BadRequest();
                 
-                await using var connection = new MySqlConnection(_authenticator.ConnectionString);
-                var result = await new ProfessionalRepository(connection).GetUserInfoByAsync(userName);
-
+                var result = await _professionalRepository.GetUserInfoByAsync(userName);
                 return result == null ? NotFound() : Ok(result);
             }
             catch (Exception ex)
@@ -72,16 +73,15 @@ namespace FluxusApi.Controllers
         }
 
 
-        [HttpGet("v1/professionals/{id}")]
+        [HttpGet("{id}")]
         public async Task<IActionResult> Get(int id)
         {
             try
             {
-                _authenticator.Authenticate();
+                if (!_authenticated)
+                    return BadRequest();
                 
-                await using var connection = new MySqlConnection(_authenticator.ConnectionString);
-                var result = await new ProfessionalRepository(connection).GetAsync(id);
-
+                var result = await _professionalRepository.GetAsync(id);
                 return result == null ? NotFound() : Ok(result);
             }
             catch (Exception ex)
@@ -91,16 +91,16 @@ namespace FluxusApi.Controllers
         }
 
 
-        [HttpPost("v1/professionals")]
+        [HttpPost]
         public async Task<IActionResult> Post([FromBody] Professional professional)
         {
             try
             {
-                _authenticator.Authenticate();
                 
-                await using var connection = new MySqlConnection(_authenticator.ConnectionString);
-                var id = await new ProfessionalRepository(connection).InsertAsync(professional);
-
+                if (!_authenticated)
+                    return BadRequest();
+                
+                var id = await _professionalRepository.InsertAsync(professional);
                 return Ok(id);
             }
             catch (Exception ex)
@@ -110,16 +110,15 @@ namespace FluxusApi.Controllers
         }
 
 
-        [HttpPut("v1/professionals")]
+        [HttpPut]
         public async Task<IActionResult> Put([FromBody] Professional professional)
         {
             try
             {
-                _authenticator.Authenticate();
+                if (!_authenticated)
+                    return BadRequest();
                 
-                await using var connection = new MySqlConnection(_authenticator.ConnectionString);
-                await new ProfessionalRepository(connection).UpdateAsync(professional);
-
+                await _professionalRepository.UpdateAsync(professional);
                 return Ok();
             }
             catch (Exception ex)
@@ -129,22 +128,21 @@ namespace FluxusApi.Controllers
         }
 
 
-        [HttpDelete("v1/professionals/{id}")]
+        [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {
             try
             {
-                var deleted = false;
-                _authenticator.Authenticate();
+                if (!_authenticated)
+                    return BadRequest();
                 
-                await using var connection = new MySqlConnection(_authenticator.ConnectionString);
-                var professional = await new ProfessionalRepository(connection).GetAsync(id);
-                
-                if (professional.Id != 0)
-                    deleted = await new ProfessionalRepository(connection).DeleteAsync(professional);
-                
+                var professional = await _professionalRepository.GetAsync(id);
 
-                return deleted == false ? NotFound() : Ok();
+                if (professional.Id == 0)
+                    return NotFound();
+                
+                await _professionalRepository.DeleteAsync(professional);
+                return Ok();
             }
             catch (Exception ex)
             {

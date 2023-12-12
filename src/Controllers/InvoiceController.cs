@@ -1,30 +1,33 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using FluxusApi.Repositories;
-using FluxusApi.Entities;
-using MySql.Data.MySqlClient;
+using FluxusApi.Models;
+using FluxusApi.Repositories.Contracts;
 
 namespace FluxusApi.Controllers
 {
 
     [ApiController]
+    [Route("v1/invoices")]
     public class InvoiceController : ControllerBase
     {
-        private readonly Authentication _authenticator;
+        private readonly IInvoiceRepository _invoiceRepository;
+        private readonly bool _authenticated;
 
-        public InvoiceController(IHttpContextAccessor context)
-            => _authenticator = new Authentication(context);
+        public InvoiceController(IHttpContextAccessor context, IInvoiceRepository invoiceRepository)
+        {
+            _authenticated = new Authenticator(context).Authenticate();
+            _invoiceRepository = invoiceRepository;
+        }
 
 
-        [HttpGet("v1/invoices")]
+        [HttpGet]
         public async Task<IActionResult> GetAll()
         {
             try
             {
-                _authenticator.Authenticate();
-
-                await using var connection = new MySqlConnection(_authenticator.ConnectionString);
-                var result = await new InvoiceRepository(connection).GetAllAsync();
+                if (!_authenticated)
+                    return BadRequest();
                 
+                var result = await _invoiceRepository.GetAllAsync();
                 return result == null ? NotFound() : Ok(((List<Invoice>)result).OrderBy(x => x.IssueDate));
             }
             catch (Exception ex)
@@ -34,16 +37,15 @@ namespace FluxusApi.Controllers
         }
 
 
-        [HttpGet("v1/invoices/description/{id}")]
+        [HttpGet("description/{id}")]
         public async Task<IActionResult> GetDescription(int id)
         {
             try
             {
-                _authenticator.Authenticate();
+                if (!_authenticated)
+                    return BadRequest();
                 
-                await using var connection = new MySqlConnection(_authenticator.ConnectionString);
-                var result = await new InvoiceRepository(connection).GetDescriptionAsync(id);
-
+                var result = await _invoiceRepository.GetDescriptionAsync(id);
                 return result == null ? NotFound() : Ok(result);
             }
             catch (Exception ex)
@@ -53,16 +55,15 @@ namespace FluxusApi.Controllers
         }
 
 
-        [HttpPost("v1/invoices")]
+        [HttpPost]
         public async Task<IActionResult> Post([FromBody] Invoice invoice)
         {
             try
             {
-                _authenticator.Authenticate();
-
-                await using var connection = new MySqlConnection(_authenticator.ConnectionString);
-                var id = await new InvoiceRepository(connection).InsertAsync(invoice);
-
+                if (!_authenticated)
+                    return BadRequest();
+                
+                var id = await _invoiceRepository.InsertAsync(invoice);
                 return Ok(id);
             }
             catch (Exception ex)
@@ -72,16 +73,15 @@ namespace FluxusApi.Controllers
         }
 
 
-        [HttpPut("v1/invoices/totals")]
+        [HttpPut("totals")]
         public async Task<IActionResult> PutTotals([FromBody] Invoice invoice)
         {
             try
             {
-                _authenticator.Authenticate();
+                if (!_authenticated)
+                    return BadRequest();
                 
-                await using var connection = new MySqlConnection(_authenticator.ConnectionString);
-                await new InvoiceRepository(connection).UpdateTotalsAsync(invoice);
-
+                await _invoiceRepository.UpdateTotalsAsync(invoice);
                 return Ok();
             }
             catch (Exception ex)
@@ -91,22 +91,21 @@ namespace FluxusApi.Controllers
         }
 
 
-        [HttpDelete("v1/invoices/{id}")]
+        [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {
             try
             {
-                var deleted = false;
-                _authenticator.Authenticate();
+                if (!_authenticated)
+                    return BadRequest();
                 
-                await using var connection = new MySqlConnection(_authenticator.ConnectionString);
-                var invoice = await new InvoiceRepository(connection).GetAsync(id);
+                var invoice = await _invoiceRepository.GetAsync(id);
 
-                if (invoice.Id != 0)
-                    deleted = await new InvoiceRepository(connection).DeleteAsync(invoice);
+                if (invoice.Id == 0)
+                    return NotFound();
                 
-
-                return deleted == false ? NotFound() : Ok();
+                await _invoiceRepository.DeleteAsync(invoice);
+                return Ok();
             }
             catch (Exception ex)
             {

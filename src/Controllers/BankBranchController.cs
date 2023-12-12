@@ -1,30 +1,32 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using FluxusApi.Repositories;
-using FluxusApi.Entities;
-using MySql.Data.MySqlClient;
+using FluxusApi.Models;
+using FluxusApi.Repositories.Contracts;
 
 namespace FluxusApi.Controllers
 {
-
     [ApiController]
+    [Route("v1/bank-branches")]
     public class BankBranchController : ControllerBase
     {
-        private readonly Authentication _authenticator;
+        private readonly IBankBranchRepository _bankBranchRepository;
+        private readonly bool _authenticated;
 
-        public BankBranchController(IHttpContextAccessor context)
-            => _authenticator = new Authentication(context);
+        public BankBranchController(IHttpContextAccessor context, IBankBranchRepository bankBranchRepository)
+        {
+            _authenticated = new Authenticator(context).Authenticate();
+            _bankBranchRepository = bankBranchRepository;
+        }
 
 
-        [HttpGet("v1/bank-branches")]
+        [HttpGet]
         public async Task<IActionResult> GetAll()
         {
             try
             {
-                _authenticator.Authenticate();
-                
-                await using var connection = new MySqlConnection(_authenticator.ConnectionString);
-                var result = await new BankBranchRepository(connection).GetIndexAsync();
+                if (!_authenticated)
+                    return BadRequest();
 
+                var result = await _bankBranchRepository.GetIndexAsync();
                 return result == null ? NotFound() : Ok(result);
             }
             catch (Exception ex)
@@ -34,16 +36,15 @@ namespace FluxusApi.Controllers
         }
 
 
-        [HttpGet("v1/bank-branches/{id}")]
+        [HttpGet("{id}")]
         public async Task<IActionResult> GetById(string id)
         {
             try
             {
-                _authenticator.Authenticate();
+                if (!_authenticated)
+                    return BadRequest();
                 
-                await using var connection = new MySqlConnection(_authenticator.ConnectionString);
-                var result = await new BankBranchRepository(connection).GetAsync(id);
-
+                var result = await _bankBranchRepository.GetAsync(id);
                 return result == null ? NotFound() : Ok(result);
             }
             catch (Exception ex)
@@ -53,16 +54,15 @@ namespace FluxusApi.Controllers
         }
 
 
-        [HttpGet("v1/bank-branches/contacts/{id}")]
+        [HttpGet("contacts/{id}")]
         public async Task<IActionResult> GetContactsById(string id)
         {
             try
             {
-                _authenticator.Authenticate();
+                if (!_authenticated)
+                    return BadRequest();
                 
-                await using var connection = new MySqlConnection(_authenticator.ConnectionString);
-                var result = await new BankBranchRepository(connection).GetContactsAsync(id);
-
+                var result = await _bankBranchRepository.GetContactsAsync(id);
                 return result == null ? NotFound() : Ok(result);
             }
             catch (Exception ex)
@@ -72,16 +72,15 @@ namespace FluxusApi.Controllers
         }
 
 
-        [HttpPost("v1/bank-branches")]
+        [HttpPost]
         public async Task<IActionResult> Post([FromBody] BankBranch bankBranch)
         {
             try
             {
-                _authenticator.Authenticate();
+                if (!_authenticated)
+                    return BadRequest();
                 
-                await using var connection = new MySqlConnection(_authenticator.ConnectionString);
-                await new BankBranchRepository(connection).InsertAsync(bankBranch);
-                
+                await _bankBranchRepository.InsertAsync(bankBranch);
                 return Ok(bankBranch.Id);
             }
             catch (Exception ex)
@@ -91,47 +90,44 @@ namespace FluxusApi.Controllers
         }
 
 
-        [HttpPut("v1/bank-branches")]
+        [HttpPut]
         public async Task<IActionResult> Put([FromBody] BankBranch bankBranch)
         {
             try
             {
-                _authenticator.Authenticate();
+                if (!_authenticated)
+                    return BadRequest();
                 
-                await using var connection = new MySqlConnection(_authenticator.ConnectionString);
-                await new BankBranchRepository(connection).UpdateAsync(bankBranch);
-
+                await _bankBranchRepository.UpdateAsync(bankBranch);
                 return Ok();
             }
             catch (Exception ex)
             {
                 return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
-            }            
+            }
         }
 
 
-        [HttpDelete("v1/bank-branches/{id}")]
+        [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(string id)
         {
             try
             {
-                _authenticator.Authenticate();
+                if (!_authenticated)
+                    return BadRequest();
                 
-                var deleted = false;
-                await using var connection = new MySqlConnection(_authenticator.ConnectionString);
-                var bankBranch = await new BankBranchRepository(connection).GetAsync(id);
+                var bankBranch = await _bankBranchRepository.GetAsync(id);
 
-                if (bankBranch.Id != null)
-                    deleted = await new BankBranchRepository(connection).DeleteAsync(bankBranch);
+                if (bankBranch.Id == null)
+                    return NotFound();
 
-                return deleted == false ? NotFound() : Ok();
+                await _bankBranchRepository.DeleteAsync(bankBranch);
+                return Ok();
             }
             catch (Exception ex)
             {
                 return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
             }
         }
-
     }
-
 }

@@ -1,17 +1,18 @@
+using System.Collections;
 using Dapper;
 using FluxusApi.Models;
 using FluxusApi.Repositories.Contracts;
 using MySql.Data.MySqlClient;
 
-namespace FluxusApi.Repositories;
-
-public class UserRepository: Repository<User>, IUserRepository
+namespace FluxusApi.Repositories
 {
-    protected UserRepository(MySqlConnection connection) : base(connection) { }
-    
-    public async Task<User> GetByUserNameAsync(string userName)
+    public class UserRepository: Repository<User>, IUserRepository
     {
-        const string query = @"
+        public UserRepository(MySqlConnection connection) : base(connection) { }
+    
+        public async Task<IEnumerable> GetByUserNameAsync(string userName)
+        {
+            const string query = @"
                 SELECT 
                     * 
                 FROM 
@@ -19,6 +20,8 @@ public class UserRepository: Repository<User>, IUserRepository
                 WHERE 
                     UserName = @userName";
 
-        return await Connection.QueryFirstAsync(query, new { userName });
+            return await Connection.QueryFirstAsync(query, new { userName });
+        }
+        
     }
 }

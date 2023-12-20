@@ -2,13 +2,11 @@ using FluxusApi.Models;
 using FluxusApi.Repositories.Contracts;
 using Microsoft.AspNetCore.Mvc;
 
-
 namespace FluxusApi.Controllers
 {
     
     [ApiController]
     [Route("v1/users")]
-
     public class UserController : ControllerBase
     {
         private readonly IUserRepository _userRepository;
@@ -30,18 +28,7 @@ namespace FluxusApi.Controllers
                     return BadRequest();
                 
                 var result = await _userRepository.GetByUserNameAsync(userName);
-
-                var usuario = new User();
-                usuario.Id = 1;
-                usuario.ProfessionalId = 1;
-                usuario.LegalResponsible = true;
-                usuario.TechnicianResponsible = true;
-                usuario.UserActive = true;
-                usuario.UserName = "fgandraf";
-                usuario.UserPassword = "123456";
-            
-                //return result == null ? NotFound() : Ok(usuario);
-                return Ok(usuario);
+                return result == null ? NotFound() : Ok(result);
             }
             catch (Exception ex)
             {

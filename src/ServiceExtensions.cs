@@ -18,6 +18,7 @@ public static class ServiceExtensions
         services.AddScoped<IProfileRepository, ProfileRepository>();
         services.AddScoped<IServiceOrderRepository, ServiceOrderRepository>();
         services.AddScoped<IServiceRepository, ServiceRepository>();
+        services.AddScoped<IUserRepository, UserRepository>();
 
         return services;
     }

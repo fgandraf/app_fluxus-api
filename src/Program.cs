@@ -13,6 +13,7 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(c => { c.OperationFilter<AddCustomHeader>(); });
 
 // Dependency Injection services configuration
+builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 builder.Services.AddDatabaseServices(builder.Configuration);
 builder.Services.AddRepositoryServices();
 

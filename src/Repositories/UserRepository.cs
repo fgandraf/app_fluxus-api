@@ -22,6 +22,18 @@ namespace FluxusApi.Repositories
 
             return await Connection.QueryFirstAsync(query, new { userName });
         }
-        
+
+        public async Task<IEnumerable> GetByProfessionalIdAsync(int professionalId)
+        {
+            const string query = @"
+                SELECT 
+                    * 
+                FROM 
+                    User 
+                WHERE 
+                    ProfessionalId = @professionalId";
+
+            return await Connection.QueryFirstAsync(query, new { professionalId });
+        }
     }
 }

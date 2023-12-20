@@ -54,25 +54,7 @@ namespace FluxusApi.Controllers
             }
         }
 
-
-        [HttpGet("user-info/{userName}")]
-        public async Task<IActionResult> GetUserInfo(string userName)
-        {
-            try
-            {
-                if (!_authenticated)
-                    return BadRequest();
-                
-                var result = await _professionalRepository.GetUserInfoByAsync(userName);
-                return result == null ? NotFound() : Ok(result);
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
-            }
-        }
-
-
+        
         [HttpGet("{id}")]
         public async Task<IActionResult> Get(int id)
         {

@@ -82,15 +82,24 @@ CREATE TABLE `Professional` (
 	`Phone1` VARCHAR(15) DEFAULT NULL,
 	`Phone2` VARCHAR(15) DEFAULT NULL,
 	`Email` VARCHAR(50) DEFAULT NULL,
+	
+	PRIMARY KEY (`Id`)
+);
+
+DROP TABLE IF EXISTS `User`;
+CREATE TABLE `User` (
+	`Id` INT NOT NULL AUTO_INCREMENT,
+	`ProfessionalId` INT NOT NULL,
 	`TechnicianResponsible` BIT DEFAULT 0,
 	`LegalResponsible` BIT DEFAULT 0,
 	`UserActive` BIT DEFAULT 0,
 	`UserName` VARCHAR(40) DEFAULT NULL,
 	`UserPassword` VARCHAR(15) DEFAULT NULL,
 	
-	PRIMARY KEY (`Id`)
-);
+	PRIMARY KEY (`Id`),
 
+	CONSTRAINT FK_ProfessionalUser FOREIGN KEY (`ProfessionalId`) REFERENCES `Professional`(`Id`)
+);
 
 DROP TABLE IF EXISTS `Invoice`;
 CREATE TABLE `Invoice` (

@@ -9,5 +9,6 @@ public interface IUserRepository
     Task<bool> UpdateAsync(User model);
     Task<bool> DeleteAsync(User model);
     Task<IEnumerable> GetByUserNameAsync(string userName);
+    Task<IEnumerable> GetByProfessionalIdAsync(int professionalId);
     Task<User> GetAsync(int id);
 }

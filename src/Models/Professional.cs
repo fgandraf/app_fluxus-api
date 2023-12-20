@@ -16,10 +16,5 @@ namespace FluxusApi.Models
         public string Phone1 { get; set; }
         public string Phone2 { get; set; }
         public string Email { get; set; }
-        public bool TechnicianResponsible { get; set; }
-        public bool LegalResponsible { get; set; }
-        public bool UserActive { get; set; }
-        public string UserName { get; set; }
-        public string UserPassword { get; set; }
     }
 }

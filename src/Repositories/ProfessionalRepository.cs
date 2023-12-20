@@ -18,8 +18,7 @@ namespace FluxusApi.Repositories
                     Tag, 
                     Name, 
                     Profession, 
-                    Phone1, 
-                    UserActive
+                    Phone1
                 FROM 
                     Professional 
                 ORDER BY 
@@ -49,25 +48,7 @@ namespace FluxusApi.Repositories
 
             return await Connection.QueryAsync(query);
         }
-        
-        public async Task<IEnumerable> GetUserInfoByAsync(string userName)
-        {
-            const string query = @"
-                SELECT 
-                    Id, 
-                    Tag,
-                    TechnicianResponsible, 
-                    LegalResponsible, 
-                    UserName, 
-                    UserPassword, 
-                    UserActive 
-                FROM 
-                    Professional 
-                WHERE 
-                    UserName = @userName";
 
-            return await Connection.QueryFirstAsync(query, new { userName });
-        }
     }
 
 }

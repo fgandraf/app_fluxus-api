@@ -20,7 +20,7 @@ namespace FluxusApi.Controllers
     
     
         [HttpGet("username/{userName}")]
-        public async Task<IActionResult> GetUserInfo(string userName)
+        public async Task<IActionResult> GetByUsername(string userName)
         {
             try
             {
@@ -35,7 +35,23 @@ namespace FluxusApi.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
             }
         }
-    
+        
+        [HttpGet("professional/{professionalId}")]
+        public async Task<IActionResult> GetByProfessionalId(int professionalId)
+        {
+            try
+            {
+                if (!_authenticated)
+                    return BadRequest();
+                
+                var result = await _userRepository.GetByProfessionalIdAsync(professionalId);
+                return result == null ? NotFound() : Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+            }
+        }
     
         [HttpPost]
         public async Task<IActionResult> Post([FromBody] User user)

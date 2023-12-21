@@ -2,7 +2,7 @@ using FluxusApi.Repositories;
 using FluxusApi.Repositories.Contracts;
 using MySql.Data.MySqlClient;
 
-namespace FluxusApi;
+namespace FluxusApi.Extensions;
 
 public static class ServiceExtensions
 {

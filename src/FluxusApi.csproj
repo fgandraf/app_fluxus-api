@@ -13,36 +13,11 @@
   <ItemGroup>
     <PackageReference Include="Dapper" Version="2.1.15" />
     <PackageReference Include="Dapper.Contrib" Version="2.0.78" />
+    <PackageReference Include="Microsoft.AspNetCore.Authentication" Version="2.2.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="7.0.0" />
     <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="7.0.10" />
     <PackageReference Include="MySql.Data" Version="8.2.0" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.5.0" />
   </ItemGroup>
-
-  <ItemGroup>
-    <None Remove="Properties\launchSettingsCOPIA.json" />
-    <None Remove="Entities\Records\**" />
-    <None Remove="Entities\ViewModels\**" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Compile Remove="Entities\Records\ServiceOrderOpen.cs" />
-    <Compile Remove="Entities\Records\**" />
-    <Compile Remove="Entities\ViewModels\ServiceOrderController.cs" />
-    <Compile Remove="Entities\ViewModels\ServiceOrderViewModel.cs" />
-    <Compile Remove="Entities\ViewModels\**" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <EmbeddedResource Remove="Entities\Records\**" />
-    <EmbeddedResource Remove="Entities\ViewModels\**" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Content Remove="Entities\Records\**" />
-    <Content Remove="Entities\ViewModels\**" />
-  </ItemGroup>
-
-
-
-
+  
 </Project>

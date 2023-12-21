@@ -1,14 +1,13 @@
 ﻿using Dapper.Contrib.Extensions;
 
-namespace FluxusApi.Models
+namespace FluxusApi.Models;
+
+[Table("Service")]
+public class Service
 {
-    [Table("Service")]
-    public class Service
-    {
-        public long Id { get; set; }
-        public string Tag { get; set; }
-        public string Description { get; set; }
-        public decimal ServiceAmount { get; set; }
-        public decimal MileageAllowance { get; set; }
-    }
+    public long Id { get; set; }
+    public string Tag { get; set; }
+    public string Description { get; set; }
+    public decimal ServiceAmount { get; set; }
+    public decimal MileageAllowance { get; set; }
 }

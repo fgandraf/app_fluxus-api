@@ -4,15 +4,15 @@ using System.Collections;
 using Dapper;
 using FluxusApi.Repositories.Contracts;
 
-namespace FluxusApi.Repositories
+namespace FluxusApi.Repositories;
+
+public class BankBranchRepository : Repository<BankBranch>, IBankBranchRepository
 {
-    public class BankBranchRepository : Repository<BankBranch>, IBankBranchRepository
-    {
-        public BankBranchRepository(MySqlConnection connection) : base(connection) { }
+    public BankBranchRepository(MySqlConnection connection) : base(connection) { }
         
-        public async Task<IEnumerable> GetIndexAsync()
-        {
-            const string query = @"
+    public async Task<IEnumerable> GetIndexAsync()
+    {
+        const string query = @"
                 SELECT
                     Id, 
                     Name, 
@@ -24,12 +24,12 @@ namespace FluxusApi.Repositories
                 ORDER BY 
                     Id";
 
-            return await Connection.QueryAsync(query);
-        }
+        return await Connection.QueryAsync(query);
+    }
         
-        public async Task<IEnumerable> GetContactsAsync(string id)
-        {
-            const string query = @"
+    public async Task<IEnumerable> GetContactsAsync(string id)
+    {
+        const string query = @"
                 SELECT 
                     Id, 
                     Name, 
@@ -40,8 +40,7 @@ namespace FluxusApi.Repositories
                 WHERE 
                     Id = @id";
 
-            return await Connection.QueryFirstAsync(query, new { id = id });
-        }
-             
+        return await Connection.QueryFirstAsync(query, new { id = id });
     }
+             
 }

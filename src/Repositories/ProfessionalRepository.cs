@@ -4,15 +4,15 @@ using System.Collections;
 using Dapper;
 using FluxusApi.Repositories.Contracts;
 
-namespace FluxusApi.Repositories
+namespace FluxusApi.Repositories;
+
+public class ProfessionalRepository : Repository<Professional>, IProfessionalRepository
 {
-    public class ProfessionalRepository : Repository<Professional>, IProfessionalRepository
-    {
-        public ProfessionalRepository(MySqlConnection connection) : base(connection) { }
+    public ProfessionalRepository(MySqlConnection connection) : base(connection) { }
         
-        public async Task<IEnumerable> GetIndexAsync()
-        {
-            const string query = @"
+    public async Task<IEnumerable> GetIndexAsync()
+    {
+        const string query = @"
                 SELECT 
                     Id, 
                     Tag, 
@@ -24,12 +24,12 @@ namespace FluxusApi.Repositories
                 ORDER BY 
                     Tag";
 
-            return await Connection.QueryAsync(query);
-        }
+        return await Connection.QueryAsync(query);
+    }
         
-        public async Task<IEnumerable> GetTagNameidAsync()
-        {
-            const string query = @"
+    public async Task<IEnumerable> GetTagNameidAsync()
+    {
+        const string query = @"
                 SELECT 
                     Id,
                     Tag, 
@@ -46,9 +46,7 @@ namespace FluxusApi.Repositories
                 ORDER BY 
                     Tag";
 
-            return await Connection.QueryAsync(query);
-        }
-
+        return await Connection.QueryAsync(query);
     }
 
 }

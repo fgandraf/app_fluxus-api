@@ -1,13 +1,12 @@
 ﻿using System.Text.Json.Serialization;
 
-namespace FluxusApi.Models.Enums
+namespace FluxusApi.Models.Enums;
+
+[JsonConverter(typeof(JsonStringEnumConverter))]
+public enum EnumStatus
 {
-    [JsonConverter(typeof(JsonStringEnumConverter))]
-    public enum EnumStatus
-    {
-        RECEBIDA = 1,
-        PENDENTE = 2,
-        VISTORIADA = 3,
-        CONCLUIDA = 4
-    }
+    RECEBIDA = 1,
+    PENDENTE = 2,
+    VISTORIADA = 3,
+    CONCLUIDA = 4
 }

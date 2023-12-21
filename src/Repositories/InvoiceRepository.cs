@@ -3,22 +3,22 @@ using FluxusApi.Models;
 using Dapper;
 using FluxusApi.Repositories.Contracts;
 
-namespace FluxusApi.Repositories
-{
-    public class InvoiceRepository : Repository<Invoice>, IInvoiceRepository
-    {
-        public InvoiceRepository(MySqlConnection connection) : base(connection) { }
-        
-        public async Task<string> GetDescriptionAsync(int id)
-        {
-            const string query = @"SELECT Description FROM Invoice WHERE Id = @id";
+namespace FluxusApi.Repositories;
 
-            return await Connection.QueryFirstAsync(query, new { id = id });
-        }
+public class InvoiceRepository : Repository<Invoice>, IInvoiceRepository
+{
+    public InvoiceRepository(MySqlConnection connection) : base(connection) { }
         
-        public async Task<int> UpdateTotalsAsync(Invoice invoice)
-        {
-            const string query = @"
+    public async Task<string> GetDescriptionAsync(int id)
+    {
+        const string query = @"SELECT Description FROM Invoice WHERE Id = @id";
+
+        return await Connection.QueryFirstAsync(query, new { id = id });
+    }
+        
+    public async Task<int> UpdateTotalsAsync(Invoice invoice)
+    {
+        const string query = @"
                 UPDATE 
                     Invoice
                 SET
@@ -28,7 +28,6 @@ namespace FluxusApi.Repositories
                 WHERE
                     Id = @Id";
 
-            return await Connection.ExecuteAsync(query, invoice);
-        }
+        return await Connection.ExecuteAsync(query, invoice);
     }
 }

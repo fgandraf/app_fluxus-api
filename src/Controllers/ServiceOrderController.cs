@@ -3,243 +3,240 @@ using FluxusApi.Models;
 using FluxusApi.Models.Enums;
 using FluxusApi.Repositories.Contracts;
 
-namespace FluxusApi.Controllers
+namespace FluxusApi.Controllers;
+
+[ApiController]
+[Route("v1/service-orders")]
+public class ServiceOrderController : ControllerBase
 {
+    private readonly IServiceOrderRepository _serviceOrderRepository;
+    private readonly bool _authenticated;
 
-    [ApiController]
-    [Route("v1/service-orders")]
-    public class ServiceOrderController : ControllerBase
+    public ServiceOrderController(IHttpContextAccessor context, IServiceOrderRepository serviceOrderRepository)
     {
-        private readonly IServiceOrderRepository _serviceOrderRepository;
-        private readonly bool _authenticated;
+        _authenticated = new Authenticator(context).Authenticate();
+        _serviceOrderRepository = serviceOrderRepository;
+    }
 
-        public ServiceOrderController(IHttpContextAccessor context, IServiceOrderRepository serviceOrderRepository)
+
+    [HttpGet("flow")]
+    public async Task<IActionResult> GetOrdersFlow()
+    {
+        try
         {
-            _authenticated = new Authenticator(context).Authenticate();
-            _serviceOrderRepository = serviceOrderRepository;
-        }
-
-
-        [HttpGet("flow")]
-        public async Task<IActionResult> GetOrdersFlow()
-        {
-            try
-            {
-                if (!_authenticated)
-                    return BadRequest();
+            if (!_authenticated)
+                return BadRequest();
                 
-                var result = await _serviceOrderRepository.GetOrdersFlowAsync();
-                return result == null ? NotFound() : Ok(result);
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
-            }
+            var result = await _serviceOrderRepository.GetOrdersFlowAsync();
+            return result == null ? NotFound() : Ok(result);
         }
-
-
-        [HttpGet("cities")]
-        public async Task<IActionResult> GetOrderedCities()
+        catch (Exception ex)
         {
-            try
-            {
-                if (!_authenticated)
-                    return BadRequest();
-                
-                var result = await _serviceOrderRepository.GetOrderedCitiesAsync();
-                return result == null ? NotFound() : Ok(result);
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
-            }
+            return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
         }
+    }
 
 
-        [HttpGet("done-to-invoice")]
-        public async Task<IActionResult> GetDoneToInvoice() 
+    [HttpGet("cities")]
+    public async Task<IActionResult> GetOrderedCities()
+    {
+        try
         {
-            try
-            {
-                if (!_authenticated)
-                    return BadRequest();
+            if (!_authenticated)
+                return BadRequest();
                 
-                var result = await _serviceOrderRepository.GetDoneToInvoiceAsync();
-                return result == null ? NotFound() : Ok(result);
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
-            }
+            var result = await _serviceOrderRepository.GetOrderedCitiesAsync();
+            return result == null ? NotFound() : Ok(result);
         }
-
-
-        [HttpGet("filtered/{filter}")]
-        public async Task<IActionResult> GetFiltered(string filter)
+        catch (Exception ex)
         {
-            try
-            {
-                if (!_authenticated)
-                    return BadRequest();
-                
-                var result = await _serviceOrderRepository.GetFilteredAsync(filter);
-                return result == null ? NotFound() : Ok(result);
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
-            }
+            return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
         }
+    }
 
 
-        [HttpGet("invoiced/{invoiceId}")]
-        public async Task<IActionResult> GetInvoiced(int invoiceId)
+    [HttpGet("done-to-invoice")]
+    public async Task<IActionResult> GetDoneToInvoice() 
+    {
+        try
         {
-            try
-            {
-                if (!_authenticated)
-                    return BadRequest();
+            if (!_authenticated)
+                return BadRequest();
                 
-                var result = await _serviceOrderRepository.GetInvoicedAsync(invoiceId);
-                return result == null ? NotFound() : Ok(result);
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
-            }
+            var result = await _serviceOrderRepository.GetDoneToInvoiceAsync();
+            return result == null ? NotFound() : Ok(result);
         }
-
-
-        [HttpGet("professionals/{invoiceId}")]
-        public async Task<IActionResult> GetProfessionals(int invoiceId)
+        catch (Exception ex)
         {
-            try
-            {
-                if (!_authenticated)
-                    return BadRequest();
-                
-                var result = await _serviceOrderRepository.GetProfessionalAsync(invoiceId);
-                return result == null ? NotFound() : Ok(result);
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
-            }
+            return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
         }
+    }
 
 
-        [HttpGet("{id}")]
-        public async Task<IActionResult> GetById(int id)
+    [HttpGet("filtered/{filter}")]
+    public async Task<IActionResult> GetFiltered(string filter)
+    {
+        try
         {
-            try
-            {
-                if (!_authenticated)
-                    return BadRequest();
+            if (!_authenticated)
+                return BadRequest();
                 
-                var result = await _serviceOrderRepository.GetAsync(id);
-                return result == null ? NotFound() : Ok(result);
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
-            }
+            var result = await _serviceOrderRepository.GetFilteredAsync(filter);
+            return result == null ? NotFound() : Ok(result);
         }
-
-
-        [HttpPost]
-        public async Task<IActionResult> Post([FromBody] ServiceOrder serviceOrder)
+        catch (Exception ex)
         {
-            try
-            {
-                if (!_authenticated)
-                    return BadRequest();
-                
-                var id = await _serviceOrderRepository.InsertAsync(serviceOrder);
-                return Ok(id);
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
-            }
+            return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
         }
+    }
 
 
-        [HttpPut]
-        public async Task<IActionResult> Put([FromBody] ServiceOrder serviceOrder)
+    [HttpGet("invoiced/{invoiceId}")]
+    public async Task<IActionResult> GetInvoiced(int invoiceId)
+    {
+        try
         {
-            try
-            {
-                if (!_authenticated)
-                    return BadRequest();
+            if (!_authenticated)
+                return BadRequest();
                 
-                await _serviceOrderRepository.UpdateAsync(serviceOrder);
-                return Ok();
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
-            }
+            var result = await _serviceOrderRepository.GetInvoicedAsync(invoiceId);
+            return result == null ? NotFound() : Ok(result);
         }
+        catch (Exception ex)
+        {
+            return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+        }
+    }
+
+
+    [HttpGet("professionals/{invoiceId}")]
+    public async Task<IActionResult> GetProfessionals(int invoiceId)
+    {
+        try
+        {
+            if (!_authenticated)
+                return BadRequest();
+                
+            var result = await _serviceOrderRepository.GetProfessionalAsync(invoiceId);
+            return result == null ? NotFound() : Ok(result);
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+        }
+    }
+
+
+    [HttpGet("{id}")]
+    public async Task<IActionResult> GetById(int id)
+    {
+        try
+        {
+            if (!_authenticated)
+                return BadRequest();
+                
+            var result = await _serviceOrderRepository.GetAsync(id);
+            return result == null ? NotFound() : Ok(result);
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+        }
+    }
+
+
+    [HttpPost]
+    public async Task<IActionResult> Post([FromBody] ServiceOrder serviceOrder)
+    {
+        try
+        {
+            if (!_authenticated)
+                return BadRequest();
+                
+            var id = await _serviceOrderRepository.InsertAsync(serviceOrder);
+            return Ok(id);
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+        }
+    }
+
+
+    [HttpPut]
+    public async Task<IActionResult> Put([FromBody] ServiceOrder serviceOrder)
+    {
+        try
+        {
+            if (!_authenticated)
+                return BadRequest();
+                
+            await _serviceOrderRepository.UpdateAsync(serviceOrder);
+            return Ok();
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+        }
+    }
         
         
-        [HttpPut("update-invoice/{invoiceId}")]
-        public async Task<IActionResult> UpdateInvoiceId(int invoiceId, [FromBody]List<int> orders)
+    [HttpPut("update-invoice/{invoiceId}")]
+    public async Task<IActionResult> UpdateInvoiceId(int invoiceId, [FromBody]List<int> orders)
+    {
+        try
         {
-            try
-            {
-                if (!_authenticated)
-                    return BadRequest();
+            if (!_authenticated)
+                return BadRequest();
                 
-                await _serviceOrderRepository.UpdateInvoiceIdAsync(invoiceId, orders);
-                return Ok();
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
-            }
+            await _serviceOrderRepository.UpdateInvoiceIdAsync(invoiceId, orders);
+            return Ok();
         }
-
-
-        [HttpPut("update-status/{id},{status}")]
-        public async Task<IActionResult> UpdateStatus(int id, EnumStatus status)
+        catch (Exception ex)
         {
-            try
-            {
-                if (!_authenticated)
-                    return BadRequest();
-                
-                await _serviceOrderRepository.UpdateStatusAsync(id, status);
-                return Ok();
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
-            }
+            return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
         }
+    }
 
 
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> Delete(int id)
+    [HttpPut("update-status/{id},{status}")]
+    public async Task<IActionResult> UpdateStatus(int id, EnumStatus status)
+    {
+        try
         {
-            try
-            {
-                if (!_authenticated)
-                    return BadRequest();
+            if (!_authenticated)
+                return BadRequest();
                 
-                var serviceOrder = await _serviceOrderRepository.GetAsync(id);
-
-                if (serviceOrder.Id == 0)
-                    return NotFound();
-                
-                await _serviceOrderRepository.DeleteAsync(serviceOrder);
-                return Ok();
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
-            }
+            await _serviceOrderRepository.UpdateStatusAsync(id, status);
+            return Ok();
         }
+        catch (Exception ex)
+        {
+            return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+        }
+    }
 
+
+    [HttpDelete("{id}")]
+    public async Task<IActionResult> Delete(int id)
+    {
+        try
+        {
+            if (!_authenticated)
+                return BadRequest();
+                
+            var serviceOrder = await _serviceOrderRepository.GetAsync(id);
+
+            if (serviceOrder.Id == 0)
+                return NotFound();
+                
+            await _serviceOrderRepository.DeleteAsync(serviceOrder);
+            return Ok();
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+        }
     }
 
 }

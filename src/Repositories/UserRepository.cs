@@ -10,7 +10,7 @@ public class UserRepository: Repository<User>, IUserRepository
 {
     public UserRepository(MySqlConnection connection) : base(connection) { }
     
-    public async Task<IEnumerable> GetByUserNameAsync(string userName)
+    public async Task<User> GetByUserNameAsync(string userName)
     {
         const string query = @"
                 SELECT 
@@ -20,7 +20,7 @@ public class UserRepository: Repository<User>, IUserRepository
                 WHERE 
                     UserName = @userName";
 
-        return await Connection.QueryFirstAsync(query, new { userName });
+        return await Connection.QueryFirstOrDefaultAsync<User>(query, new { userName });
     }
 
     public async Task<IEnumerable> GetByProfessionalIdAsync(int professionalId)

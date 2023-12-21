@@ -2,117 +2,114 @@
 using FluxusApi.Models;
 using FluxusApi.Repositories.Contracts;
 
-namespace FluxusApi.Controllers
+namespace FluxusApi.Controllers;
+
+[ApiController]
+[Route("v1/services")]
+public class ServiceController : ControllerBase
 {
+    private readonly IServiceRepository _serviceRepository;
+    private readonly bool _authenticated;
 
-    [ApiController]
-    [Route("v1/services")]
-    public class ServiceController : ControllerBase
+    public ServiceController(IHttpContextAccessor context, IServiceRepository serviceRepository)
     {
-        private readonly IServiceRepository _serviceRepository;
-        private readonly bool _authenticated;
+        _authenticated = new Authenticator(context).Authenticate();
+        _serviceRepository = serviceRepository;
+    }
 
-        public ServiceController(IHttpContextAccessor context, IServiceRepository serviceRepository)
+
+    [HttpGet]
+    public async Task<IActionResult> GetAll()
+    {
+        try
         {
-            _authenticated = new Authenticator(context).Authenticate();
-            _serviceRepository = serviceRepository;
+            if (!_authenticated)
+                return BadRequest();
+                
+            var result = await _serviceRepository.GetAllAsync();
+            return result == null ? NotFound() : Ok(result);
         }
-
-
-        [HttpGet]
-        public async Task<IActionResult> GetAll()
+        catch (Exception ex)
         {
-            try
-            {
-                if (!_authenticated)
-                    return BadRequest();
-                
-                var result = await _serviceRepository.GetAllAsync();
-                return result == null ? NotFound() : Ok(result);
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
-            }
+            return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
         }
+    }
 
 
-        [HttpGet("{id}")]
-        public async Task<IActionResult> GetById(int id)
+    [HttpGet("{id}")]
+    public async Task<IActionResult> GetById(int id)
+    {
+        try
         {
-            try
-            {
-                if (!_authenticated)
-                    return BadRequest();
+            if (!_authenticated)
+                return BadRequest();
                 
-                var result = await _serviceRepository.GetAsync(id);
-                return result == null ? NotFound() : Ok(result);
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
-            }
+            var result = await _serviceRepository.GetAsync(id);
+            return result == null ? NotFound() : Ok(result);
         }
-
-
-        [HttpPost]
-        public async Task<IActionResult> Post([FromBody] Service service)
+        catch (Exception ex)
         {
-            try
-            {
-                if (!_authenticated)
-                    return BadRequest();
-                
-                var id = await _serviceRepository.InsertAsync(service);
-                return Ok(id);
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
-            }
+            return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
         }
+    }
 
 
-        [HttpPut]
-        public async Task<IActionResult> Put([FromBody] Service service)
+    [HttpPost]
+    public async Task<IActionResult> Post([FromBody] Service service)
+    {
+        try
         {
-            try
-            {
-                if (!_authenticated)
-                    return BadRequest();
+            if (!_authenticated)
+                return BadRequest();
                 
-                await _serviceRepository.UpdateAsync(service);
-                return Ok();
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
-            }
+            var id = await _serviceRepository.InsertAsync(service);
+            return Ok(id);
         }
-
-
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> Delete(int id)
+        catch (Exception ex)
         {
-            try
-            {
-                if (!_authenticated)
-                    return BadRequest();
-                
-                var service = await _serviceRepository.GetAsync(id);
-
-                if (service.Id == 0)
-                    return NotFound();
-                
-                await _serviceRepository.DeleteAsync(service);
-                return Ok();
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
-            }
+            return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
         }
+    }
 
+
+    [HttpPut]
+    public async Task<IActionResult> Put([FromBody] Service service)
+    {
+        try
+        {
+            if (!_authenticated)
+                return BadRequest();
+                
+            await _serviceRepository.UpdateAsync(service);
+            return Ok();
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+        }
+    }
+
+
+    [HttpDelete("{id}")]
+    public async Task<IActionResult> Delete(int id)
+    {
+        try
+        {
+            if (!_authenticated)
+                return BadRequest();
+                
+            var service = await _serviceRepository.GetAsync(id);
+
+            if (service.Id == 0)
+                return NotFound();
+                
+            await _serviceRepository.DeleteAsync(service);
+            return Ok();
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+        }
     }
 
 }

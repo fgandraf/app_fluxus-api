@@ -4,15 +4,15 @@ using FluxusApi.Models;
 using FluxusApi.Repositories.Contracts;
 using MySql.Data.MySqlClient;
 
-namespace FluxusApi.Repositories
+namespace FluxusApi.Repositories;
+
+public class UserRepository: Repository<User>, IUserRepository
 {
-    public class UserRepository: Repository<User>, IUserRepository
-    {
-        public UserRepository(MySqlConnection connection) : base(connection) { }
+    public UserRepository(MySqlConnection connection) : base(connection) { }
     
-        public async Task<IEnumerable> GetByUserNameAsync(string userName)
-        {
-            const string query = @"
+    public async Task<IEnumerable> GetByUserNameAsync(string userName)
+    {
+        const string query = @"
                 SELECT 
                     * 
                 FROM 
@@ -20,12 +20,12 @@ namespace FluxusApi.Repositories
                 WHERE 
                     UserName = @userName";
 
-            return await Connection.QueryFirstAsync(query, new { userName });
-        }
+        return await Connection.QueryFirstAsync(query, new { userName });
+    }
 
-        public async Task<IEnumerable> GetByProfessionalIdAsync(int professionalId)
-        {
-            const string query = @"
+    public async Task<IEnumerable> GetByProfessionalIdAsync(int professionalId)
+    {
+        const string query = @"
                 SELECT 
                     * 
                 FROM 
@@ -33,7 +33,6 @@ namespace FluxusApi.Repositories
                 WHERE 
                     ProfessionalId = @professionalId";
 
-            return await Connection.QueryFirstAsync(query, new { professionalId });
-        }
+        return await Connection.QueryFirstAsync(query, new { professionalId });
     }
 }

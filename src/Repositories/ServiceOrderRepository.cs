@@ -5,15 +5,15 @@ using System.Collections;
 using Dapper;
 using FluxusApi.Repositories.Contracts;
 
-namespace FluxusApi.Repositories
+namespace FluxusApi.Repositories;
+
+public class ServiceOrderRepository : Repository<ServiceOrder>, IServiceOrderRepository
 {
-    public class ServiceOrderRepository : Repository<ServiceOrder>, IServiceOrderRepository
-    {
-        public ServiceOrderRepository(MySqlConnection connection) : base(connection) { }
+    public ServiceOrderRepository(MySqlConnection connection) : base(connection) { }
         
-        public async Task<IEnumerable> GetOrdersFlowAsync()
-        {
-            const string query = @"
+    public async Task<IEnumerable> GetOrdersFlowAsync()
+    {
+        const string query = @"
                 SELECT 
                     A.Id,
                     CONCAT(
@@ -36,12 +36,12 @@ namespace FluxusApi.Repositories
                 ORDER BY 
                     OrderDate";
 
-            return await Connection.QueryAsync(query);
-        }
+        return await Connection.QueryAsync(query);
+    }
         
-        public async Task<IEnumerable> GetInvoicedAsync(int invoiceId)
-        {
-            const string query = @"
+    public async Task<IEnumerable> GetInvoicedAsync(int invoiceId)
+    {
+        const string query = @"
                 SELECT 
                     os.Id, 
                     os.OrderDate, 
@@ -72,12 +72,12 @@ namespace FluxusApi.Repositories
                 ORDER BY 
                     DoneDate";
 
-            return await Connection.QueryAsync(query, new { invoiceId });
-        }
+        return await Connection.QueryAsync(query, new { invoiceId });
+    }
         
-        public async Task<IEnumerable>GetDoneToInvoiceAsync()
-        {
-            const string query = @"
+    public async Task<IEnumerable>GetDoneToInvoiceAsync()
+    {
+        const string query = @"
                 SELECT 
                     os.Id, 
                     os.OrderDate, 
@@ -107,12 +107,12 @@ namespace FluxusApi.Repositories
                 ORDER BY 
                     DoneDate";
 
-            return await Connection.QueryAsync(query);
-        }
+        return await Connection.QueryAsync(query);
+    }
         
-        public async Task<IEnumerable>GetFilteredAsync(string filter)
-        {
-            const string query = @"
+    public async Task<IEnumerable>GetFilteredAsync(string filter)
+    {
+        const string query = @"
                 SELECT 
                     os.Id,
                     os.Status,
@@ -140,23 +140,23 @@ namespace FluxusApi.Repositories
                 ORDER BY 
                     OrderDate";
 
-            var filters = filter.Split(',');
-            var param = new
-            {
-                professional = filters[0],
-                service = filters[1],
-                city = filters[2],
-                status = filters[3],
-                invoiced = filters[4]
-            };
-
-            return await Connection.QueryAsync(query, param);
-        }
-
-
-        public async Task<IEnumerable> GetProfessionalAsync(int invoiceId)
+        var filters = filter.Split(',');
+        var param = new
         {
-            const string query = @"
+            professional = filters[0],
+            service = filters[1],
+            city = filters[2],
+            status = filters[3],
+            invoiced = filters[4]
+        };
+
+        return await Connection.QueryAsync(query, param);
+    }
+
+
+    public async Task<IEnumerable> GetProfessionalAsync(int invoiceId)
+    {
+        const string query = @"
                 SELECT DISTINCT 
                     t1.ProfessionalId, 
                     t2.Nameid 
@@ -171,12 +171,12 @@ namespace FluxusApi.Repositories
                 ORDER BY 
                     t2.Nameid";
 
-            return await Connection.QueryAsync(query, new { invoiceId });
-        }
+        return await Connection.QueryAsync(query, new { invoiceId });
+    }
         
-        public async Task<IEnumerable> GetOrderedCitiesAsync()
-        {
-            const string query = @"
+    public async Task<IEnumerable> GetOrderedCitiesAsync()
+    {
+        const string query = @"
                 SELECT DISTINCT 
                     City 
                 FROM 
@@ -184,16 +184,16 @@ namespace FluxusApi.Repositories
                 ORDER BY 
                     City";
 
-            return await Connection.QueryAsync(query);
-        }
+        return await Connection.QueryAsync(query);
+    }
         
-        public async Task<int> UpdateInvoiceIdAsync(int invoiceId, List<int> orders)
-        {
-            bool invoiced = invoiceId > 0;
+    public async Task<int> UpdateInvoiceIdAsync(int invoiceId, List<int> orders)
+    {
+        bool invoiced = invoiceId > 0;
             
-            foreach (var item in orders)
-            {
-                const string query = @"
+        foreach (var item in orders)
+        {
+            const string query = @"
                     UPDATE
                         ServiceOrder
                     SET
@@ -202,26 +202,26 @@ namespace FluxusApi.Repositories
                     WHERE
                         Id = @item";
                 
-                await Connection.ExecuteAsync(query, new { invoiceId, invoiced, item });
-            }
-
-            return 1;
+            await Connection.ExecuteAsync(query, new { invoiceId, invoiced, item });
         }
 
-        public async Task<int> UpdateStatusAsync(int id, EnumStatus status)
-        {
-            var changeDate = "";
-            switch (status)
-            {
-                case EnumStatus.RECEBIDA: break;
-                case EnumStatus.PENDENTE: changeDate = ", PendingDate = @ActualDate "; break;
-                case EnumStatus.VISTORIADA: changeDate = ", SurveyDate = @ActualDate "; break;
-                case EnumStatus.CONCLUIDA: changeDate = ", DoneDate = @ActualDate "; break;
-                default:
-                    throw new ArgumentOutOfRangeException(nameof(status), status, null);
-            }
+        return 1;
+    }
 
-            var query = @$"
+    public async Task<int> UpdateStatusAsync(int id, EnumStatus status)
+    {
+        var changeDate = "";
+        switch (status)
+        {
+            case EnumStatus.RECEBIDA: break;
+            case EnumStatus.PENDENTE: changeDate = ", PendingDate = @ActualDate "; break;
+            case EnumStatus.VISTORIADA: changeDate = ", SurveyDate = @ActualDate "; break;
+            case EnumStatus.CONCLUIDA: changeDate = ", DoneDate = @ActualDate "; break;
+            default:
+                throw new ArgumentOutOfRangeException(nameof(status), status, null);
+        }
+
+        var query = @$"
                 UPDATE
                     ServiceOrder
                 SET
@@ -230,16 +230,14 @@ namespace FluxusApi.Repositories
                 WHERE
                     Id = @Id";
 
-            var orderObj = new
-            {
-                Status = status,
-                ActualDate = DateTime.Now,
-                Id = id
-            };
+        var orderObj = new
+        {
+            Status = status,
+            ActualDate = DateTime.Now,
+            Id = id
+        };
 
-            return await Connection.ExecuteAsync(query, orderObj);
-        }
-        
+        return await Connection.ExecuteAsync(query, orderObj);
     }
-
+        
 }

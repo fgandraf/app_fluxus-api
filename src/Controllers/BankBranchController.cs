@@ -2,132 +2,131 @@
 using FluxusApi.Models;
 using FluxusApi.Repositories.Contracts;
 
-namespace FluxusApi.Controllers
+namespace FluxusApi.Controllers;
+
+[ApiController]
+[Route("v1/bank-branches")]
+public class BankBranchController : ControllerBase
 {
-    [ApiController]
-    [Route("v1/bank-branches")]
-    public class BankBranchController : ControllerBase
+    private readonly IBankBranchRepository _bankBranchRepository;
+    private readonly bool _authenticated;
+
+    public BankBranchController(IHttpContextAccessor context, IBankBranchRepository bankBranchRepository)
     {
-        private readonly IBankBranchRepository _bankBranchRepository;
-        private readonly bool _authenticated;
+        _authenticated = new Authenticator(context).Authenticate();
+        _bankBranchRepository = bankBranchRepository;
+    }
 
-        public BankBranchController(IHttpContextAccessor context, IBankBranchRepository bankBranchRepository)
+
+    [HttpGet]
+    public async Task<IActionResult> GetAll()
+    {
+        try
         {
-            _authenticated = new Authenticator(context).Authenticate();
-            _bankBranchRepository = bankBranchRepository;
+            if (!_authenticated)
+                return BadRequest();
+
+            var result = await _bankBranchRepository.GetIndexAsync();
+            return result == null ? NotFound() : Ok(result);
         }
-
-
-        [HttpGet]
-        public async Task<IActionResult> GetAll()
+        catch (Exception ex)
         {
-            try
-            {
-                if (!_authenticated)
-                    return BadRequest();
-
-                var result = await _bankBranchRepository.GetIndexAsync();
-                return result == null ? NotFound() : Ok(result);
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
-            }
+            return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
         }
+    }
 
 
-        [HttpGet("{id}")]
-        public async Task<IActionResult> GetById(string id)
+    [HttpGet("{id}")]
+    public async Task<IActionResult> GetById(string id)
+    {
+        try
         {
-            try
-            {
-                if (!_authenticated)
-                    return BadRequest();
+            if (!_authenticated)
+                return BadRequest();
                 
-                var result = await _bankBranchRepository.GetAsync(id);
-                return result == null ? NotFound() : Ok(result);
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
-            }
+            var result = await _bankBranchRepository.GetAsync(id);
+            return result == null ? NotFound() : Ok(result);
         }
-
-
-        [HttpGet("contacts/{id}")]
-        public async Task<IActionResult> GetContactsById(string id)
+        catch (Exception ex)
         {
-            try
-            {
-                if (!_authenticated)
-                    return BadRequest();
-                
-                var result = await _bankBranchRepository.GetContactsAsync(id);
-                return result == null ? NotFound() : Ok(result);
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
-            }
+            return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
         }
+    }
 
 
-        [HttpPost]
-        public async Task<IActionResult> Post([FromBody] BankBranch bankBranch)
+    [HttpGet("contacts/{id}")]
+    public async Task<IActionResult> GetContactsById(string id)
+    {
+        try
         {
-            try
-            {
-                if (!_authenticated)
-                    return BadRequest();
+            if (!_authenticated)
+                return BadRequest();
                 
-                await _bankBranchRepository.InsertAsync(bankBranch);
-                return Ok(bankBranch.Id);
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
-            }
+            var result = await _bankBranchRepository.GetContactsAsync(id);
+            return result == null ? NotFound() : Ok(result);
         }
-
-
-        [HttpPut]
-        public async Task<IActionResult> Put([FromBody] BankBranch bankBranch)
+        catch (Exception ex)
         {
-            try
-            {
-                if (!_authenticated)
-                    return BadRequest();
-                
-                await _bankBranchRepository.UpdateAsync(bankBranch);
-                return Ok();
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
-            }
+            return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
         }
+    }
 
 
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> Delete(string id)
+    [HttpPost]
+    public async Task<IActionResult> Post([FromBody] BankBranch bankBranch)
+    {
+        try
         {
-            try
-            {
-                if (!_authenticated)
-                    return BadRequest();
+            if (!_authenticated)
+                return BadRequest();
                 
-                var bankBranch = await _bankBranchRepository.GetAsync(id);
+            await _bankBranchRepository.InsertAsync(bankBranch);
+            return Ok(bankBranch.Id);
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+        }
+    }
 
-                if (bankBranch.Id == null)
-                    return NotFound();
 
-                await _bankBranchRepository.DeleteAsync(bankBranch);
-                return Ok();
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
-            }
+    [HttpPut]
+    public async Task<IActionResult> Put([FromBody] BankBranch bankBranch)
+    {
+        try
+        {
+            if (!_authenticated)
+                return BadRequest();
+                
+            await _bankBranchRepository.UpdateAsync(bankBranch);
+            return Ok();
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+        }
+    }
+
+
+    [HttpDelete("{id}")]
+    public async Task<IActionResult> Delete(string id)
+    {
+        try
+        {
+            if (!_authenticated)
+                return BadRequest();
+                
+            var bankBranch = await _bankBranchRepository.GetAsync(id);
+
+            if (bankBranch.Id == null)
+                return NotFound();
+
+            await _bankBranchRepository.DeleteAsync(bankBranch);
+            return Ok();
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
         }
     }
 }

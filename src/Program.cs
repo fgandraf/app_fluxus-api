@@ -6,7 +6,8 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers();
 
 // Configure Kestrel to listen on all interfaces on port 5001
-builder.WebHost.UseKestrel(serverOptions => serverOptions.ListenAnyIP(5001));
+if (builder.Environment.IsProduction())
+    builder.WebHost.UseKestrel(serverOptions => serverOptions.ListenAnyIP(5001));
 
 // Dependency Injection services configuration
 builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();

@@ -13,7 +13,7 @@ public class ServiceOrderController : ControllerBase
 {
     private readonly IServiceOrderRepository _serviceOrderRepository;
 
-    public ServiceOrderController(IHttpContextAccessor context, IServiceOrderRepository serviceOrderRepository)
+    public ServiceOrderController(IServiceOrderRepository serviceOrderRepository)
         => _serviceOrderRepository = serviceOrderRepository;
     
 

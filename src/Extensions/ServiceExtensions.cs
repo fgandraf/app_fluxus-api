@@ -1,5 +1,6 @@
 using FluxusApi.Repositories;
 using FluxusApi.Repositories.Contracts;
+using FluxusApi.Services;
 using MySql.Data.MySqlClient;
 
 namespace FluxusApi.Extensions;
@@ -19,6 +20,7 @@ public static class ServiceExtensions
         services.AddScoped<IServiceOrderRepository, ServiceOrderRepository>();
         services.AddScoped<IServiceRepository, ServiceRepository>();
         services.AddScoped<IUserRepository, UserRepository>();
+        services.AddTransient<TokenService>();
 
         return services;
     }

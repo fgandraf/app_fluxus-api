@@ -1,31 +1,26 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using FluxusApi.Models;
 using FluxusApi.Repositories.Contracts;
+using Microsoft.AspNetCore.Authorization;
 
 namespace FluxusApi.Controllers;
 
+[Authorize]
 [ApiController]
 [Route("v1/professionals")]
 public class ProfessionalController : ControllerBase
 {
     private readonly IProfessionalRepository _professionalRepository;
-    private readonly bool _authenticated;
 
-    public ProfessionalController(IHttpContextAccessor context, IProfessionalRepository professionalRepository)
-    {
-        _authenticated = new Authenticator(context).Authenticate();
-        _professionalRepository = professionalRepository;
-    }
-
-
+    public ProfessionalController(IProfessionalRepository professionalRepository)
+        => _professionalRepository = professionalRepository;
+    
+    
     [HttpGet]
     public async Task<IActionResult> GetAll()
     {
         try
         {
-            if (!_authenticated)
-                return BadRequest();
-                
             var result = await _professionalRepository.GetIndexAsync();
             return result == null ? NotFound() : Ok(result);
         }
@@ -41,9 +36,6 @@ public class ProfessionalController : ControllerBase
     {
         try
         {
-            if (!_authenticated)
-                return BadRequest();
-                
             var result = await _professionalRepository.GetTagNameidAsync();
             return result == null ? NotFound() : Ok(result);
         }
@@ -59,9 +51,6 @@ public class ProfessionalController : ControllerBase
     {
         try
         {
-            if (!_authenticated)
-                return BadRequest();
-                
             var result = await _professionalRepository.GetAsync(id);
             return result == null ? NotFound() : Ok(result);
         }
@@ -77,10 +66,6 @@ public class ProfessionalController : ControllerBase
     {
         try
         {
-                
-            if (!_authenticated)
-                return BadRequest();
-                
             var id = await _professionalRepository.InsertAsync(professional);
             return Ok(id);
         }
@@ -96,9 +81,6 @@ public class ProfessionalController : ControllerBase
     {
         try
         {
-            if (!_authenticated)
-                return BadRequest();
-                
             await _professionalRepository.UpdateAsync(professional);
             return Ok();
         }
@@ -114,9 +96,6 @@ public class ProfessionalController : ControllerBase
     {
         try
         {
-            if (!_authenticated)
-                return BadRequest();
-                
             var professional = await _professionalRepository.GetAsync(id);
 
             if (professional.Id == 0)

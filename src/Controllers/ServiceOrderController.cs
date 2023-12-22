@@ -2,31 +2,26 @@
 using FluxusApi.Models;
 using FluxusApi.Models.Enums;
 using FluxusApi.Repositories.Contracts;
+using Microsoft.AspNetCore.Authorization;
 
 namespace FluxusApi.Controllers;
 
+[Authorize]
 [ApiController]
 [Route("v1/service-orders")]
 public class ServiceOrderController : ControllerBase
 {
     private readonly IServiceOrderRepository _serviceOrderRepository;
-    private readonly bool _authenticated;
 
     public ServiceOrderController(IHttpContextAccessor context, IServiceOrderRepository serviceOrderRepository)
-    {
-        _authenticated = new Authenticator(context).Authenticate();
-        _serviceOrderRepository = serviceOrderRepository;
-    }
-
+        => _serviceOrderRepository = serviceOrderRepository;
+    
 
     [HttpGet("flow")]
     public async Task<IActionResult> GetOrdersFlow()
     {
         try
         {
-            if (!_authenticated)
-                return BadRequest();
-                
             var result = await _serviceOrderRepository.GetOrdersFlowAsync();
             return result == null ? NotFound() : Ok(result);
         }
@@ -42,9 +37,6 @@ public class ServiceOrderController : ControllerBase
     {
         try
         {
-            if (!_authenticated)
-                return BadRequest();
-                
             var result = await _serviceOrderRepository.GetOrderedCitiesAsync();
             return result == null ? NotFound() : Ok(result);
         }
@@ -60,9 +52,6 @@ public class ServiceOrderController : ControllerBase
     {
         try
         {
-            if (!_authenticated)
-                return BadRequest();
-                
             var result = await _serviceOrderRepository.GetDoneToInvoiceAsync();
             return result == null ? NotFound() : Ok(result);
         }
@@ -78,9 +67,6 @@ public class ServiceOrderController : ControllerBase
     {
         try
         {
-            if (!_authenticated)
-                return BadRequest();
-                
             var result = await _serviceOrderRepository.GetFilteredAsync(filter);
             return result == null ? NotFound() : Ok(result);
         }
@@ -96,9 +82,6 @@ public class ServiceOrderController : ControllerBase
     {
         try
         {
-            if (!_authenticated)
-                return BadRequest();
-                
             var result = await _serviceOrderRepository.GetInvoicedAsync(invoiceId);
             return result == null ? NotFound() : Ok(result);
         }
@@ -114,9 +97,6 @@ public class ServiceOrderController : ControllerBase
     {
         try
         {
-            if (!_authenticated)
-                return BadRequest();
-                
             var result = await _serviceOrderRepository.GetProfessionalAsync(invoiceId);
             return result == null ? NotFound() : Ok(result);
         }
@@ -132,9 +112,6 @@ public class ServiceOrderController : ControllerBase
     {
         try
         {
-            if (!_authenticated)
-                return BadRequest();
-                
             var result = await _serviceOrderRepository.GetAsync(id);
             return result == null ? NotFound() : Ok(result);
         }
@@ -150,9 +127,6 @@ public class ServiceOrderController : ControllerBase
     {
         try
         {
-            if (!_authenticated)
-                return BadRequest();
-                
             var id = await _serviceOrderRepository.InsertAsync(serviceOrder);
             return Ok(id);
         }
@@ -168,9 +142,6 @@ public class ServiceOrderController : ControllerBase
     {
         try
         {
-            if (!_authenticated)
-                return BadRequest();
-                
             await _serviceOrderRepository.UpdateAsync(serviceOrder);
             return Ok();
         }
@@ -186,9 +157,6 @@ public class ServiceOrderController : ControllerBase
     {
         try
         {
-            if (!_authenticated)
-                return BadRequest();
-                
             await _serviceOrderRepository.UpdateInvoiceIdAsync(invoiceId, orders);
             return Ok();
         }
@@ -204,9 +172,6 @@ public class ServiceOrderController : ControllerBase
     {
         try
         {
-            if (!_authenticated)
-                return BadRequest();
-                
             await _serviceOrderRepository.UpdateStatusAsync(id, status);
             return Ok();
         }
@@ -222,9 +187,6 @@ public class ServiceOrderController : ControllerBase
     {
         try
         {
-            if (!_authenticated)
-                return BadRequest();
-                
             var serviceOrder = await _serviceOrderRepository.GetAsync(id);
 
             if (serviceOrder.Id == 0)

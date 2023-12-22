@@ -1,31 +1,49 @@
 using FluxusApi.Models;
 using FluxusApi.Repositories.Contracts;
+using FluxusApi.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace FluxusApi.Controllers;
 
+[Authorize]
 [ApiController]
 [Route("v1/users")]
 public class UserController : ControllerBase
 {
     private readonly IUserRepository _userRepository;
-    private readonly bool _authenticated;
-    
-    public UserController(IHttpContextAccessor context, IUserRepository userRepository)
+    private readonly TokenService _tokenService;
+
+    public UserController(TokenService tokenService, IUserRepository userRepository)
     {
-        _authenticated = new Authenticator(context).Authenticate();
+        _tokenService = tokenService;
         _userRepository = userRepository;
     }
     
+    [AllowAnonymous]
+    [HttpPost("login")]
+    public async Task<IActionResult> Login([FromBody]User user)
+    {
+        var userInDb = await _userRepository.GetByUserNameAsync(user.UserName);
+        
+        if (userInDb == null || userInDb.Id == 0)
+            return NotFound($"Nenhum usuário '{user.UserName}' encontrado");
+        
+        if (!userInDb.UserActive)
+            return BadRequest("Usuário inativo");
+        
+        if (user.UserPassword != userInDb.UserPassword)
+            return BadRequest("Senha incorreta");
+        
+        var token = _tokenService.GenerateToken(user);
+        return Ok(token);
+    }
     
     [HttpGet("username/{userName}")]
     public async Task<IActionResult> GetByUsername(string userName)
     {
         try
         {
-            if (!_authenticated)
-                return BadRequest();
-                
             var result = await _userRepository.GetByUserNameAsync(userName);
             return result == null ? NotFound() : Ok(result);
         }
@@ -40,9 +58,6 @@ public class UserController : ControllerBase
     {
         try
         {
-            if (!_authenticated)
-                return BadRequest();
-                
             var result = await _userRepository.GetByProfessionalIdAsync(professionalId);
             return result == null ? NotFound() : Ok(result);
         }
@@ -57,10 +72,6 @@ public class UserController : ControllerBase
     {
         try
         {
-                
-            if (!_authenticated)
-                return BadRequest();
-                
             var id = await _userRepository.InsertAsync(user);
             return Ok(id);
         }
@@ -76,9 +87,6 @@ public class UserController : ControllerBase
     {
         try
         {
-            if (!_authenticated)
-                return BadRequest();
-                
             await _userRepository.UpdateAsync(user);
             return Ok();
         }
@@ -94,9 +102,6 @@ public class UserController : ControllerBase
     {
         try
         {
-            if (!_authenticated)
-                return BadRequest();
-                
             var professional = await _userRepository.GetAsync(id);
 
             if (professional.Id == 0)

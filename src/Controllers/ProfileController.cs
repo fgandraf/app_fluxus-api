@@ -1,31 +1,26 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using FluxusApi.Models;
 using FluxusApi.Repositories.Contracts;
+using Microsoft.AspNetCore.Authorization;
 
 namespace FluxusApi.Controllers;
 
+[Authorize]
 [ApiController]
 [Route("v1/profile")]
 public class ProfileController : ControllerBase
 {
     private readonly IProfileRepository _profileRepository;
-    private readonly bool _authenticated;
 
-    public ProfileController(IHttpContextAccessor context, IProfileRepository profileRepository)
-    {
-        _authenticated = new Authenticator(context).Authenticate();
-        _profileRepository = profileRepository;
-    }
-
+    public ProfileController(IProfileRepository profileRepository)
+        => _profileRepository = profileRepository;
+    
 
     [HttpGet]
     public async Task<IActionResult> GetAll()
     {
         try
         {
-            if (!_authenticated)
-                return BadRequest();
-                
             var result = await _profileRepository.GetAsync(1);
             return result == null ? NotFound() : Ok(result);
         }
@@ -41,9 +36,6 @@ public class ProfileController : ControllerBase
     {
         try
         {
-            if (!_authenticated)
-                return BadRequest();
-                
             var result = await _profileRepository.GetLogoAsync();
             return result == null ? NotFound() : Ok(result);
         }
@@ -59,9 +51,6 @@ public class ProfileController : ControllerBase
     {
         try
         {
-            if (!_authenticated)
-                return BadRequest();
-                
             var result = await _profileRepository.GetToPrintAsync();
             return result == null ? NotFound() : Ok(result);
         }
@@ -77,9 +66,6 @@ public class ProfileController : ControllerBase
     {
         try
         {
-            if (!_authenticated)
-                return BadRequest();
-                
             var result = await _profileRepository.GetTradingNameAsync();
             return result == null ? NotFound() : Ok(result);
         }
@@ -95,9 +81,6 @@ public class ProfileController : ControllerBase
     {
         try
         {
-            if (!_authenticated)
-                return BadRequest();
-                
             var id = await _profileRepository.InsertAsync(profile);
             return Ok(id);
         }
@@ -113,9 +96,6 @@ public class ProfileController : ControllerBase
     {
         try
         {
-            if (!_authenticated)
-                return BadRequest();
-                
             await _profileRepository.UpdateLogoAsync(logo);
             return Ok();
         }
@@ -131,9 +111,6 @@ public class ProfileController : ControllerBase
     {
         try
         {
-            if (!_authenticated)
-                return BadRequest();
-                
             await _profileRepository.UpdateAsync(profile);
             return Ok();
         }

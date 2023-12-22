@@ -1,31 +1,26 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using FluxusApi.Models;
 using FluxusApi.Repositories.Contracts;
+using Microsoft.AspNetCore.Authorization;
 
 namespace FluxusApi.Controllers;
 
+[Authorize]
 [ApiController]
 [Route("v1/bank-branches")]
 public class BankBranchController : ControllerBase
 {
     private readonly IBankBranchRepository _bankBranchRepository;
-    private readonly bool _authenticated;
 
-    public BankBranchController(IHttpContextAccessor context, IBankBranchRepository bankBranchRepository)
-    {
-        _authenticated = new Authenticator(context).Authenticate();
-        _bankBranchRepository = bankBranchRepository;
-    }
-
-
+    public BankBranchController(IBankBranchRepository bankBranchRepository)
+        => _bankBranchRepository = bankBranchRepository;
+    
+    
     [HttpGet]
     public async Task<IActionResult> GetAll()
     {
         try
         {
-            if (!_authenticated)
-                return BadRequest();
-
             var result = await _bankBranchRepository.GetIndexAsync();
             return result == null ? NotFound() : Ok(result);
         }
@@ -41,9 +36,6 @@ public class BankBranchController : ControllerBase
     {
         try
         {
-            if (!_authenticated)
-                return BadRequest();
-                
             var result = await _bankBranchRepository.GetAsync(id);
             return result == null ? NotFound() : Ok(result);
         }
@@ -59,9 +51,6 @@ public class BankBranchController : ControllerBase
     {
         try
         {
-            if (!_authenticated)
-                return BadRequest();
-                
             var result = await _bankBranchRepository.GetContactsAsync(id);
             return result == null ? NotFound() : Ok(result);
         }
@@ -77,9 +66,6 @@ public class BankBranchController : ControllerBase
     {
         try
         {
-            if (!_authenticated)
-                return BadRequest();
-                
             await _bankBranchRepository.InsertAsync(bankBranch);
             return Ok(bankBranch.Id);
         }
@@ -95,9 +81,6 @@ public class BankBranchController : ControllerBase
     {
         try
         {
-            if (!_authenticated)
-                return BadRequest();
-                
             await _bankBranchRepository.UpdateAsync(bankBranch);
             return Ok();
         }
@@ -113,9 +96,6 @@ public class BankBranchController : ControllerBase
     {
         try
         {
-            if (!_authenticated)
-                return BadRequest();
-                
             var bankBranch = await _bankBranchRepository.GetAsync(id);
 
             if (bankBranch.Id == null)

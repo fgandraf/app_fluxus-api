@@ -1,31 +1,26 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using FluxusApi.Models;
 using FluxusApi.Repositories.Contracts;
+using Microsoft.AspNetCore.Authorization;
 
 namespace FluxusApi.Controllers;
 
+[Authorize]
 [ApiController]
 [Route("v1/invoices")]
 public class InvoiceController : ControllerBase
 {
     private readonly IInvoiceRepository _invoiceRepository;
-    private readonly bool _authenticated;
 
-    public InvoiceController(IHttpContextAccessor context, IInvoiceRepository invoiceRepository)
-    {
-        _authenticated = new Authenticator(context).Authenticate();
-        _invoiceRepository = invoiceRepository;
-    }
-
+    public InvoiceController(IInvoiceRepository invoiceRepository)
+        => _invoiceRepository = invoiceRepository;
+    
 
     [HttpGet]
     public async Task<IActionResult> GetAll()
     {
         try
         {
-            if (!_authenticated)
-                return BadRequest();
-                
             var result = await _invoiceRepository.GetAllAsync();
             return result == null ? NotFound() : Ok(((List<Invoice>)result).OrderBy(x => x.IssueDate));
         }
@@ -41,9 +36,6 @@ public class InvoiceController : ControllerBase
     {
         try
         {
-            if (!_authenticated)
-                return BadRequest();
-                
             var result = await _invoiceRepository.GetDescriptionAsync(id);
             return result == null ? NotFound() : Ok(result);
         }
@@ -59,9 +51,6 @@ public class InvoiceController : ControllerBase
     {
         try
         {
-            if (!_authenticated)
-                return BadRequest();
-                
             var id = await _invoiceRepository.InsertAsync(invoice);
             return Ok(id);
         }
@@ -77,9 +66,6 @@ public class InvoiceController : ControllerBase
     {
         try
         {
-            if (!_authenticated)
-                return BadRequest();
-                
             await _invoiceRepository.UpdateTotalsAsync(invoice);
             return Ok();
         }
@@ -95,9 +81,6 @@ public class InvoiceController : ControllerBase
     {
         try
         {
-            if (!_authenticated)
-                return BadRequest();
-                
             var invoice = await _invoiceRepository.GetAsync(id);
 
             if (invoice.Id == 0)

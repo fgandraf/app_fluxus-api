@@ -1,31 +1,26 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using FluxusApi.Models;
 using FluxusApi.Repositories.Contracts;
+using Microsoft.AspNetCore.Authorization;
 
 namespace FluxusApi.Controllers;
 
+[Authorize]
 [ApiController]
 [Route("v1/services")]
 public class ServiceController : ControllerBase
 {
     private readonly IServiceRepository _serviceRepository;
-    private readonly bool _authenticated;
 
-    public ServiceController(IHttpContextAccessor context, IServiceRepository serviceRepository)
-    {
-        _authenticated = new Authenticator(context).Authenticate();
-        _serviceRepository = serviceRepository;
-    }
-
-
+    public ServiceController(IServiceRepository serviceRepository)
+        => _serviceRepository = serviceRepository;
+    
+    
     [HttpGet]
     public async Task<IActionResult> GetAll()
     {
         try
         {
-            if (!_authenticated)
-                return BadRequest();
-                
             var result = await _serviceRepository.GetAllAsync();
             return result == null ? NotFound() : Ok(result);
         }
@@ -41,9 +36,6 @@ public class ServiceController : ControllerBase
     {
         try
         {
-            if (!_authenticated)
-                return BadRequest();
-                
             var result = await _serviceRepository.GetAsync(id);
             return result == null ? NotFound() : Ok(result);
         }
@@ -59,9 +51,6 @@ public class ServiceController : ControllerBase
     {
         try
         {
-            if (!_authenticated)
-                return BadRequest();
-                
             var id = await _serviceRepository.InsertAsync(service);
             return Ok(id);
         }
@@ -77,9 +66,6 @@ public class ServiceController : ControllerBase
     {
         try
         {
-            if (!_authenticated)
-                return BadRequest();
-                
             await _serviceRepository.UpdateAsync(service);
             return Ok();
         }
@@ -95,9 +81,6 @@ public class ServiceController : ControllerBase
     {
         try
         {
-            if (!_authenticated)
-                return BadRequest();
-                
             var service = await _serviceRepository.GetAsync(id);
 
             if (service.Id == 0)

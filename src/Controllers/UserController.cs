@@ -3,6 +3,7 @@ using FluxusApi.Repositories.Contracts;
 using FluxusApi.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using SecureIdentity.Password;
 
 namespace FluxusApi.Controllers;
 
@@ -27,13 +28,13 @@ public class UserController : ControllerBase
         var userInDb = await _userRepository.GetByUserNameAsync(user.UserName);
         
         if (userInDb == null || userInDb.Id == 0)
-            return NotFound($"Nenhum usuário '{user.UserName}' encontrado");
+            return NotFound("Usuário ou senha inválida!");
         
         if (!userInDb.UserActive)
-            return BadRequest("Usuário inativo");
+            return BadRequest("Usuário ou senha inválida!");
         
-        if (user.UserPassword != userInDb.UserPassword)
-            return BadRequest("Senha incorreta");
+        if (!PasswordHasher.Verify(userInDb.UserPassword, user.UserPassword))
+            return BadRequest("Usuário ou senha inválida!");
         
         var token = _tokenService.GenerateToken(user);
         return Ok(token);
@@ -72,6 +73,8 @@ public class UserController : ControllerBase
     {
         try
         {
+            user.UserPassword = PasswordHasher.Hash(user.UserPassword);
+            
             var id = await _userRepository.InsertAsync(user);
             return Ok(id);
         }
@@ -87,6 +90,8 @@ public class UserController : ControllerBase
     {
         try
         {
+            user.UserPassword = PasswordHasher.Hash(user.UserPassword);
+            
             await _userRepository.UpdateAsync(user);
             return Ok();
         }

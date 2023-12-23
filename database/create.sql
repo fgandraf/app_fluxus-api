@@ -94,7 +94,7 @@ CREATE TABLE `User` (
 	`LegalResponsible` BIT DEFAULT 0,
 	`UserActive` BIT DEFAULT 0,
 	`UserName` VARCHAR(40) DEFAULT NULL,
-	`UserPassword` VARCHAR(15) DEFAULT NULL,
+	`UserPassword` VARCHAR(100) DEFAULT NULL,
 	
 	PRIMARY KEY (`Id`),
 

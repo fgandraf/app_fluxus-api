@@ -1,6 +1,7 @@
 using FluxusApi.Models;
 using FluxusApi.Repositories.Contracts;
 using FluxusApi.Services;
+using FluxusApi.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using SecureIdentity.Password;
@@ -23,7 +24,7 @@ public class UserController : ControllerBase
     
     [AllowAnonymous]
     [HttpPost("login")]
-    public async Task<IActionResult> Login([FromBody]User user)
+    public async Task<IActionResult> Login([FromBody]LoginViewModel user)
     {
         var userInDb = await _userRepository.GetByUserNameAsync(user.UserName);
         
@@ -33,10 +34,10 @@ public class UserController : ControllerBase
         if (!userInDb.UserActive)
             return BadRequest("Usuário ou senha inválida!");
         
-        if (!PasswordHasher.Verify(userInDb.UserPassword, user.UserPassword))
+        if (!PasswordHasher.Verify(userInDb.UserPassword, user.Password))
             return BadRequest("Usuário ou senha inválida!");
         
-        var token = _tokenService.GenerateToken(user);
+        var token = _tokenService.GenerateToken(userInDb);
         return Ok(token);
     }
     

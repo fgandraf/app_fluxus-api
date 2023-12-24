@@ -22,6 +22,8 @@ public class ProfileController : ControllerBase
         try
         {
             var result = await _profileRepository.GetAsync(1);
+            var file = await System.IO.File.ReadAllBytesAsync("wwwroot/logo.png");
+            result.Logo = file;
             return result == null ? NotFound() : Ok(result);
         }
         catch (Exception ex)
@@ -36,8 +38,9 @@ public class ProfileController : ControllerBase
     {
         try
         {
-            var result = await _profileRepository.GetLogoAsync();
-            return result == null ? NotFound() : Ok(result);
+            var file = await System.IO.File.ReadAllBytesAsync("wwwroot/logo.png");
+            var bytes = Convert.ToBase64String(file);
+            return Ok(bytes);
         }
         catch (Exception ex)
         {
@@ -45,13 +48,14 @@ public class ProfileController : ControllerBase
         }
     }
 
-
     [HttpGet("to-print")]
     public async Task<IActionResult> GetToPrint()
     {
         try
         {
             var result = await _profileRepository.GetToPrintAsync();
+            var file = await System.IO.File.ReadAllBytesAsync("wwwroot/logo.png");
+            result.Logo = file;
             return result == null ? NotFound() : Ok(result);
         }
         catch (Exception ex)
@@ -81,6 +85,9 @@ public class ProfileController : ControllerBase
     {
         try
         {
+            await System.IO.File.WriteAllBytesAsync("wwwroot/logo.png", profile.Logo);
+            profile.Logo = null;
+            
             var id = await _profileRepository.InsertAsync(profile);
             return Ok(id);
         }
@@ -91,19 +98,7 @@ public class ProfileController : ControllerBase
     }
 
 
-    [HttpPut("logo")]
-    public async Task<IActionResult> Put([FromBody] byte[] logo)
-    {
-        try
-        {
-            await _profileRepository.UpdateLogoAsync(logo);
-            return Ok();
-        }
-        catch (Exception ex)
-        {
-            return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
-        }
-    }
+    
 
 
     [HttpPut]
@@ -111,6 +106,9 @@ public class ProfileController : ControllerBase
     {
         try
         {
+            await System.IO.File.WriteAllBytesAsync("wwwroot/logo.png", profile.Logo);
+            profile.Logo = null;
+            
             await _profileRepository.UpdateAsync(profile);
             return Ok();
         }

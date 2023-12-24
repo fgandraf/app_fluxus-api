@@ -159,7 +159,14 @@ public class ServiceOrderRepository : Repository<ServiceOrder>, IServiceOrderRep
         const string query = @"
                 SELECT DISTINCT 
                     t1.ProfessionalId, 
-                    t2.Nameid 
+                        CONCAT(
+                        IFNULL(LEFT(t2.Profession, 3), ''), 
+                        '. ', 
+                        SUBSTRING_INDEX(t2.Name, ' ', 1),
+                        ' ',
+                        SUBSTRING_INDEX(SUBSTRING_INDEX(t2.Name, ' ', -1), ' ', 1)
+                        ) 
+                        AS Nameid 
                 FROM 
                     ServiceOrder t1 
                 INNER JOIN 
@@ -169,7 +176,7 @@ public class ServiceOrderRepository : Repository<ServiceOrder>, IServiceOrderRep
                 WHERE 
                     t1.InvoiceId = @invoiceId 
                 ORDER BY 
-                    t2.Nameid";
+                    Nameid";
 
         return await Connection.QueryAsync(query, new { invoiceId });
     }

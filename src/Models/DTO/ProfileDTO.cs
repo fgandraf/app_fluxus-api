@@ -1,9 +1,9 @@
 ﻿using Dapper.Contrib.Extensions;
 
-namespace FluxusApi.Models;
+namespace FluxusApi.Models.DTO;
 
 [Table("Profile")]
-public class Profile
+public class ProfileDTO
 {
     public long Id { get; set; }
     public string Cnpj { get; set; }
@@ -32,5 +32,4 @@ public class Profile
     public DateTime ContractEstablished { get; set; }
     public DateTime ContractStart { get; set; }
     public DateTime ContractEnd { get; set; }
-    public byte[] Logo { get; set; }
 }

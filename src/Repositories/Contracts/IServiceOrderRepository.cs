@@ -1,5 +1,6 @@
 using System.Collections;
 using FluxusApi.Models;
+using FluxusApi.Models.DTO;
 using FluxusApi.Models.Enums;
 
 namespace FluxusApi.Repositories.Contracts;
@@ -14,9 +15,9 @@ public interface IServiceOrderRepository
     Task<IEnumerable> GetOrderedCitiesAsync();
     Task<int> UpdateInvoiceIdAsync(int invoiceId, List<int> orders);
     Task<int> UpdateStatusAsync(int id, EnumStatus status);
-    Task<long> InsertAsync(ServiceOrder model);
-    Task<bool> UpdateAsync(ServiceOrder model);
-    Task<bool> DeleteAsync(ServiceOrder model);
-    Task<ServiceOrder> GetAsync(int id);
+    Task<long> InsertAsync(ServiceOrderDTO model);
+    Task<bool> UpdateAsync(ServiceOrderDTO model);
+    Task<bool> DeleteAsync(ServiceOrderDTO model);
+    Task<ServiceOrderDTO> GetAsync(int id);
     Task<IEnumerable> GetAllAsync();
 }

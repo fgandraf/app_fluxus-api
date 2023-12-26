@@ -1,12 +1,13 @@
 ﻿using Dapper.Contrib.Extensions;
 
-namespace FluxusApi.Models;
+namespace FluxusApi.Models.DTO;
 
 [Table("BankBranch")]
-public class BankBranch
+public class BankBranchDTO
 {
     [ExplicitKey] 
     public string Id { get; set; }
+    
     public string Name { get; set; }
     public string Address { get; set; }
     public string Complement { get; set; }

@@ -1,11 +1,12 @@
 ﻿using MySql.Data.MySqlClient;
 using FluxusApi.Models;
 using Dapper;
+using FluxusApi.Models.DTO;
 using FluxusApi.Repositories.Contracts;
 
 namespace FluxusApi.Repositories;
 
-public class InvoiceRepository : Repository<Invoice>, IInvoiceRepository
+public class InvoiceRepository : Repository<InvoiceDTO>, IInvoiceRepository
 {
     public InvoiceRepository(MySqlConnection connection) : base(connection) { }
         
@@ -16,7 +17,7 @@ public class InvoiceRepository : Repository<Invoice>, IInvoiceRepository
         return await Connection.QueryFirstAsync(query, new { id = id });
     }
         
-    public async Task<int> UpdateTotalsAsync(Invoice invoice)
+    public async Task<int> UpdateTotalsAsync(InvoiceDTO invoiceDto)
     {
         const string query = @"
                 UPDATE 
@@ -28,6 +29,6 @@ public class InvoiceRepository : Repository<Invoice>, IInvoiceRepository
                 WHERE
                     Id = @Id";
 
-        return await Connection.ExecuteAsync(query, invoice);
+        return await Connection.ExecuteAsync(query, invoiceDto);
     }
 }

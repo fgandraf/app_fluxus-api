@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using FluxusApi.Models;
+using FluxusApi.Models.DTO;
 using FluxusApi.Repositories.Contracts;
 using Microsoft.AspNetCore.Authorization;
 
@@ -62,12 +63,12 @@ public class BankBranchController : ControllerBase
 
 
     [HttpPost]
-    public async Task<IActionResult> Post([FromBody] BankBranch bankBranch)
+    public async Task<IActionResult> Post([FromBody]BankBranchDTO bankBranchDto)
     {
         try
         {
-            await _bankBranchRepository.InsertAsync(bankBranch);
-            return Ok(bankBranch.Id);
+            await _bankBranchRepository.InsertAsync(bankBranchDto);
+            return Ok(bankBranchDto.Id);
         }
         catch (Exception ex)
         {
@@ -77,11 +78,11 @@ public class BankBranchController : ControllerBase
 
 
     [HttpPut]
-    public async Task<IActionResult> Put([FromBody] BankBranch bankBranch)
+    public async Task<IActionResult> Put([FromBody]BankBranchDTO bankBranchDto)
     {
         try
         {
-            await _bankBranchRepository.UpdateAsync(bankBranch);
+            await _bankBranchRepository.UpdateAsync(bankBranchDto);
             return Ok();
         }
         catch (Exception ex)

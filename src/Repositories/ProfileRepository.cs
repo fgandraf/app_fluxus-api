@@ -2,15 +2,17 @@
 using FluxusApi.Models;
 using System.Collections;
 using Dapper;
+using Dapper.Contrib.Extensions;
+using FluxusApi.Models.DTO;
+using FluxusApi.Models.ViewModels;
 using FluxusApi.Repositories.Contracts;
-using FluxusApi.ViewModels;
 
 namespace FluxusApi.Repositories;
 
-public class ProfileRepository : Repository<Profile>, IProfileRepository
+public class ProfileRepository : Repository<ProfileDTO>, IProfileRepository
 {
     public ProfileRepository(MySqlConnection connection) : base(connection) { }
-        
+    
     public async Task<byte[]>  GetLogoAsync()
     {
         const string query = @"SELECT Logo FROM Profile WHERE Id = 1";
@@ -26,8 +28,7 @@ public class ProfileRepository : Repository<Profile>, IProfileRepository
                     Cnpj, 
                     CompanyName, 
                     ContractNotice, 
-                    ContractNumber,
-                    Logo 
+                    ContractNumber
                 FROM 
                     Profile 
                 WHERE 

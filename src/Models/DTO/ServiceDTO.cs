@@ -1,9 +1,9 @@
 ﻿using Dapper.Contrib.Extensions;
 
-namespace FluxusApi.Models;
+namespace FluxusApi.Models.DTO;
 
 [Table("Service")]
-public class Service
+public class ServiceDTO
 {
     public long Id { get; set; }
     public string Tag { get; set; }

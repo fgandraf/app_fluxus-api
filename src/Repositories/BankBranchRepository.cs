@@ -2,11 +2,12 @@
 using FluxusApi.Models;
 using System.Collections;
 using Dapper;
+using FluxusApi.Models.DTO;
 using FluxusApi.Repositories.Contracts;
 
 namespace FluxusApi.Repositories;
 
-public class BankBranchRepository : Repository<BankBranch>, IBankBranchRepository
+public class BankBranchRepository : Repository<BankBranchDTO>, IBankBranchRepository
 {
     public BankBranchRepository(MySqlConnection connection) : base(connection) { }
         

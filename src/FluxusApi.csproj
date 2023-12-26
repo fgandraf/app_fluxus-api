@@ -24,7 +24,8 @@
   <ItemGroup>
     <Compile Remove="Authenticator.cs" />
     <Compile Remove="AddCustomHeader.cs" />
-    <Compile Remove="Controllers\AccountController.cs" />
+    <Compile Remove="Models\ViewModels\ProfileViewModel.cs" />
+    <Compile Remove="Models\InputModels\LogoInputModel.cs" />
   </ItemGroup>
   
 </Project>

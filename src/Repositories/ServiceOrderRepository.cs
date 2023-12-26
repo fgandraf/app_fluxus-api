@@ -3,11 +3,12 @@ using FluxusApi.Models;
 using FluxusApi.Models.Enums;
 using System.Collections;
 using Dapper;
+using FluxusApi.Models.DTO;
 using FluxusApi.Repositories.Contracts;
 
 namespace FluxusApi.Repositories;
 
-public class ServiceOrderRepository : Repository<ServiceOrder>, IServiceOrderRepository
+public class ServiceOrderRepository : Repository<ServiceOrderDTO>, IServiceOrderRepository
 {
     public ServiceOrderRepository(MySqlConnection connection) : base(connection) { }
         

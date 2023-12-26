@@ -1,5 +1,6 @@
 using System.Collections;
 using FluxusApi.Models;
+using FluxusApi.Models.DTO;
 
 namespace FluxusApi.Repositories.Contracts;
 
@@ -7,8 +8,8 @@ public interface IProfessionalRepository
 {
     Task<IEnumerable> GetIndexAsync();
     Task<IEnumerable> GetTagNameidAsync();
-    Task<long> InsertAsync(Professional model);
-    Task<bool> UpdateAsync(Professional model);
-    Task<bool> DeleteAsync(Professional model);
-    Task<Professional> GetAsync(int id);
+    Task<long> InsertAsync(ProfessionalDTO model);
+    Task<bool> UpdateAsync(ProfessionalDTO model);
+    Task<bool> DeleteAsync(ProfessionalDTO model);
+    Task<ProfessionalDTO> GetAsync(int id);
 }

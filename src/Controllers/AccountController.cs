@@ -1,7 +1,7 @@
-using FluxusApi.Models;
+using FluxusApi.Models.DTO;
+using FluxusApi.Models.ViewModels;
 using FluxusApi.Repositories.Contracts;
 using FluxusApi.Services;
-using FluxusApi.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using SecureIdentity.Password;
@@ -10,17 +10,19 @@ namespace FluxusApi.Controllers;
 
 [Authorize]
 [ApiController]
-[Route("v1/users")]
-public class UserController : ControllerBase
+[Route("v1/accounts")]
+public class AccountController : ControllerBase
 {
     private readonly IUserRepository _userRepository;
     private readonly TokenService _tokenService;
-
-    public UserController(TokenService tokenService, IUserRepository userRepository)
+    
+    
+    public AccountController(TokenService tokenService, IUserRepository userRepository)
     {
         _tokenService = tokenService;
         _userRepository = userRepository;
     }
+    
     
     [AllowAnonymous]
     [HttpPost("login")]
@@ -40,6 +42,7 @@ public class UserController : ControllerBase
         var token = _tokenService.GenerateToken(userInDb);
         return Ok(token);
     }
+    
     
     [HttpGet("username/{userName}")]
     public async Task<IActionResult> GetByUsername(string userName)
@@ -70,13 +73,13 @@ public class UserController : ControllerBase
     }
     
     [HttpPost]
-    public async Task<IActionResult> Post([FromBody] User user)
+    public async Task<IActionResult> Post([FromBody] UserDTO userDto)
     {
         try
         {
-            user.UserPassword = PasswordHasher.Hash(user.UserPassword);
+            userDto.UserPassword = PasswordHasher.Hash(userDto.UserPassword);
             
-            var id = await _userRepository.InsertAsync(user);
+            var id = await _userRepository.InsertAsync(userDto);
             return Ok(id);
         }
         catch (Exception ex)
@@ -87,13 +90,13 @@ public class UserController : ControllerBase
 
 
     [HttpPut]
-    public async Task<IActionResult> Put([FromBody] User user)
+    public async Task<IActionResult> Put([FromBody] UserDTO userDto)
     {
         try
         {
-            user.UserPassword = PasswordHasher.Hash(user.UserPassword);
+            userDto.UserPassword = PasswordHasher.Hash(userDto.UserPassword);
             
-            await _userRepository.UpdateAsync(user);
+            await _userRepository.UpdateAsync(userDto);
             return Ok();
         }
         catch (Exception ex)
@@ -121,4 +124,5 @@ public class UserController : ControllerBase
             return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
         }
     }
+    
 }

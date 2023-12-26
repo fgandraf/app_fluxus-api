@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using FluxusApi.Models;
+using FluxusApi.Models.DTO;
 using FluxusApi.Repositories.Contracts;
 using Microsoft.AspNetCore.Authorization;
 
@@ -22,7 +23,7 @@ public class InvoiceController : ControllerBase
         try
         {
             var result = await _invoiceRepository.GetAllAsync();
-            return result == null ? NotFound() : Ok(((List<Invoice>)result).OrderBy(x => x.IssueDate));
+            return result == null ? NotFound() : Ok(((List<InvoiceDTO>)result).OrderBy(x => x.IssueDate));
         }
         catch (Exception ex)
         {
@@ -47,11 +48,11 @@ public class InvoiceController : ControllerBase
 
 
     [HttpPost]
-    public async Task<IActionResult> Post([FromBody] Invoice invoice)
+    public async Task<IActionResult> Post([FromBody] InvoiceDTO invoiceDto)
     {
         try
         {
-            var id = await _invoiceRepository.InsertAsync(invoice);
+            var id = await _invoiceRepository.InsertAsync(invoiceDto);
             return Ok(id);
         }
         catch (Exception ex)
@@ -62,11 +63,11 @@ public class InvoiceController : ControllerBase
 
 
     [HttpPut("totals")]
-    public async Task<IActionResult> PutTotals([FromBody] Invoice invoice)
+    public async Task<IActionResult> PutTotals([FromBody] InvoiceDTO invoiceDto)
     {
         try
         {
-            await _invoiceRepository.UpdateTotalsAsync(invoice);
+            await _invoiceRepository.UpdateTotalsAsync(invoiceDto);
             return Ok();
         }
         catch (Exception ex)

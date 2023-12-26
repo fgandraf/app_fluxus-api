@@ -1,6 +1,7 @@
 using System.Collections;
 using FluxusApi.Models;
-using FluxusApi.ViewModels;
+using FluxusApi.Models.DTO;
+using FluxusApi.Models.ViewModels;
 
 namespace FluxusApi.Repositories.Contracts;
 
@@ -9,9 +10,9 @@ public interface IProfileRepository
     Task<byte[]> GetLogoAsync();
     Task<ProfileToPrintViewModel> GetToPrintAsync();
     Task<string> GetTradingNameAsync();
-    Task<long> InsertAsync(Profile model);
-    Task<bool> UpdateAsync(Profile model);
-    Task<bool> DeleteAsync(Profile model);
-    Task<Profile> GetAsync(int id);
+    Task<long> InsertAsync(ProfileDTO model);
+    Task<bool> UpdateAsync(ProfileDTO model);
+    Task<bool> DeleteAsync(ProfileDTO model);
+    Task<ProfileDTO> GetAsync(int id);
     Task<IEnumerable> GetAllAsync();
 }

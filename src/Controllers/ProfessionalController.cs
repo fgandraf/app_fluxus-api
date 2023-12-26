@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using FluxusApi.Models;
+using FluxusApi.Models.DTO;
 using FluxusApi.Repositories.Contracts;
 using Microsoft.AspNetCore.Authorization;
 
@@ -62,11 +63,11 @@ public class ProfessionalController : ControllerBase
 
 
     [HttpPost]
-    public async Task<IActionResult> Post([FromBody] Professional professional)
+    public async Task<IActionResult> Post([FromBody] ProfessionalDTO professionalDto)
     {
         try
         {
-            var id = await _professionalRepository.InsertAsync(professional);
+            var id = await _professionalRepository.InsertAsync(professionalDto);
             return Ok(id);
         }
         catch (Exception ex)
@@ -77,11 +78,11 @@ public class ProfessionalController : ControllerBase
 
 
     [HttpPut]
-    public async Task<IActionResult> Put([FromBody] Professional professional)
+    public async Task<IActionResult> Put([FromBody] ProfessionalDTO professionalDto)
     {
         try
         {
-            await _professionalRepository.UpdateAsync(professional);
+            await _professionalRepository.UpdateAsync(professionalDto);
             return Ok();
         }
         catch (Exception ex)

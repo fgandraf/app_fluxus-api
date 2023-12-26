@@ -1,4 +1,4 @@
-namespace FluxusApi.ViewModels;
+namespace FluxusApi.Models.ViewModels;
 
 public class ProfileToPrintViewModel
 {

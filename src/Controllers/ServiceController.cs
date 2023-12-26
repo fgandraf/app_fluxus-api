@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using FluxusApi.Models;
+using FluxusApi.Models.DTO;
 using FluxusApi.Repositories.Contracts;
 using Microsoft.AspNetCore.Authorization;
 
@@ -47,11 +48,11 @@ public class ServiceController : ControllerBase
 
 
     [HttpPost]
-    public async Task<IActionResult> Post([FromBody] Service service)
+    public async Task<IActionResult> Post([FromBody] ServiceDTO serviceDto)
     {
         try
         {
-            var id = await _serviceRepository.InsertAsync(service);
+            var id = await _serviceRepository.InsertAsync(serviceDto);
             return Ok(id);
         }
         catch (Exception ex)
@@ -62,11 +63,11 @@ public class ServiceController : ControllerBase
 
 
     [HttpPut]
-    public async Task<IActionResult> Put([FromBody] Service service)
+    public async Task<IActionResult> Put([FromBody] ServiceDTO serviceDto)
     {
         try
         {
-            await _serviceRepository.UpdateAsync(service);
+            await _serviceRepository.UpdateAsync(serviceDto);
             return Ok();
         }
         catch (Exception ex)

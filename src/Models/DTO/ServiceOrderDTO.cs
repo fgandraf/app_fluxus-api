@@ -1,10 +1,10 @@
 ﻿using Dapper.Contrib.Extensions;
 using FluxusApi.Models.Enums;
 
-namespace FluxusApi.Models;
+namespace FluxusApi.Models.DTO;
 
 [Table("ServiceOrder")]
-public class ServiceOrder
+public class ServiceOrderDTO
 {
     public long Id { get; set; }
     public string ReferenceCode { get; set; }

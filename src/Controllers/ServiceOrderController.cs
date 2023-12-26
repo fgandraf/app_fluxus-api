@@ -1,6 +1,7 @@
 ﻿using System.Text;
 using Microsoft.AspNetCore.Mvc;
 using FluxusApi.Models;
+using FluxusApi.Models.DTO;
 using FluxusApi.Models.Enums;
 using FluxusApi.Repositories.Contracts;
 using FluxusApi.Services;
@@ -124,12 +125,12 @@ public class ServiceOrderController : ControllerBase
     }
     
     [HttpPost]
-    public async Task<IActionResult> Post([FromBody] ServiceOrder serviceOrder, [FromServices] EmailService emailService)
+    public async Task<IActionResult> Post([FromBody] ServiceOrderDTO serviceOrderDto, [FromServices] EmailService emailService)
     {
         try
         {
-            var id = await _serviceOrderRepository.InsertAsync(serviceOrder);
-            emailService.Send(EmailTitleBuilder(serviceOrder), EmailBodyBuilder(serviceOrder));
+            var id = await _serviceOrderRepository.InsertAsync(serviceOrderDto);
+            emailService.Send(EmailTitleBuilder(serviceOrderDto), EmailBodyBuilder(serviceOrderDto));
             
             return Ok(id);
         }
@@ -141,12 +142,12 @@ public class ServiceOrderController : ControllerBase
 
 
     [HttpPut]
-    public async Task<IActionResult> Put([FromBody] ServiceOrder serviceOrder, [FromServices] EmailService emailService)
+    public async Task<IActionResult> Put([FromBody] ServiceOrderDTO serviceOrderDto, [FromServices] EmailService emailService)
     {
         try
         {
-            await _serviceOrderRepository.UpdateAsync(serviceOrder);
-            emailService.Send(EmailTitleBuilder(serviceOrder), EmailBodyBuilder(serviceOrder));
+            await _serviceOrderRepository.UpdateAsync(serviceOrderDto);
+            emailService.Send(EmailTitleBuilder(serviceOrderDto), EmailBodyBuilder(serviceOrderDto));
             
             return Ok();
         }
@@ -207,21 +208,21 @@ public class ServiceOrderController : ControllerBase
     }
 
 
-    private string EmailBodyBuilder(ServiceOrder serviceOrder)
+    private string EmailBodyBuilder(ServiceOrderDTO serviceOrderDto)
     {
         var body = new StringBuilder();
-        body.Append($"<p>Referência: {serviceOrder.ReferenceCode}</p>");
-        body.Append($"<p>Data da Ordem: {DateTime.Parse(serviceOrder.OrderDate).ToString("dd/MM/yyyy")}</p>");
-        body.Append($"<p>Cliente: {serviceOrder.CustomerName}</p>");
-        body.Append($"<p>Contato: {serviceOrder.ContactName}</p>");
-        body.Append($"<p>Telefone: {serviceOrder.ContactPhone}</p>");
-        body.Append($"<p>Coordenadas: {serviceOrder.Coordinates}</p>");
+        body.Append($"<p>Referência: {serviceOrderDto.ReferenceCode}</p>");
+        body.Append($"<p>Data da Ordem: {DateTime.Parse(serviceOrderDto.OrderDate).ToString("dd/MM/yyyy")}</p>");
+        body.Append($"<p>Cliente: {serviceOrderDto.CustomerName}</p>");
+        body.Append($"<p>Contato: {serviceOrderDto.ContactName}</p>");
+        body.Append($"<p>Telefone: {serviceOrderDto.ContactPhone}</p>");
+        body.Append($"<p>Coordenadas: {serviceOrderDto.Coordinates}</p>");
 
         return body.ToString();
     }
     
-    private string EmailTitleBuilder(ServiceOrder serviceOrder)
-        => serviceOrder.City + "-" + Convert.ToInt32(serviceOrder.ReferenceCode.Substring(10, 9));
+    private string EmailTitleBuilder(ServiceOrderDTO serviceOrderDto)
+        => serviceOrderDto.City + "-" + Convert.ToInt32(serviceOrderDto.ReferenceCode.Substring(10, 9));
     
 
 }

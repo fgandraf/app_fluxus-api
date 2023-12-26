@@ -2,11 +2,12 @@
 using FluxusApi.Models;
 using System.Collections;
 using Dapper;
+using FluxusApi.Models.DTO;
 using FluxusApi.Repositories.Contracts;
 
 namespace FluxusApi.Repositories;
 
-public class ProfessionalRepository : Repository<Professional>, IProfessionalRepository
+public class ProfessionalRepository : Repository<ProfessionalDTO>, IProfessionalRepository
 {
     public ProfessionalRepository(MySqlConnection connection) : base(connection) { }
         

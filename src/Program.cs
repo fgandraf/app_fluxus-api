@@ -15,22 +15,16 @@ builder.Services.AddBearerAuthentication(builder.Configuration);
 builder.Services.AddDatabaseServices(builder.Configuration);
 builder.Services.AddRepositoryServices();
 
-// Extends Services to add swagger configuration in development environment
-//if (builder.Environment.IsDevelopment())
-    builder.Services.AddSwaggerConfiguration();
+builder.Services.AddSwaggerConfiguration();
 
 // Configure Kestrel to listen on all interfaces on port 5001
 //if (builder.Environment.IsProduction())
-    //builder.WebHost.UseKestrel(serverOptions => serverOptions.ListenAnyIP(5001));
+//    builder.WebHost.UseKestrel(serverOptions => serverOptions.ListenAnyIP(5001));
 
 var app = builder.Build();
 
-// Swagger UI configuration in development environment
-//if (app.Environment.IsDevelopment())
-//{
-    app.UseSwagger();
-    app.UseSwaggerUI();
-//}
+app.UseSwagger();
+app.UseSwaggerUI();
 
 // Configure SMTP Configurations
 var smtp = new Configuration.SmtpConfiguration();

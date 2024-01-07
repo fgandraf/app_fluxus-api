@@ -11,8 +11,8 @@ public class ServiceOrderDTO
     public string Branch { get; set; }
     public string OrderDate { get; set; }
     public DateTime Deadline { get; set; }
-    public string ProfessionalId { get; set; }
-    public string ServiceId { get; set; }
+    public long ProfessionalId { get; set; }
+    public long ServiceId { get; set; }
     public decimal ServiceAmount { get; set; }
     public decimal MileageAllowance { get; set; }
     public bool Siopi { get; set; }

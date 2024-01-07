@@ -1,6 +1,7 @@
 using System.Text;
-using FluxusApi.Repositories;
 using FluxusApi.Repositories.Contracts;
+using FluxusApi.Repositories.Database;
+using FluxusApi.Repositories.Mock;
 using FluxusApi.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
@@ -15,15 +16,33 @@ public static class ServiceExtensions
         => services.AddScoped<MySqlConnection>(sp => 
             new MySqlConnection(configuration.GetConnectionString("Default")));
 
-    public static IServiceCollection AddRepositoryServices(this IServiceCollection services)
+    public static IServiceCollection AddRepositoryServices(this IServiceCollection services, IConfiguration configuration)
     {
-        services.AddScoped<IBankBranchRepository, BankBranchRepository>();
-        services.AddScoped<IInvoiceRepository, InvoiceRepository>();
-        services.AddScoped<IProfessionalRepository, ProfessionalRepository>();
-        services.AddScoped<IProfileRepository, ProfileRepository>();
-        services.AddScoped<IServiceOrderRepository, ServiceOrderRepository>();
-        services.AddScoped<IServiceRepository, ServiceRepository>();
-        services.AddScoped<IUserRepository, UserRepository>();
+        var isMock = configuration.GetValue<bool>("MockDataSource");
+
+        if (isMock)
+        {
+            services.AddScoped<IBankBranchRepository, BankBranchRepositoryMock>();
+            services.AddScoped<IInvoiceRepository, InvoiceRepositoryMock>();
+            services.AddScoped<IProfessionalRepository, ProfessionalRepositoryMock>();
+            services.AddScoped<IProfileRepository, ProfileRepositoryMock>();
+            services.AddScoped<IServiceOrderRepository, ServiceOrderRepositoryMock>();
+            services.AddScoped<IServiceRepository, ServiceRepositoryMock>();
+            services.AddScoped<IUserRepository, UserRepositoryMock>();
+        }
+        else
+        {
+            services.AddScoped<IBankBranchRepository, BankBranchRepository>();
+            services.AddScoped<IInvoiceRepository, InvoiceRepository>();
+            services.AddScoped<IProfessionalRepository, ProfessionalRepository>();
+            services.AddScoped<IProfileRepository, ProfileRepository>();
+            services.AddScoped<IServiceOrderRepository, ServiceOrderRepository>();
+            services.AddScoped<IServiceRepository, ServiceRepository>();
+            services.AddScoped<IUserRepository, UserRepository>();
+        }
+        
+        
+        
         
         services.AddTransient<TokenService>();
         services.AddTransient<EmailService>();

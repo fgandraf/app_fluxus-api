@@ -13,13 +13,12 @@ builder.Services.AddBearerAuthentication(builder.Configuration);
 
 // Extends Services to add Dependency Injection services configuration
 builder.Services.AddDatabaseServices(builder.Configuration);
-builder.Services.AddRepositoryServices();
+builder.Services.AddRepositoryServices(builder.Configuration);
 
 builder.Services.AddSwaggerConfiguration();
 
-// Configure Kestrel to listen on all interfaces on port 5001
-//if (builder.Environment.IsProduction())
-//    builder.WebHost.UseKestrel(serverOptions => serverOptions.ListenAnyIP(5001));
+// For staging environment, configure Kestrel to listen on all interfaces on port 5001
+//builder.WebHost.UseKestrel(serverOptions => serverOptions.ListenAnyIP(5001));
 
 var app = builder.Build();
 

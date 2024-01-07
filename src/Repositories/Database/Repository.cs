@@ -2,7 +2,7 @@
 using Dapper.Contrib.Extensions;
 using MySql.Data.MySqlClient;
 
-namespace FluxusApi.Repositories;
+namespace FluxusApi.Repositories.Database;
 
 public class Repository<T> where T : class
 {
@@ -32,7 +32,7 @@ public class Repository<T> where T : class
     public async Task<T> GetAsync(string id)
         => await Connection.GetAsync<T>(id);
         
-    public async Task<IEnumerable> GetAllAsync()
-        => await Connection.GetAllAsync<T>();
+    public async Task<List<T>> GetAllAsync()
+        => (List<T>)await Connection.GetAllAsync<List<T>>();
 
 }

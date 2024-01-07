@@ -1,11 +1,10 @@
 using System.Collections;
 using Dapper;
-using FluxusApi.Models;
 using FluxusApi.Models.DTO;
 using FluxusApi.Repositories.Contracts;
 using MySql.Data.MySqlClient;
 
-namespace FluxusApi.Repositories;
+namespace FluxusApi.Repositories.Database;
 
 public class UserRepository: Repository<UserDTO>, IUserRepository
 {
@@ -24,7 +23,7 @@ public class UserRepository: Repository<UserDTO>, IUserRepository
         return await Connection.QueryFirstOrDefaultAsync<UserDTO>(query, new { userName });
     }
 
-    public async Task<IEnumerable> GetByProfessionalIdAsync(int professionalId)
+    public async Task<UserDTO> GetByProfessionalIdAsync(int professionalId)
     {
         const string query = @"
                 SELECT 

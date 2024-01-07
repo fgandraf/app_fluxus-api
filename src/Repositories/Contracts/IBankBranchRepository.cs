@@ -12,5 +12,5 @@ public interface IBankBranchRepository
     Task<bool> UpdateAsync(BankBranchDTO model);
     Task<bool> DeleteAsync(BankBranchDTO model);
     Task<BankBranchDTO> GetAsync(string id);
-    Task<IEnumerable> GetAllAsync();
+    Task<List<BankBranchDTO>> GetAllAsync();
 }

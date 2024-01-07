@@ -19,5 +19,5 @@ public interface IServiceOrderRepository
     Task<bool> UpdateAsync(ServiceOrderDTO model);
     Task<bool> DeleteAsync(ServiceOrderDTO model);
     Task<ServiceOrderDTO> GetAsync(int id);
-    Task<IEnumerable> GetAllAsync();
+    Task<List<ServiceOrderDTO>> GetAllAsync();
 }

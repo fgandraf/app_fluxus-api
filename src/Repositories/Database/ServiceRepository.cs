@@ -1,9 +1,8 @@
-﻿using FluxusApi.Models;
-using FluxusApi.Models.DTO;
+﻿using FluxusApi.Models.DTO;
 using FluxusApi.Repositories.Contracts;
 using MySql.Data.MySqlClient;
 
-namespace FluxusApi.Repositories;
+namespace FluxusApi.Repositories.Database;
 
 public class ServiceRepository : Repository<ServiceDTO>, IServiceRepository
 {

@@ -1,12 +1,11 @@
-﻿using MySql.Data.MySqlClient;
-using FluxusApi.Models;
-using FluxusApi.Models.Enums;
-using System.Collections;
+﻿using System.Collections;
 using Dapper;
 using FluxusApi.Models.DTO;
+using FluxusApi.Models.Enums;
 using FluxusApi.Repositories.Contracts;
+using MySql.Data.MySqlClient;
 
-namespace FluxusApi.Repositories;
+namespace FluxusApi.Repositories.Database;
 
 public class ServiceOrderRepository : Repository<ServiceOrderDTO>, IServiceOrderRepository
 {

@@ -1,10 +1,9 @@
-﻿using MySql.Data.MySqlClient;
-using FluxusApi.Models;
-using Dapper;
+﻿using Dapper;
 using FluxusApi.Models.DTO;
 using FluxusApi.Repositories.Contracts;
+using MySql.Data.MySqlClient;
 
-namespace FluxusApi.Repositories;
+namespace FluxusApi.Repositories.Database;
 
 public class InvoiceRepository : Repository<InvoiceDTO>, IInvoiceRepository
 {

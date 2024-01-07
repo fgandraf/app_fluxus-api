@@ -10,5 +10,5 @@ public interface IServiceRepository
     Task<bool> UpdateAsync(ServiceDTO model);
     Task<bool> DeleteAsync(ServiceDTO model);
     Task<ServiceDTO> GetAsync(int id);
-    Task<IEnumerable> GetAllAsync();
+    Task<List<ServiceDTO>> GetAllAsync();
 }

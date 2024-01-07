@@ -12,5 +12,5 @@ public interface IInvoiceRepository
     Task<bool> UpdateAsync(InvoiceDTO model);
     Task<bool> DeleteAsync(InvoiceDTO model);
     Task<InvoiceDTO> GetAsync(int id);
-    Task<IEnumerable> GetAllAsync();
+    Task<List<InvoiceDTO>> GetAllAsync();
 }

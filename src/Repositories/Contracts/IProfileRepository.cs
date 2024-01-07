@@ -7,12 +7,11 @@ namespace FluxusApi.Repositories.Contracts;
 
 public interface IProfileRepository
 {
-    Task<byte[]> GetLogoAsync();
     Task<ProfileToPrintViewModel> GetToPrintAsync();
     Task<string> GetTradingNameAsync();
     Task<long> InsertAsync(ProfileDTO model);
     Task<bool> UpdateAsync(ProfileDTO model);
     Task<bool> DeleteAsync(ProfileDTO model);
     Task<ProfileDTO> GetAsync(int id);
-    Task<IEnumerable> GetAllAsync();
+    Task<List<ProfileDTO>> GetAllAsync();
 }
